@@ -1,0 +1,54 @@
+/* blog-detail.module.css */
+.blogContent :global(ul) {
+  list-style: disc !important;
+  list-style-position: outside;
+  padding-left: 1.5rem !important;
+  margin: 0.75rem 0 !important;
+}
+
+.blogContent :global(ol) {
+  list-style: decimal !important;
+  list-style-position: outside;
+  padding-left: 1.5rem !important;
+  margin: 0.75rem 0 !important;
+}
+
+.blogContent :global(li) {
+  margin: 0.25rem 0 !important;
+}
+
+.blogContent :global(ul ul),
+.blogContent :global(ol ol),
+.blogContent :global(ul ol),
+.blogContent :global(ol ul) {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.blogContent :global(p),
+.blogContent :global(div),
+.blogContent :global(figure) {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.blogContent :global(img),
+.blogContent :global(video),
+.blogContent :global(iframe) {
+  display: block;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100%;
+  height: auto;
+}
+
+.blogContent :global(*) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Ẩn các phần không cần thiết */
+.blogContent :global(.scrolldown),
+.blogContent :global([class*="scrolldown"]) {
+  display: none !important;
+}

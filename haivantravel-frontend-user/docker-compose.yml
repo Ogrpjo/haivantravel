@@ -1,0 +1,19 @@
+name: haivantravel-frontend-user
+services: 
+  haivantravel-frontend-user:
+    container_name: haivantravel-frontend-user
+    image: haivantravel-frontend-user
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "2032:2032"
+    extra_hosts: 
+      - "host.docker.internal:host-gateway"
+    networks: 
+      - haivantravel_network
+    
+networks:
+  haivantravel_network:
+    external: true

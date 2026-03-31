@@ -1,0 +1,60 @@
+import { NextRequest, NextResponse } from "next/server";
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL 
+
+export async function POST(req: NextRequest) {
+  try {
+    const { username, password } = await req.json();
+
+    if (!API_URL) {
+      return NextResponse.json(
+        { message: "API_URL is not configured" },
+        { status: 500 }
+      );
+    }
+
+    const backendRes = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await backendRes.json().catch(() => ({}));
+
+    if (!backendRes.ok) {
+      return NextResponse.json(
+        { message: data.message ?? "Đăng nhập thất bại" },
+        { status: backendRes.status }
+      );
+    }
+    const token =
+      data.token ?? data.accessToken ?? data.authToken ?? data.user?.id;
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "Token không hợp lệ" },
+        { status: 500 }
+      );
+    }
+
+    const response = NextResponse.json({ success: true });
+
+    response.cookies.set("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { message: "Có lỗi xảy ra. Vui lòng thử lại." },
+      { status: 500 }
+    );
+  }
+}

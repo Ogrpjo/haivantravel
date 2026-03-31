@@ -1,0 +1,25 @@
+name: haivantravel-frontend-admin
+
+services: 
+  haivantravel-frontend-admin:
+    container_name: haivantravel-frontend-admin
+    image: haivantravel-frontend-admin
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "127.0.0.1:2033:2033"
+    env_file: 
+      - .env.production
+    environment:
+      PORT: 2033
+      HOSTNAME: 0.0.0.0
+    extra_hosts: 
+      - "host.docker.internal:host-gateway"
+    networks: 
+      - haivantravel_network
+    
+networks:
+  haivantravel_network:
+    external: true

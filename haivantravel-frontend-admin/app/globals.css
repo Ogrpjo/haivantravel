@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+:root {
+  --background: #121212;
+  --foreground: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+.sun-editor {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  background-color: #121212 !important;
+}
+
+.sun-editor .se-container,
+.sun-editor .se-container .se-editor-container,
+.sun-editor .se-wrapper,
+.sun-editor .se-wrapper-inner,
+.sun-editor .se-wrapper-wysiwyg,
+.sun-editor .sun-editor-editable,
+.sun-editor-editable {
+  background: #121212 !important;
+  color: #ffffff !important;
+}
+
+.sun-editor .se-toolbar {
+  background-color: #121212 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.sun-editor .se-btn-module-border {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.sun-editor .se-btn,
+.sun-editor .se-btn:enabled,
+.sun-editor .se-btn:enabled:hover,
+.sun-editor .se-btn:enabled:focus {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+.sun-editor .se-btn svg,
+.sun-editor .se-btn svg path {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sun-editor .se-btn svg,
+.sun-editor .se-btn svg * {
+  stroke: #ffffff !important;
+}
+
+.sun-editor .se-input-form,
+.sun-editor .se-input-form input,
+.sun-editor .se-input-form textarea {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.sun-editor .se-wrapper,
+.sun-editor .se-wrapper-inner,
+.sun-editor .se-wrapper-wysiwyg {
+  background-color: #121212 !important;
+}
+
+.sun-editor .se-wrapper-inner.se-wrapper-wysiwyg,
+.sun-editor .se-wrapper .se-wrapper-inner {
+  color: #ffffff !important;
+}
+
+.sun-editor .se-resizing-bar {
+  background: #121212 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.sun-editor .se-navigation,
+.sun-editor .se-list-layer,
+.sun-editor .se-menu-list {
+  background: #121212 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.sun-editor .se-btn-list,
+.sun-editor .se-list-layer .se-btn-list,
+.sun-editor .se-menu-list .se-btn-list {
+  color: #e0e0e0!important;
+  background-color: #121212 !important;
+}
+
+.sun-editor .se-list-layer li button .se-list-text,
+.sun-editor .se-menu-list li button .se-list-text {
+  color: #ffffff !important;
+}
+
+.sun-editor .se-list-layer li button:hover,
+.sun-editor .se-menu-list li button:hover,
+.sun-editor .se-btn-list:hover {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+.sun-editor .se-wrapper-wysiwyg p,
+.sun-editor .se-wrapper-wysiwyg span,
+.sun-editor .se-wrapper-wysiwyg div,
+.sun-editor .se-wrapper-wysiwyg h1,
+.sun-editor .se-wrapper-wysiwyg h2,
+.sun-editor .se-wrapper-wysiwyg h3,
+.sun-editor .se-wrapper-wysiwyg h4,
+.sun-editor .se-wrapper-wysiwyg h5,
+.sun-editor .se-wrapper-wysiwyg h6,
+.sun-editor .se-wrapper-wysiwyg li,
+.sun-editor .se-wrapper-wysiwyg a,
+.sun-editor .se-wrapper-wysiwyg strong,
+.sun-editor .se-wrapper-wysiwyg em {
+  color: #ffffff !important;
+}
+
+@keyframes modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.sun-editor .se-wrapper-wysiwyg [style*="font-family: Inter"] {
+  font-family: var(--font-inter), Arial, sans-serif !important;
+}
+
+.sun-editor .se-wrapper-wysiwyg [style*="font-family: Montserrat"] {
+  font-family: var(--font-montserrat), Arial, sans-serif !important;
+}
+
+.sun-editor .se-wrapper-wysiwyg [style*="font-family: Roboto"] {
+  font-family: var(--font-roboto), Arial, sans-serif !important;
+}

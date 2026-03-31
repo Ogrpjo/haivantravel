@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: haivantravel-backend
+    environment:
+      DB_HOST: postgres 
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: 123
+      DB_NAME: haivantravel
+      JWT_SECRET: ce791bdaf064258f602baf9e8be2ba83c220273e10f453afe4a8e7fd61cfdddf
+      JWT_EXPIRES: 1d
+      PORT: 2031
+    ports:
+      - "2031:2031"
+    networks: 
+      - haivantravel_network
+
+networks: 
+  haivantravel_network: 
+    external: true

@@ -23,7 +23,7 @@ function buildProjectImageSrc(
   const base = apiBaseUrl.replace(/\/$/, "");
   // backend returns `uploads/<filename>` or sometimes a full path; normalize to `/uploads/<filename>`
   const parts = trimmed.split(/[/\\]/).filter(Boolean);
-  const uploadsIdx = parts.findIndex((p) => p.toLowerCase() === "uploads");
+  const uploadsIdx = parts.findIndex((p) => p.toLowerCase() === "upload");
   const filename =
     uploadsIdx >= 0
       ? parts.slice(uploadsIdx + 1).join("/")

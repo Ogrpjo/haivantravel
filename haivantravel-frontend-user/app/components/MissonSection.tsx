@@ -5,7 +5,7 @@ import Image from "next/image";
 import ImageFrameEmotion from "./ImageFrameEmotion";
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
 
 const DEFAULT_TITLE = "Những người kiến tạo cảm xúc";
 const DEFAULT_DESCRIPTION =

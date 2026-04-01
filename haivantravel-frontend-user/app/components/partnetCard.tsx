@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type PartnerCardProps = {
   src: string;
@@ -8,6 +8,10 @@ type PartnerCardProps = {
 
 export default function PartnerCard({ src, title, width }: PartnerCardProps) {
   const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [src]);
 
   return (
     <div

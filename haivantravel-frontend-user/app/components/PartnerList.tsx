@@ -131,7 +131,7 @@ export default function PartnerList() {
 
                     return partner ? (
                       <PartnerCard
-                        key={`partner-slot-${index}`}
+                        key={partner.id}
                         src={partner.src}
                         width={partner.width}
                         title={partner.title}

@@ -21,7 +21,7 @@ function buildProjectImageSrc(
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
     return trimmed;
   const base = apiBaseUrl.replace(/\/$/, "");
-  // backend returns `uploads/<filename>` or sometimes a full path; normalize to `/uploads/<filename>`
+  // backend returns `upload/<filename>` or sometimes a full path; normalize to `/upload/<filename>`
   const parts = trimmed.split(/[/\\]/).filter(Boolean);
   const uploadsIdx = parts.findIndex((p) => p.toLowerCase() === "upload");
   const filename =
@@ -29,7 +29,7 @@ function buildProjectImageSrc(
       ? parts.slice(uploadsIdx + 1).join("/")
       : parts[parts.length - 1];
   if (!filename) return null;
-  return `${base}/uploads/${filename}`;
+  return `${base}/upload/${filename}`;
 }
 
 export default function ProjectSection() {

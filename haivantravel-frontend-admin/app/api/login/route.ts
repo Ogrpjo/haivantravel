@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerApiBaseUrl } from "@/app/lib/apiBaseUrl";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export async function POST(req: NextRequest) {
   try {
     const { username, password } = await req.json();
-    const apiUrl = getServerApiBaseUrl();
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
 
     const backendRes = await fetch(`${apiUrl}/auth/login`, {
       method: "POST",

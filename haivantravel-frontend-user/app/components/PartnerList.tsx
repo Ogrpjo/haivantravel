@@ -26,8 +26,9 @@ function buildPartnerSrc(iconPath: string, apiBaseUrl: string): string {
   if (!iconPath || typeof iconPath !== "string") return "";
   const trimmed = iconPath.trim();
   if (!trimmed) return "";
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
-    return trimmed;
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed.replace("/uploads/", "/upload/");
+  }
   const base = apiBaseUrl.replace(/\/$/, "");
   const filename = trimmed.split(/[/\\]/).pop()?.trim() ?? trimmed;
   if (!filename) return "";

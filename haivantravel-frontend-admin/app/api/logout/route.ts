@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
-
-const API_URL = process.env.API_URL?.trim() || getApiBaseUrl();
+import { getServerApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export async function POST(req: NextRequest) {
   try {
-    if (API_URL) {
-      await fetch(`${API_URL}/auth/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).catch(() => {});
-    }
+    const apiUrl = getServerApiBaseUrl();
+    await fetch(`${apiUrl}/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).catch(() => {});
 
     const res = NextResponse.json({ success: true });
 

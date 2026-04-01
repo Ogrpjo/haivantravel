@@ -1,20 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
-
-const API_URL = getApiBaseUrl();
+import { getServerApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export async function POST(req: NextRequest) {
   try {
     const { username, password } = await req.json();
+    const apiUrl = getServerApiBaseUrl();
 
-    if (!API_URL) {
-      return NextResponse.json(
-        { message: "API_URL is not configured" },
-        { status: 500 }
-      );
-    }
-
-    const backendRes = await fetch(`${API_URL}/auth/login`, {
+    const backendRes = await fetch(`${apiUrl}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

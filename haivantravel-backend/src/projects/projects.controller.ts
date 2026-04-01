@@ -19,7 +19,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectsService } from './projects.service';
 
-const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads');
+const UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload');
 
 @Controller('projects')
 export class ProjectsController {
@@ -61,7 +61,7 @@ export class ProjectsController {
     if (!file) {
       throw new BadRequestException('Cần chọn ảnh dự án.');
     }
-    const imageUrl = `uploads/${file.filename}`;
+    const imageUrl = `upload/${file.filename}`;
     return this.projectsService.create(createDto, imageUrl);
   }
 
@@ -106,7 +106,7 @@ export class ProjectsController {
   ) {
     const payload: Partial<{ link_url: string; image_url: string }> = {};
     if (updateDto.link_url != null) payload.link_url = updateDto.link_url;
-    if (file) payload.image_url = `uploads/${file.filename}`;
+    if (file) payload.image_url = `upload/${file.filename}`;
 
     const updated = await this.projectsService.update(Number(id), payload);
     if (!updated) throw new NotFoundException('Không tìm thấy dự án.');

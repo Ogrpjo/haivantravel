@@ -1,26 +1,24 @@
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 
-/**
- * Upsert "single rich text" pattern:
- * - Always read the first row (ordered by id ASC)
- * - If exists: update `content`
- * - If not: create a new row with `content`
- *
- * All our rich-text tables (gala/mice/teambuilding) share the same shape:
- * { id, content }
- */
-export async function saveSingleRichText<TEntity extends { id: number; content: string | null }>(
+export async function saveSingleRichText<
+  TEntity extends { id: number; content: string | null }
+>(
   repo: Repository<TEntity>,
-  content: string | null | undefined,
+  content?: string | null,
 ): Promise<TEntity> {
-  const existing = await repo.findOne({ where: {}, order: { id: 'ASC' } });
+  const existing = await repo.findOne({
+    where: {},
+    order: { id: 'ASC' } as any, // TypeScript khó infer generic với order
+  });
 
   if (existing) {
     existing.content = content ?? null;
-    return repo.save(existing);
+    return repo.save(existing); // TypeScript OK
   }
 
-  const entity = repo.create({ content: content ?? null } as Partial<TEntity>);
+  // Dùng create() để đảm bảo single entity
+  const entity = repo.create({ content: content ?? null } as DeepPartial<TEntity>);
+
+  // Save single entity → TypeScript sẽ infer Promise<TEntity>
   return repo.save(entity);
 }
-

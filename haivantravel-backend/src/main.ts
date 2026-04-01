@@ -8,10 +8,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
-  app.use(express.json({ limit: '150mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '150mb' }));
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+  app.useStaticAssets(join(__dirname, '..', '..', '..', 'upload'), {
+    prefix: '/upload/',
   });
 
   app.useGlobalPipes(

@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 type ProjectItemProps = {
   id: number;
   link: string;
@@ -31,12 +29,13 @@ export default function ProjectItem({
       </div>
       <div className="flex-1 min-w-0 py-2 px-4 border-r border-white/10">
         {src ? (
-          <Image
+          <img
             src={src}
             alt=""
             width={36}
             height={36}
             className="h-9 w-9 rounded object-cover"
+            loading="lazy"
           />
         ) : (
           "—"
@@ -52,7 +51,7 @@ export default function ProjectItem({
           aria-label="Chỉnh sửa"
           onClick={() => onEdit?.(id)}
         >
-          <Image src="/admin/edit.svg" alt="Chỉnh sửa" width={16} height={16} />
+          <img src="/admin/edit.svg" alt="Chỉnh sửa" width={16} height={16} />
         </button>
         <button
           type="button"
@@ -60,7 +59,7 @@ export default function ProjectItem({
           aria-label="Xóa"
           onClick={() => onDelete?.(id)}
         >
-          <Image src="/admin/delete.svg" alt="Xóa" width={16} height={16} />
+          <img src="/admin/delete.svg" alt="Xóa" width={16} height={16} />
         </button>
       </div>
     </div>

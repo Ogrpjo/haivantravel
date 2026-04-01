@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import "suneditor/dist/css/suneditor.min.css";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 const SunEditor = dynamic(() => import("suneditor-react"), {
   ssr: false,
@@ -31,7 +32,7 @@ export default function BlogCreatePage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   const slug = useMemo(() => slugify(title), [title]);
 

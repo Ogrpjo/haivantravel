@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createDeleteHandler } from "@/app/lib/tableActions";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export type BlogDetail = {
   id: number;
@@ -20,7 +21,7 @@ export default function BlogListContent() {
   const [items, setItems] = useState<BlogDetail[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   const resolveImageUrl = (value: string | null) => {
     if (!value) return "";

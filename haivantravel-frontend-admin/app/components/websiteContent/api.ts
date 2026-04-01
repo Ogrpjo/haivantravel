@@ -1,5 +1,6 @@
-const getApiBaseUrl = () =>
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+import { getApiBaseUrl as getNormalizedApiBaseUrl } from "@/app/lib/apiBaseUrl";
+
+const getApiBaseUrl = () => getNormalizedApiBaseUrl();
 
 export async function fetchContentByPage(
   page: string

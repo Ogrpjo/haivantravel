@@ -6,6 +6,7 @@ import AddServiceModel from "./AddServiceModel";
 import EditServiceModal, { type ServiceForEdit } from "./EditServiceModal";
 import ServiceItem from "./ServiceItem";
 import { createDeleteHandler } from "@/app/lib/tableActions";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export type Service = {
   id: number;
@@ -24,7 +25,7 @@ export default function ServiceListContent() {
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   const fetchServices = async () => {
     try {

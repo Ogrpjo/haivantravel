@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import AddSocialMediaModal from "./AddSocialMediaModal";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export type SocialLink = {
   id: number;
@@ -17,7 +18,7 @@ export default function SocialMediaListContent() {
   const [list, setList] = useState<SocialLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   const fetchSocialLinks = async () => {
     try {

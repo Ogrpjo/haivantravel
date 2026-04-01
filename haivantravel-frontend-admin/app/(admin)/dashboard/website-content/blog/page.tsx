@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "@/app/components/SideBar";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 type EventPayload = {
   name: string | null;
   time: string | null;
 };
-
-const getApiBaseUrl = () =>
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
 
 export default function WebsiteContentBlogPage() {
   const [eventName, setEventName] = useState("");

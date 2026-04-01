@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 type AddCustomerModalProps = {
   isOpen: boolean;
@@ -21,7 +22,7 @@ export default function AddCustomerModal({ isOpen, onClose }: AddCustomerModalPr
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

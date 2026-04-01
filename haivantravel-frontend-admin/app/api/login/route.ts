@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL 
+const API_URL = getApiBaseUrl();
 
 export async function POST(req: NextRequest) {
   try {

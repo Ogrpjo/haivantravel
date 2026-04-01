@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 export type ServiceForEdit = {
   id: number;
@@ -35,7 +36,7 @@ export default function EditServiceModal({
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     if (service && isOpen) {

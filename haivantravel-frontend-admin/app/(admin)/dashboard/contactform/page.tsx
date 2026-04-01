@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Sidebar from "@/app/components/SideBar";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 type ContactData = {
   id: number;
@@ -44,7 +45,7 @@ export default function ContactFormPage() {
   const [requests, setRequests] = useState<RequestPhone[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  const apiBaseUrl = getApiBaseUrl();
 
   const fetchAllData = async () => {
     try {

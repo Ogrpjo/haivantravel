@@ -4,6 +4,7 @@ import Sidebar from "@/app/components/SideBar";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import "suneditor/dist/css/suneditor.min.css";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 const SunEditor = dynamic(() => import("suneditor-react"), {
   ssr: false,
@@ -13,7 +14,7 @@ export default function WebsiteContentGalaPage() {
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     let cancelled = false;

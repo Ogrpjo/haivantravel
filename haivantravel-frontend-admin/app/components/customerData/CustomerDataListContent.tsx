@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import AddCustomerModal from "./AddCustomerModal";
 import EditCustomerModal from "./EditCustomerModal";
 import { createEditHandler, createDeleteHandler } from "@/app/lib/tableActions";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 type Partner = {
   id: number;
@@ -22,7 +23,7 @@ export default function CustomerDataListContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [visibleCount, setVisibleCount] = useState(9);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   const fetchPartners = async () => {
     try {

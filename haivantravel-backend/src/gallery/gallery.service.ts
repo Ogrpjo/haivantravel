@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { join } from 'path';
 import { Gallery } from './gallery.entity';
 
-const UPLOADS_DIR = join(process.cwd(), '..', 'uploads');
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
 
 @Injectable()
 export class GalleryService {
@@ -16,12 +16,12 @@ export class GalleryService {
 
   /**
    * Tạo một record trong galleries cho mỗi filename.
-   * Filename là tên file đã lưu trong thư mục /uploads.
+   * Filename là tên file đã lưu trong thư mục /upload.
    */
   async createManyFromFilenames(filenames: string[]): Promise<Gallery[]> {
     const saved: Gallery[] = [];
     for (const filename of filenames) {
-      const imageUrl = `uploads/${filename}`;
+      const imageUrl = `upload/${filename}`;
       const gallery = this.galleryRepository.create({ image_url: imageUrl });
       saved.push(await this.galleryRepository.save(gallery));
     }
@@ -38,7 +38,7 @@ export class GalleryService {
       throw new NotFoundException('Không tìm thấy ảnh gallery');
     }
 
-    const filename = item.image_url.replace(/^uploads\//, '');
+    const filename = item.image_url.replace(/^upload\//, '');
     const filePath = join(UPLOADS_DIR, filename);
 
     if (fs.existsSync(filePath)) {

@@ -20,7 +20,7 @@ export default function BlogListContent() {
   const [items, setItems] = useState<BlogDetail[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
 
   const resolveImageUrl = (value: string | null) => {
     if (!value) return "";

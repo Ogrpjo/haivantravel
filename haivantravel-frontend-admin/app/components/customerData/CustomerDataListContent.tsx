@@ -22,7 +22,7 @@ export default function CustomerDataListContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [visibleCount, setVisibleCount] = useState(9);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
 
   const fetchPartners = async () => {
     try {

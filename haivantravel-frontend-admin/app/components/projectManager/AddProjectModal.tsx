@@ -24,7 +24,7 @@ export default function AddProjectModal({
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

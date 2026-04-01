@@ -17,7 +17,7 @@ export default function SocialMediaListContent() {
   const [list, setList] = useState<SocialLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
 
   const fetchSocialLinks = async () => {
     try {

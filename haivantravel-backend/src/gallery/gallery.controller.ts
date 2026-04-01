@@ -16,8 +16,8 @@ import * as fs from 'fs';
 import sharp from 'sharp';
 import { GalleryService } from './gallery.service';
 
-const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads');
-const MAX_FILE_SIZE = 150 * 1024 * 1024; // 150MB / file
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 interface MulterFile {
   fieldname: string;

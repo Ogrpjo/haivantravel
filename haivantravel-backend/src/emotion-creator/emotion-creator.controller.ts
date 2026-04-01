@@ -15,8 +15,8 @@ import sharp from 'sharp';
 import { EmotionCreatorService } from './emotion-creator.service';
 
 const UPLOAD_SUBDIR = 'emotion-creator';
-const UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload', UPLOAD_SUBDIR);
-const MAX_FILE_SIZE = 150 * 1024 * 1024; // 150MB / file
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
+const MAX_FILE_SIZE = 10 * 1024 * 1024; 
 
 interface MulterFile {
   fieldname: string;
@@ -103,9 +103,6 @@ export class EmotionCreatorController {
     @UploadedFiles() files: FileFields,
   ) {
     const current = await this.emotionCreatorService.findOne();
-
-    // Format URL giống gallery / website-content: path tương đối "uploads/..." (forward slash),
-    // hiển thị trong DB dạng chuỗi, frontend dùng bằng cách: apiBase + "/" + image_url
     const getUrl = async (
       arr: MulterFile[] | undefined,
       existing: string | null,

@@ -41,7 +41,7 @@ export class BlogDetailsController {
     FileInterceptor('demo_image', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
+          const uploadPath = join(process.cwd(), '..', 'upload');
           fs.mkdirSync(uploadPath, { recursive: true });
           cb(null, uploadPath);
         },

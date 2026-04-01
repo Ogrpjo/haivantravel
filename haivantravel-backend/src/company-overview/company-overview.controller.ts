@@ -15,8 +15,8 @@ import sharp from 'sharp';
 import { CompanyOverviewService } from './company-overview.service';
 
 const UPLOAD_SUBDIR = 'company-overview';
-const UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload', UPLOAD_SUBDIR);
-const MAX_FILE_SIZE = 150 * 1024 * 1024; // 150MB / file
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 interface MulterFile {
   fieldname: string;

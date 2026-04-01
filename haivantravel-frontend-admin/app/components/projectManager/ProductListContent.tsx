@@ -6,6 +6,7 @@ import ProjectItem from "./ProjectItem";
 import AddProjectModal from "./AddProjectModal";
 import EditProjectModal, { type ProjectForEdit } from "./EditProjectModal";
 import { confirmDelete } from "@/app/lib/tableActions";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
 type Project = {
   id: number;
@@ -18,7 +19,7 @@ export default function ProductListContent() {
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectForEdit | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.haivanevent.vn";
+  const apiBaseUrl = getApiBaseUrl();
 
   const fetchProjects = useCallback(async () => {
     try {

@@ -20,7 +20,7 @@ function buildServiceIconSrc(iconPath: string, apiBaseUrl: string): string {
   const base = apiBaseUrl.replace(/\/$/, "");
   const filename = trimmed.split(/[/\\]/).pop()?.trim() ?? trimmed;
   if (!filename) return "";
-  return `${base}/services/uploads/${filename}`;
+  return `${base}/services/upload/${filename}`;
 }
 
 export default function ServiceSection() {

@@ -6,7 +6,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { join } from 'path';
 import * as fs from 'fs';
 
-const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads');
+const UPLOADS_DIR = join(process.cwd(), '..', 'uploads');
 
 @Injectable()
 export class ProjectsService {

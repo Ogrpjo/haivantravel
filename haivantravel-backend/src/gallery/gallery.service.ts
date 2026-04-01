@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { join } from 'path';
 import { Gallery } from './gallery.entity';
 
-const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads');
+const UPLOADS_DIR = join(process.cwd(), '..', 'uploads');
 
 @Injectable()
 export class GalleryService {

@@ -15,11 +15,13 @@ import type { Response } from 'express';
 import { existsSync } from 'fs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, Multer } from 'multer';
-import { extname, join, resolve } from 'path';
+import { extname, join } from 'path';
 import * as fs from 'fs';
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
 
 @Controller('services')
 export class ServicesController {
@@ -30,9 +32,8 @@ export class ServicesController {
     FileInterceptor('icon', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
-          fs.mkdirSync(uploadPath, { recursive: true });
-          cb(null, uploadPath);
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+          cb(null, UPLOADS_DIR);
         },
         filename: (_req, file, cb) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -80,8 +81,7 @@ export class ServicesController {
     if (!filename || filename.includes('..')) {
       return res.status(400).send('Invalid filename');
     }
-    const uploadsDir = resolve(__dirname, '..', '..', '..', 'upload');
-    const filePath = resolve(uploadsDir, filename);
+    const filePath = join(UPLOADS_DIR, filename);
     if (!existsSync(filePath)) {
       return res.status(404).send('Not found');
     }
@@ -98,9 +98,8 @@ export class ServicesController {
     FileInterceptor('icon', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
-          fs.mkdirSync(uploadPath, { recursive: true });
-          cb(null, uploadPath);
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+          cb(null, UPLOADS_DIR);
         },
         filename: (_req, file, cb) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;

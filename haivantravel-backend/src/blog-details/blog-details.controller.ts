@@ -25,6 +25,8 @@ type UploadFileLike = {
   path?: string;
 };
 
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
+
 const asUploadFile = (file: unknown): UploadFileLike => {
   if (typeof file === 'object' && file !== null) {
     return file as UploadFileLike;
@@ -41,9 +43,8 @@ export class BlogDetailsController {
     FileInterceptor('demo_image', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), '..', 'upload');
-          fs.mkdirSync(uploadPath, { recursive: true });
-          cb(null, uploadPath);
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+          cb(null, UPLOADS_DIR);
         },
         filename: (_req, file, cb) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -110,9 +111,8 @@ export class BlogDetailsController {
     FileInterceptor('demo_image', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
-          fs.mkdirSync(uploadPath, { recursive: true });
-          cb(null, uploadPath);
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+          cb(null, UPLOADS_DIR);
         },
         filename: (_req, file, cb) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;

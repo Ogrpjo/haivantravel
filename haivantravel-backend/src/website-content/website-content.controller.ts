@@ -23,7 +23,7 @@ import { UpdateWebsiteContentDto } from './dto/update-website-content.dto';
 const UPLOAD_SUBDIR = 'website-content';
 
 function getUploadPath() {
-  return join(__dirname, '..', '..', '..', 'upload', UPLOAD_SUBDIR);
+  return join(process.cwd(), '..', 'upload', UPLOAD_SUBDIR);
 }
 
 interface MulterFile {

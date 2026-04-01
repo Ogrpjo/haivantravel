@@ -19,6 +19,26 @@ const nextConfig: NextConfig = {
         hostname: "api.haivanevent.vn",
         pathname: "/upload/**",
       },
+      {
+        protocol: "https",
+        hostname: "haivanevent.vn",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.haivanevent.vn",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "haivanevent.vn",
+        pathname: "/upload/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.haivanevent.vn",
+        pathname: "/upload/**",
+      },
     ],
   },
 };

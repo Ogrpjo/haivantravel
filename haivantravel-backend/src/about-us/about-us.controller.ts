@@ -15,7 +15,7 @@ import sharp from 'sharp';
 import { AboutUsService } from './about-us.service';
 
 const UPLOAD_SUBDIR = 'about-us';
-const UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload', UPLOAD_SUBDIR);
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload', UPLOAD_SUBDIR);
 const MAX_FILE_SIZE = 150 * 1024 * 1024; 
 
 interface MulterFile {
@@ -102,6 +102,7 @@ export class AboutUsController {
         const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
         const filename = `about-us-${unique}.webp`;
         const outputPath = join(UPLOADS_DIR, filename);
+        console.log('Saving file at: ', outputPath);
         const optimized = await optimizeImageToWebp(arr[0].buffer as Buffer);
         await fs.promises.writeFile(outputPath, optimized);
         return `upload/${UPLOAD_SUBDIR}/${filename}`;

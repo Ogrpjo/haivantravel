@@ -15,7 +15,7 @@ import sharp from 'sharp';
 import { EmotionCreatorService } from './emotion-creator.service';
 
 const UPLOAD_SUBDIR = 'emotion-creator';
-const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads', UPLOAD_SUBDIR);
+const UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload', UPLOAD_SUBDIR);
 const MAX_FILE_SIZE = 150 * 1024 * 1024; // 150MB / file
 
 interface MulterFile {
@@ -118,7 +118,7 @@ export class EmotionCreatorController {
         const outputPath = join(UPLOADS_DIR, filename);
         const optimized = await optimizeImageToWebp(arr[0].buffer as Buffer);
         await fs.promises.writeFile(outputPath, optimized);
-        return `uploads/${UPLOAD_SUBDIR}/${filename}`;
+        return `upload/${UPLOAD_SUBDIR}/${filename}`;
       }
       return existing ?? null;
     };

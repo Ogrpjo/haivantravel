@@ -30,7 +30,7 @@ export class ServicesController {
     FileInterceptor('icon', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', 'uploads');
+          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
           fs.mkdirSync(uploadPath, { recursive: true });
           cb(null, uploadPath);
         },
@@ -75,12 +75,12 @@ export class ServicesController {
     return this.servicesService.findAllActive();
   }
 
-  @Get('uploads/:filename')
+  @Get('upload/:filename')
   serveIcon(@Param('filename') filename: string, @Res() res: Response) {
     if (!filename || filename.includes('..')) {
       return res.status(400).send('Invalid filename');
     }
-    const uploadsDir = resolve(__dirname, '..', '..', 'uploads');
+    const uploadsDir = resolve(__dirname, '..', '..', '..', 'upload');
     const filePath = resolve(uploadsDir, filename);
     if (!existsSync(filePath)) {
       return res.status(404).send('Not found');
@@ -98,7 +98,7 @@ export class ServicesController {
     FileInterceptor('icon', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', 'uploads');
+          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
           fs.mkdirSync(uploadPath, { recursive: true });
           cb(null, uploadPath);
         },

@@ -41,7 +41,7 @@ export class BlogDetailsController {
     FileInterceptor('demo_image', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', 'uploads');
+          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
           fs.mkdirSync(uploadPath, { recursive: true });
           cb(null, uploadPath);
         },
@@ -110,7 +110,7 @@ export class BlogDetailsController {
     FileInterceptor('demo_image', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(__dirname, '..', '..', 'uploads');
+          const uploadPath = join(__dirname, '..', '..', '..', 'upload');
           fs.mkdirSync(uploadPath, { recursive: true });
           cb(null, uploadPath);
         },

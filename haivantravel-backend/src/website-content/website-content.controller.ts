@@ -23,7 +23,7 @@ import { UpdateWebsiteContentDto } from './dto/update-website-content.dto';
 const UPLOAD_SUBDIR = 'website-content';
 
 function getUploadPath() {
-  return join(__dirname, '..', '..', 'uploads', UPLOAD_SUBDIR);
+  return join(__dirname, '..', '..', '..', 'upload', UPLOAD_SUBDIR);
 }
 
 interface MulterFile {
@@ -92,7 +92,7 @@ export class WebsiteContentController {
     const optimized = await optimizeImageToWebp(file.buffer as Buffer);
     await fs.promises.writeFile(outputPath, optimized);
 
-    const path = `uploads/${UPLOAD_SUBDIR}/${filename}`;
+    const path = `upload/${UPLOAD_SUBDIR}/${filename}`;
     return { url: path, filename };
   }
 
@@ -117,7 +117,7 @@ export class WebsiteContentController {
         const outputPath = join(dir, filename);
         const optimized = await optimizeImageToWebp(file.buffer as Buffer);
         await fs.promises.writeFile(outputPath, optimized);
-        return `uploads/${UPLOAD_SUBDIR}/${filename}`;
+        return `upload/${UPLOAD_SUBDIR}/${filename}`;
       }),
     );
 

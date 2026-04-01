@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 
@@ -13,6 +12,9 @@ const DEFAULT_IMAGES: string[] = [];
 
 const getApiBaseUrl = () =>
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+
+const getUploadBaseUrl = () =>
+  process.env.NEXT_PUBLIC_UPLOAD_BASE_URL ?? "https://api.haivanevent.vn";
 
 export default function InfinityGallery() {
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -36,14 +38,14 @@ export default function InfinityGallery() {
         const data: GalleryItem[] = await res.json();
         if (!isActive || !Array.isArray(data) || data.length === 0) return;
 
-        const baseUrl = getApiBaseUrl();
+        const uploadBaseUrl = getUploadBaseUrl();
         const urls = data
           .map((item) => item.image_url)
           .filter(Boolean)
           .map((url) => {
             if (/^https?:\/\//i.test(url)) return url;
             const normalized = url.startsWith("/") ? url : `/${url}`;
-            return `${baseUrl}${normalized}`;
+            return `${uploadBaseUrl}${normalized}`;
           });
 
         if (urls.length) setGalleryImages(urls);
@@ -90,14 +92,12 @@ export default function InfinityGallery() {
               key={`${src}-${i}`}
               className="relative h-[350px] w-[300px] overflow-hidden rounded-xl shadow-2xl sm:h-[600px] sm:w-[500px]"
             >
-              <Image
+              <img
                 src={src}
                 alt="Gallery"
-                fill
-                sizes="(max-width: 640px) 300px, 500px"
-                className="object-cover"
-                quality={70}
+                className="h-full w-full object-cover"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           ))}

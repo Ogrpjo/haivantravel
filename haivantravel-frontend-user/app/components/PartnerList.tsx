@@ -31,7 +31,7 @@ function buildPartnerSrc(iconPath: string, apiBaseUrl: string): string {
   const base = apiBaseUrl.replace(/\/$/, "");
   const filename = trimmed.split(/[/\\]/).pop()?.trim() ?? trimmed;
   if (!filename) return "";
-  return `${base}/uploads/${filename}`;
+  return `${base}/upload/${filename}`;
 }
 
 export default function PartnerList() {

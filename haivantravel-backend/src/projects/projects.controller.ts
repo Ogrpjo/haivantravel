@@ -19,7 +19,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectsService } from './projects.service';
 
-const UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload');
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
 
 @Controller('projects')
 export class ProjectsController {

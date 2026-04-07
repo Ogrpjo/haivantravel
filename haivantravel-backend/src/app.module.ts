@@ -51,8 +51,7 @@ import { TeamBuildingModule } from './teambuilding/teambuilding.module';
     }),
     MulterModule.register({
       limits: {
-        fileSize: 150 * 1024 * 1024,
-        files: 20,
+        fileSize: 10 * 1024 * 1024,
       },
     }),
     TypeOrmModule.forRootAsync({

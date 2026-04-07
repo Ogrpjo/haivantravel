@@ -121,12 +121,18 @@ export class BlogDetailsController {
           cb(null, `blog-demo-${uniqueSuffix}${fileExt}`);
         },
       }),
+  
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+        fieldSize: 10 * 1024 * 1024,
+      },
+  
       fileFilter: (_req, file, cb) => {
         const allowedTypes = /jpg|jpeg|png|webp/;
         const uploadFile = asUploadFile(file);
         const ext = extname(uploadFile.originalname ?? '').toLowerCase();
         const mimetype = (uploadFile.mimetype ?? '').toLowerCase();
-
+  
         if (allowedTypes.test(ext) && mimetype.startsWith('image/')) {
           cb(null, true);
         } else {

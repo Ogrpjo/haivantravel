@@ -137,7 +137,9 @@ export default function Footer() {
         throw new Error(errorText || "Gửi yêu cầu thất bại.");
       }
 
-      setSubmitMessage("Gửi yêu cầu tư vấn thành công. Chúng tôi sẽ liên hệ sớm.");
+      setSubmitMessage(
+        "Gửi yêu cầu tư vấn thành công. Chúng tôi sẽ liên hệ sớm.",
+      );
       setPhone("");
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Có lỗi xảy ra.");
@@ -148,22 +150,19 @@ export default function Footer() {
 
   return (
     <div className="flex flex-col w-full z-20 bg-[#121212]">
-      <div className="max-w-[1600px] mx-auto w-full flex flex-col lg:flex-row lg:justify-between gap-6 max-sm:gap-4 lg:gap-20 px-6 max-sm:px-4 py-12 max-sm:py-6 items-center lg:items-start text-center lg:text-left">
-        <div className="flex flex-col items-center lg:items-start">
-          <div className="flex gap-3 max-sm:gap-2 items-center">
-            <Image
-              src="/haivantravellogo.svg"
-              alt="logo"
-              width={120}
-              height={120}
-              className="max-sm:w-16 max-sm:h-16"
-            />
-            <span className="text-xl max-sm:text-lg font-bold max-w-[100px] max-sm:max-w-[80px]">
-              Hải Vân Event
-            </span>
-          </div>
-
-          <p className="max-w-[320px] max-sm:max-w-[280px] mt-3 max-sm:mt-2 max-sm:text-sm">
+      <div className="px-[120px] w-full flex flex-col lg:flex-row lg:justify-between gap-6 max-sm:gap-4 lg:gap-20 px-6 max-sm:px-4 py-12 max-sm:py-6 items-center lg:items-start text-center lg:text-left">
+        <div className="flex flex-col items-center gap-3 lg:items-start">
+          <Image
+            src="/haivantravellogo.svg"
+            alt="logo"
+            width={120}
+            height={120}
+            className="max-sm:w-16 max-sm:h-16"
+          />
+          <span className="text-xl max-sm:text-lg font-bold">
+            Hải Vân Event
+          </span>
+          <p className="max-sm:text-sm text-[14px]">
             TRAO NIỀM TIN - TRỌN CẢM XÚC
           </p>
 
@@ -184,25 +183,6 @@ export default function Footer() {
             })}
           </div>
         </div>
-
-        <div className="space-y-3 max-sm:space-y-2 flex flex-col items-center lg:items-start">
-          <h1 className="text-xl max-sm:text-lg font-bold">Các chi nhánh</h1>
-
-          <div className="flex gap-2 max-sm:gap-1.5">
-            <Image
-              src="/Location.svg"
-              alt="location"
-              width={28}
-              height={28}
-              className="max-sm:w-5 max-sm:h-5 shrink-0"
-            />
-            <span className="max-w-[300px] max-sm:max-w-[260px] max-sm:text-sm">
-              TRỤ SỞ CHÍNH: 154 Phan Văn Hớn, Phường Tân Thới Nhất, Quận 12,
-              TP.HCM.
-            </span>
-          </div>
-        </div>
-
         <div className="space-y-3 max-sm:space-y-2 flex flex-col items-center lg:items-start">
           <h1 className="text-xl max-sm:text-lg font-bold">Liên hệ</h1>
 
@@ -215,7 +195,7 @@ export default function Footer() {
               className="max-sm:w-5 max-sm:h-5 shrink-0"
             />
             <span className="max-sm:text-sm">
-              154 Phan Văn Hớn P. Tân Thới Nhất Quận 12 TP.HCM
+              154 Phan Văn Hớn, Phường Đông Hưng Thuận, TP.Hồ Chí Minh
             </span>
           </div>
 
@@ -246,13 +226,12 @@ export default function Footer() {
 
         <div className="space-y-3 max-sm:space-y-2 flex flex-col items-center lg:items-start">
           <h1 className="text-xl max-sm:text-lg font-bold">
-          Sẵn sàng cho chương trình của bạn?
+            Sẵn sàng cho chương trình của bạn?
           </h1>
 
           <p className="max-w-[310px] text-[13px] max-sm:max-w-full max-sm:text-sm">
-            Để lại thông tin, đội ngũ Hải Vân Event sẽ liên hệ tư vấn
-            chương trình phù hợp với mục tiêu, quy mô và kỳ vọng của doanh
-            nghiệp bạn.
+            Để lại thông tin, đội ngũ Hải Vân Event sẽ liên hệ tư vấn chương
+            trình phù hợp với mục tiêu, quy mô và kỳ vọng của doanh nghiệp bạn.
           </p>
 
           <input
@@ -273,11 +252,15 @@ export default function Footer() {
           </button>
 
           {submitMessage ? (
-            <p className="w-full max-w-[310px] text-sm text-[#8ED6D7]">{submitMessage}</p>
+            <p className="w-full max-w-[310px] text-sm text-[#8ED6D7]">
+              {submitMessage}
+            </p>
           ) : null}
 
           {submitError ? (
-            <p className="w-full max-w-[310px] text-sm text-red-400 break-all">{submitError}</p>
+            <p className="w-full max-w-[310px] text-sm text-red-400 break-all">
+              {submitError}
+            </p>
           ) : null}
         </div>
       </div>
@@ -286,7 +269,7 @@ export default function Footer() {
         <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between items-center gap-4 max-sm:gap-2 px-6 max-sm:px-4 py-6 max-sm:py-3 text-center lg:text-left">
           <span className="max-sm:text-sm">
             © 2025 Hải Vân Travel. Tất cả quyền được bảo lưu.
-          </span>   
+          </span>
         </div>
       </div>
     </div>

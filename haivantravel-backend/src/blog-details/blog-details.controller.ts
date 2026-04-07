@@ -121,18 +121,18 @@ export class BlogDetailsController {
           cb(null, `blog-demo-${uniqueSuffix}${fileExt}`);
         },
       }),
-  
+
       limits: {
         fileSize: 10 * 1024 * 1024,
         fieldSize: 10 * 1024 * 1024,
       },
-  
+
       fileFilter: (_req, file, cb) => {
         const allowedTypes = /jpg|jpeg|png|webp/;
         const uploadFile = asUploadFile(file);
         const ext = extname(uploadFile.originalname ?? '').toLowerCase();
         const mimetype = (uploadFile.mimetype ?? '').toLowerCase();
-  
+
         if (allowedTypes.test(ext) && mimetype.startsWith('image/')) {
           cb(null, true);
         } else {
@@ -197,5 +197,42 @@ export class BlogDetailsController {
     const detail = await this.blogDetailsService.findBySlug(slug);
     if (!detail) throw new NotFoundException('Blog not found');
     return detail;
+  }
+  @Post('upload-image')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (_req, _file, cb) => {
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+          cb(null, UPLOADS_DIR);
+        },
+
+        filename: (_req, file, cb) => {
+          const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+          const fileExt = extname(file.originalname);
+          cb(null, `editor-${uniqueSuffix}${fileExt}`);
+        },
+      }),
+
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+      },
+
+      fileFilter: (_req, file, cb) => {
+        const allowedTypes = /jpg|jpeg|png|webp/;
+        const ext = extname(file.originalname).toLowerCase();
+
+        if (allowedTypes.test(ext)) {
+          cb(null, true);
+        } else {
+          cb(new BadRequestException('Only image files are allowed!'), false);
+        }
+      },
+    }),
+  )
+  uploadEditorImage(@UploadedFile() file: Express.Multer.File) {
+    return {
+      url: `https://api.haivanevent.vn/upload/${file.filename}`,
+    };
   }
 }

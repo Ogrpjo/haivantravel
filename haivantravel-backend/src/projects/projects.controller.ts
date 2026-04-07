@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage, Multer } from 'multer';
+import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import * as fs from 'fs';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -55,7 +55,7 @@ export class ProjectsController {
     }),
   )
   async create(
-    @UploadedFile() file: Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Body() createDto: CreateProjectDto,
   ) {
     if (!file) {
@@ -101,7 +101,7 @@ export class ProjectsController {
   )
   async update(
     @Param('id') id: string,
-    @UploadedFile() file: Multer.File | undefined,
+    @UploadedFile() file: Express.Multer.File,
     @Body() updateDto: UpdateProjectDto,
   ) {
     const payload: Partial<{ link_url: string; image_url: string }> = {};

@@ -14,7 +14,7 @@ import {
 import type { Response } from 'express';
 import { existsSync } from 'fs';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage, Multer } from 'multer';
+import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import * as fs from 'fs';
 import { ServicesService } from './services.service';
@@ -55,7 +55,7 @@ export class ServicesController {
     }),
   )
   async create(
-    @UploadedFile() file: Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Body() createServiceDto: CreateServiceDto,
   ) {
     if (!file) {
@@ -121,7 +121,7 @@ export class ServicesController {
   )
   async update(
     @Param('id') id: string,
-    @UploadedFile() file: Multer.File | undefined,
+    @UploadedFile() file: Express.Multer.File,
     @Body() updateServiceDto: UpdateServiceDto,
   ) {
     const payload: Partial<{

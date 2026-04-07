@@ -31,7 +31,7 @@ export default function BlogCreatePage() {
   const [demoImage, setDemoImage] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const apiBaseUrl = getApiBaseUrl();
 
   const slug = useMemo(() => slugify(title), [title]);
@@ -80,7 +80,9 @@ export default function BlogCreatePage() {
 
       router.push(`/dashboard/blog`);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Có lỗi xảy ra.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Có lỗi xảy ra.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -96,7 +98,6 @@ export default function BlogCreatePage() {
 
       <div className="flex flex-col w-full bg-[#1a1a1a] h-full rounded-[8px] p-6 min-h-[calc(100vh-120px)] border border-white/10">
         <div className="flex flex-col h-full gap-4">
-          
           <div className="flex flex-col gap-2">
             <input
               type="text"
@@ -106,7 +107,8 @@ export default function BlogCreatePage() {
               className="w-full px-4 py-2 border border-white/15 bg-[#121212] rounded-lg text-lg font-semibold text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#05B9BA]/50 focus:border-[#05B9BA]"
             />
             <div className="text-sm text-white/60">
-              Đường dẫn: <span className="text-white/85">/blog/{slug || "..."}</span>
+              Đường dẫn:{" "}
+              <span className="text-white/85">/blog/{slug || "..."}</span>
             </div>
           </div>
 
@@ -125,7 +127,9 @@ export default function BlogCreatePage() {
             </div>
 
             <div className="space-y-1">
-              <label className="block text-sm text-white/70">Meta keywords</label>
+              <label className="block text-sm text-white/70">
+                Meta keywords
+              </label>
               <input
                 type="text"
                 value={metaKeywords}
@@ -136,7 +140,9 @@ export default function BlogCreatePage() {
             </div>
 
             <div className="space-y-1">
-              <label className="block text-sm text-white/70">Meta description</label>
+              <label className="block text-sm text-white/70">
+                Meta description
+              </label>
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
@@ -175,7 +181,16 @@ export default function BlogCreatePage() {
               onChange={(value: string) => setContent(value)}
               setOptions={{
                 height: "400px",
-                font: ["Inter", "Montserrat", "Roboto", "Arial", "Tahoma", "Times New Roman"],
+
+                font: [
+                  "Inter",
+                  "Montserrat",
+                  "Roboto",
+                  "Arial",
+                  "Tahoma",
+                  "Times New Roman",
+                ],
+
                 buttonList: [
                   ["undo", "redo"],
                   ["font", "fontSize", "formatBlock"],
@@ -185,6 +200,33 @@ export default function BlogCreatePage() {
                   ["link", "image"],
                   ["removeFormat"],
                 ],
+
+                imageUploadSizeLimit: 10000000,
+                imageAccept: ".jpg,.jpeg,.png,.webp",
+              }}
+              onImageUploadBefore={(files, _info, uploadHandler) => {
+                const formData = new FormData();
+                formData.append("file", files[0]);
+              
+                fetch(`${apiBaseUrl}/blog-details/upload-image`, {
+                  method: "POST",
+                  body: formData,
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    uploadHandler({
+                      result: [
+                        {
+                          url: data.url,
+                          name: files[0].name,
+                          size: files[0].size,
+                        },
+                      ],
+                    });
+                  })
+                  .catch((err) => console.error(err));
+              
+                return false;
               }}
             />
           </div>

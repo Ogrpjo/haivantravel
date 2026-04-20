@@ -1,8 +1,42 @@
 @import "tailwindcss";
+@import "@heroui/styles"; 
 
 :root {
-  --background: #0a0a0a;
+  --background: #121212;
   --foreground: #ffffff;
+}
+
+@layer ultilities {
+   .no-scrollbar::-webkit-scrollbar {
+    display: none;
+   }
+   .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+   }
+}
+
+html, body {
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.text-gradient-split .split-char {
+  background-image: linear-gradient(to right, #8ED6D7, #4B7171) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  display: inline-block !important;
+  /* Ensure no other background colors are interfering */
+  background-color: transparent !important;
 }
 
 @theme inline {
@@ -14,7 +48,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #121212;
     --foreground: #ffffff;
   }
 }

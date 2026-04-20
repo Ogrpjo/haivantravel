@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Haivanevent",
+  title: "Homepage - Công ty TNHH MTV TM Du lịch Quốc tế Hải Vân",
   description: "Haivanevent - Hải Vân Travel với hơn một thập kỷ kinh nghiệm tổ chức tour, sự kiện và teambuilding, mang đến hành trình gắn kết và trải nghiệm trọn vẹn cho doanh nghiệp.",
-  icons: "/haivantravellogo.svg",
+  icons: "/HaivantravelLogo.webp",
   openGraph: {
-    title: "HaivanEvent",
+    title: "Homepage - Công ty TNHH MTV TM Du lịch Quốc tế Hải Vân",
     description:
       "Hải Vân Travel - Đơn vị tổ chức tour, sự kiện và teambuilding chuyên nghiệp cho doanh nghiệp.",
     url: "https://haivanevent.vn",

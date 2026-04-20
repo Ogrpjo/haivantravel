@@ -12,6 +12,8 @@ RUN npm ci
 
 COPY . .
 
+RUN rm -f tsconfig.build.tsbuildinfo tsconfig.tsbuildinfo
+
 RUN npm run build
 
 RUN rm -rf ./src
@@ -21,4 +23,4 @@ ENV PORT=2031
 
 EXPOSE 2031
 
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/main.js"]

@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         pathname: "/uploads/**",
       },
       {
+        protocol: "http",
+        hostname: "localhost",
+        port: "2031",
+        pathname: "/upload/**",
+      },
+      {
         protocol: "https",
         hostname: "api.haivanevent.vn",
         pathname: "/uploads/**",

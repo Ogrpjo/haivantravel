@@ -7,7 +7,6 @@ export type PartnerForEdit = {
   id: number;
   business_type: string;
   icon: string;
-  icon_size: number;
   is_active?: boolean;
   createdAt?: string;
 };
@@ -22,7 +21,6 @@ type EditCustomerModalProps = {
 type FormData = {
   logo: File | null;
   businessType: string;
-  iconSize: string;
 };
 
 export default function EditCustomerModal({
@@ -34,7 +32,6 @@ export default function EditCustomerModal({
   const [formData, setFormData] = useState<FormData>({
     logo: null,
     businessType: "",
-    iconSize: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,7 +42,6 @@ export default function EditCustomerModal({
       setFormData({
         logo: null,
         businessType: partner.business_type,
-        iconSize: String(partner.icon_size),
       });
       setErrorMessage("");
     }
@@ -86,19 +82,12 @@ export default function EditCustomerModal({
       return;
     }
 
-    const iconSizeNumber = Number(formData.iconSize);
-    if (!formData.iconSize.trim() || Number.isNaN(iconSizeNumber)) {
-      setErrorMessage("Kích thước icon phải là số.");
-      return;
-    }
-
     if (!partner) return;
 
     try {
       setIsSubmitting(true);
       const payload = new FormData();
       payload.append("business_type", formData.businessType.trim());
-      payload.append("icon_size", String(iconSizeNumber));
       if (formData.logo) payload.append("icon", formData.logo);
 
       const response = await fetch(`${apiBaseUrl}/partners/${partner.id}`, {
@@ -113,7 +102,7 @@ export default function EditCustomerModal({
 
       onSuccess();
       onClose();
-      setFormData({ logo: null, businessType: "", iconSize: "" });
+      setFormData({ logo: null, businessType: "" });
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "Có lỗi xảy ra.");
     } finally {
@@ -180,24 +169,6 @@ export default function EditCustomerModal({
                 onChange={handleChange("businessType")}
                 className="w-full px-3 py-2 border border-[#E0E0E0] rounded-lg text-[#424242] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#05B9BA]/50 focus:border-[#05B9BA]"
                 placeholder="Nhập loại hình doanh nghiệp"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="edit-customer-icon-size"
-                className="block text-sm font-medium text-[#424242] mb-1.5"
-              >
-                Kích thước icon
-              </label>
-              <input
-                id="edit-customer-icon-size"
-                type="number"
-                min="1"
-                value={formData.iconSize}
-                onChange={handleChange("iconSize")}
-                className="w-full px-3 py-2 border border-[#E0E0E0] rounded-lg text-[#424242] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#05B9BA]/50 focus:border-[#05B9BA]"
-                placeholder="Ví dụ: 64"
               />
             </div>
 

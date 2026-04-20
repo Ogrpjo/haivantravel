@@ -1,15 +1,16 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+type LoginApiResponse = {
+  message?: string;
+};
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
-  useEffect(() => {}, [router]);
 
   const handleLogin = async () => {
     try {
@@ -21,9 +22,10 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
 
-      let data: any = {};
+      let data: LoginApiResponse = {};
       try {
-        data = await res.json();
+        const parsed = (await res.json()) as unknown;
+        if (parsed && typeof parsed === "object") data = parsed as LoginApiResponse;
       } catch {
         data = {};
       }

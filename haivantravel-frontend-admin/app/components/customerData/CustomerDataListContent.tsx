@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import AddCustomerModal from "./AddCustomerModal";
 import EditCustomerModal from "./EditCustomerModal";
@@ -11,7 +10,6 @@ type Partner = {
   id: number;
   business_type: string;
   icon: string;
-  icon_size: number;
   createdAt: string;
   is_active: boolean;
 };
@@ -24,6 +22,18 @@ export default function CustomerDataListContent() {
   const [errorMessage, setErrorMessage] = useState("");
   const [visibleCount, setVisibleCount] = useState(9);
   const apiBaseUrl = getApiBaseUrl();
+
+  const buildPartnerIconUrl = (iconValue: string) => {
+    if (!iconValue) return "";
+    if (/^https?:\/\//i.test(iconValue)) return iconValue;
+    const normalized = iconValue.replace(/\\/g, "/");
+    if (normalized.startsWith("upload/")) {
+      return `${apiBaseUrl.replace(/\/+$/, "")}/${normalized}`;
+    }
+    const filename = normalized.split("/").filter(Boolean).pop();
+    if (!filename) return "";
+    return `${apiBaseUrl.replace(/\/+$/, "")}/upload/${encodeURIComponent(filename)}`;
+  };
 
   const fetchPartners = async () => {
     try {
@@ -108,13 +118,8 @@ export default function CustomerDataListContent() {
       <div className="flex flex-col w-full bg-[#1a1a1a] h-full rounded-[8px] min-h-0 border border-white/10">
         <div className="flex items-center justify-between px-[15px] py-[10px] max-h-[70px] min-h-[60px] border-b border-white/10">
           <div className="flex items-center gap-2">
-            <Image
-              src="/pageLogo/datacustomer.svg"
-              alt=""
-              width={24}
-              height={24}
-              className="shrink-0"
-            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/pageLogo/datacustomer.svg" alt="" className="h-6 w-6 shrink-0" />
             <p className="font-medium">Danh sách khách hàng • {partners.length} mục</p>
           </div>
           <button
@@ -135,9 +140,6 @@ export default function CustomerDataListContent() {
             </div>
             <div className="flex-1 basis-0 min-w-0 py-3 px-4 border-r border-white/10 font-medium">
               Trạng thái
-            </div>
-            <div className="flex-1 basis-0 min-w-0 py-3 px-4 border-r border-white/10 font-medium">
-              Kích thước
             </div>
             <div className="flex-1 basis-0 min-w-0 py-3 px-4 border-r border-white/10 font-medium">
               Ngày tạo
@@ -163,7 +165,18 @@ export default function CustomerDataListContent() {
                 {visiblePartners.map((partner) => (
                   <div key={partner.id} className="flex w-full items-center min-w-0">
                     <div className="min-w-[320px] flex-1 basis-0 py-3 px-4 border-r border-white/10">
-                      <p className="text-white/85 truncate">{partner.icon.split("/").pop()}</p>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-10 w-16 rounded-md bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={buildPartnerIconUrl(partner.icon)}
+                            alt={partner.business_type}
+                            className="h-full w-full object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                        <p className="text-white/70 truncate">{partner.icon.split("/").pop()}</p>
+                      </div>
                     </div>
                     <div className="flex-1 basis-0 min-w-0 max-w-[135px] py-3 px-4 border-r border-white/10 text-white/85">
                       {partner.business_type}
@@ -186,9 +199,6 @@ export default function CustomerDataListContent() {
                       </button>
                     </div>
                     <div className="flex-1 basis-0 min-w-0 py-3 px-4 border-r border-white/10 text-white/85">
-                      {partner.icon_size}
-                    </div>
-                    <div className="flex-1 basis-0 min-w-0 py-3 px-4 border-r border-white/10 text-white/85">
                       {partner.createdAt ? formatCreatedAt(partner.createdAt) : "-"}
                     </div>
                     <div className="flex-1 basis-0 min-w-0 py-3 px-4 text-white/85">
@@ -199,7 +209,8 @@ export default function CustomerDataListContent() {
                           aria-label="Chỉnh sửa"
                           onClick={() => handleEdit(partner)}
                         >
-                          <Image src="/admin/edit.svg" alt="Chỉnh sửa" width={16} height={16} />
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/admin/edit.svg" alt="Chỉnh sửa" className="h-4 w-4" />
                         </button>
                         <button
                           type="button"
@@ -207,7 +218,8 @@ export default function CustomerDataListContent() {
                           aria-label="Xóa"
                           onClick={() => handleDelete(partner)}
                         >
-                          <Image src="/admin/delete.svg" alt="Xóa" width={16} height={16} />
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/admin/delete.svg" alt="Xóa" className="h-4 w-4" />
                         </button>
                       </div>
                     </div>

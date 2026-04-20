@@ -23,4 +23,4 @@ ENV PORT=2031
 
 EXPOSE 2031
 
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:prod"]

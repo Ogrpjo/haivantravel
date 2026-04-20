@@ -1,22 +1,22 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
   Post,
-  Body,
-  UseInterceptors,
   UploadedFiles,
-  BadRequestException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { extname, join } from 'path';
 import * as fs from 'fs';
 import sharp from 'sharp';
-import { AboutUsService } from './about-us.service';
+import { WhyChooseUsService } from './why-choose-us.service';
 
-const UPLOAD_SUBDIR = 'about-us';
+const UPLOAD_SUBDIR = 'why-choose-us';
 const UPLOADS_DIR = join(process.cwd(), '..', 'upload', UPLOAD_SUBDIR);
-const MAX_FILE_SIZE = 150 * 1024 * 1024; 
+const MAX_FILE_SIZE = 150 * 1024 * 1024;
 
 interface MulterFile {
   fieldname: string;
@@ -49,26 +49,6 @@ type FileFields = {
   image?: MulterFile[];
 };
 
-function countWords(text?: string | null): number {
-  const value = text?.trim();
-  if (!value) return 0;
-  return value.split(/\s+/).length;
-}
-
-function validateWordLimit(
-  label: string,
-  value: string | undefined,
-  maxWords: number,
-): void {
-  if (value === undefined) return;
-  const words = countWords(value);
-  if (words > maxWords) {
-    throw new BadRequestException(
-      `${label} vượt quá ${maxWords} từ (hiện tại: ${words}).`,
-    );
-  }
-}
-
 async function optimizeImageToWebp(
   input: Buffer,
   maxWidth = 1920,
@@ -85,13 +65,13 @@ async function optimizeImageToWebp(
     .toBuffer();
 }
 
-@Controller('about-us')
-export class AboutUsController {
-  constructor(private readonly aboutUsService: AboutUsService) {}
+@Controller('why-choose-us')
+export class WhyChooseUsController {
+  constructor(private readonly service: WhyChooseUsService) {}
 
   @Get()
   findOne() {
-    return this.aboutUsService.findOne();
+    return this.service.findOne();
   }
 
   @Post()
@@ -101,7 +81,7 @@ export class AboutUsController {
       limits: {
         fileSize: MAX_FILE_SIZE,
         files: 1,
-        fields: 10,
+        fields: 20,
         fieldSize: 1024 * 1024,
       },
       fileFilter: imageFilter,
@@ -111,14 +91,13 @@ export class AboutUsController {
     @Body('small_text') small_text: string | undefined,
     @Body('big_text') big_text: string | undefined,
     @Body('description') description: string | undefined,
-    @Body('is_active') is_active: string | undefined,
+    @Body('tick_1') tick_1: string | undefined,
+    @Body('tick_2') tick_2: string | undefined,
+    @Body('tick_3') tick_3: string | undefined,
+    @Body('tick_4') tick_4: string | undefined,
     @UploadedFiles() files: FileFields,
   ) {
-    validateWordLimit('small_text', small_text, 15);
-    validateWordLimit('big_text', big_text, 8);
-    validateWordLimit('description', description, 150);
-
-    const current = await this.aboutUsService.findOne();
+    const current = await this.service.findOne();
 
     const getUrl = async (
       arr: MulterFile[] | undefined,
@@ -127,9 +106,8 @@ export class AboutUsController {
       if (arr?.[0]) {
         fs.mkdirSync(UPLOADS_DIR, { recursive: true });
         const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-        const filename = `about-us-${unique}.webp`;
+        const filename = `why-choose-us-${unique}.webp`;
         const outputPath = join(UPLOADS_DIR, filename);
-        console.log('Saving file at: ', outputPath);
         const optimized = await optimizeImageToWebp(arr[0].buffer as Buffer);
         await fs.promises.writeFile(outputPath, optimized);
         return `upload/${UPLOAD_SUBDIR}/${filename}`;
@@ -138,15 +116,17 @@ export class AboutUsController {
     };
 
     const image_url = await getUrl(files.image, current?.image_url ?? null);
-    const parsedIsActive =
-      is_active === undefined ? current?.is_active ?? true : is_active === 'true';
 
-    return this.aboutUsService.save({
-      small_text: small_text ?? current?.small_text ?? null,
-      big_text: big_text ?? current?.big_text ?? null,
-      description: description ?? current?.description ?? null,
+    return this.service.save({
       image_url,
-      is_active: parsedIsActive,
+      small_text: small_text?.trim() ?? undefined,
+      big_text: big_text?.trim() ?? undefined,
+      description: description?.trim() ?? undefined,
+      tick_1: tick_1?.trim() ?? undefined,
+      tick_2: tick_2?.trim() ?? undefined,
+      tick_3: tick_3?.trim() ?? undefined,
+      tick_4: tick_4?.trim() ?? undefined,
     });
   }
 }
+

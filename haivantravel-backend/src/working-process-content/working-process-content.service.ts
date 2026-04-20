@@ -1,47 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AboutUs } from './about-us.entity';
+import {
+  WorkingProcessCard,
+  WorkingProcessContent,
+} from './working-process-content.entity';
 
-export interface SaveAboutUsDto {
+export interface SaveWorkingProcessContentDto {
   small_text?: string | null;
   big_text?: string | null;
   description?: string | null;
-  image_url?: string | null;
-  is_active?: boolean;
+  cards?: WorkingProcessCard[] | null;
 }
 
 @Injectable()
-export class AboutUsService {
+export class WorkingProcessContentService {
   constructor(
-    @InjectRepository(AboutUs)
-    private readonly repo: Repository<AboutUs>,
+    @InjectRepository(WorkingProcessContent)
+    private readonly repo: Repository<WorkingProcessContent>,
   ) {}
 
-  async findOne(): Promise<AboutUs | null> {
+  async findOne(): Promise<WorkingProcessContent | null> {
     return this.repo.findOne({ where: {}, order: { id: 'ASC' } });
   }
 
-  async save(dto: SaveAboutUsDto): Promise<AboutUs> {
-    const existing = await this.repo.findOne({
-      where: {},
-      order: { id: 'ASC' },
-    });
+  async save(dto: SaveWorkingProcessContentDto): Promise<WorkingProcessContent> {
+    const existing = await this.findOne();
     if (existing) {
       if (dto.small_text !== undefined) existing.small_text = dto.small_text;
       if (dto.big_text !== undefined) existing.big_text = dto.big_text;
       if (dto.description !== undefined) existing.description = dto.description;
-      if (dto.image_url !== undefined) existing.image_url = dto.image_url;
-      if (dto.is_active !== undefined) existing.is_active = dto.is_active;
+      if (dto.cards !== undefined) existing.cards = dto.cards;
       return this.repo.save(existing);
     }
+
     const entity = this.repo.create({
       small_text: dto.small_text ?? null,
       big_text: dto.big_text ?? null,
       description: dto.description ?? null,
-      image_url: dto.image_url ?? null,
-      is_active: dto.is_active ?? true,
+      cards: dto.cards ?? null,
     });
     return this.repo.save(entity);
   }
 }
+

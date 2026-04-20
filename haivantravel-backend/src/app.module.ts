@@ -43,6 +43,20 @@ import { Mice } from './mice/mice.entity';
 import { MiceModule } from './mice/mice.module';
 import { TeamBuilding } from './teambuilding/teambuilding.entity';
 import { TeamBuildingModule } from './teambuilding/teambuilding.module';
+import { AboutUsStatistic } from './about-us-statistic/about-us-statistic.entity';
+import { AboutUsStatisticModule } from './about-us-statistic/about-us-statistic.module';
+import { Statistic } from './statistic/statistic.entity';
+import { StatisticModule } from './statistic/statistic.module';
+import { CollaboratorContent } from './collaborator-content/collaborator-content.entity';
+import { CollaboratorContentModule } from './collaborator-content/collaborator-content.module';
+import { EventProvider } from './event-provider/event-provider.entity';
+import { EventProviderModule } from './event-provider/event-provider.module';
+import { WhyChooseUs } from './why-choose-us/why-choose-us.entity';
+import { WhyChooseUsModule } from './why-choose-us/why-choose-us.module';
+import { ExperienceContent } from './experience-content/experience-content.entity';
+import { ExperienceContentModule } from './experience-content/experience-content.module';
+import { WorkingProcessContent } from './working-process-content/working-process-content.entity';
+import { WorkingProcessContentModule } from './working-process-content/working-process-content.module';
 
 @Module({
   imports: [
@@ -84,6 +98,13 @@ import { TeamBuildingModule } from './teambuilding/teambuilding.module';
           Gala,
           Mice,
           TeamBuilding,
+          AboutUsStatistic,
+          Statistic,
+          CollaboratorContent,
+          EventProvider,
+          WhyChooseUs,
+          ExperienceContent,
+          WorkingProcessContent,
         ],
         synchronize: true,
       }),
@@ -108,6 +129,13 @@ import { TeamBuildingModule } from './teambuilding/teambuilding.module';
     GalaModule,
     MiceModule,
     TeamBuildingModule,
+    AboutUsStatisticModule,
+    StatisticModule,
+    CollaboratorContentModule,
+    EventProviderModule,
+    WhyChooseUsModule,
+    ExperienceContentModule,
+    WorkingProcessContentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

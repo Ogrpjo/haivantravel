@@ -14,7 +14,6 @@ export class PartnersService {
   async create(createPartnerDto: CreatePartnerDto, iconPath: string) {
     const partner = this.partnerRepository.create({
       business_type: createPartnerDto.business_type,
-      icon_size: createPartnerDto.icon_size,
       icon: iconPath,
     });
 
@@ -46,7 +45,6 @@ export class PartnersService {
     id: number,
     updateDto: Partial<{
       business_type: string;
-      icon_size: number;
       icon: string;
     }>,
   ) {
@@ -56,7 +54,6 @@ export class PartnersService {
     }
     if (updateDto.business_type != null)
       partner.business_type = updateDto.business_type;
-    if (updateDto.icon_size != null) partner.icon_size = updateDto.icon_size;
     if (updateDto.icon != null) partner.icon = updateDto.icon;
     return this.partnerRepository.save(partner);
   }

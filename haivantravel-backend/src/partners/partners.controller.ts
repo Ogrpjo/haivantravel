@@ -21,7 +21,10 @@ import { PartnersService } from './partners.service';
 import { CreatePartnerDto } from './dto/create-partner.dto';
 import { UpdatePartnerDto } from './dto/update-partner.dto';
 
-const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
+// Save partner icons into `haivantravel-backend/uploads` (historical location),
+// but still support reading from the repo-level `upload/` folder as a fallback.
+const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads');
+const FALLBACK_UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload');
 
 @Controller('partners')
 export class PartnersController {
@@ -62,8 +65,7 @@ export class PartnersController {
       throw new BadRequestException('Icon file is required.');
     }
 
-    const iconPath = file.path.replace(/\\/g, '/');
-    return this.partnersService.create(createPartnerDto, iconPath);
+    return this.partnersService.create(createPartnerDto, `upload/${file.filename}`);
   }
 
   @Get()
@@ -81,11 +83,13 @@ export class PartnersController {
     if (!filename || filename.includes('..')) {
       return res.status(400).send('Invalid filename');
     }
-    const filePath = join(UPLOADS_DIR, filename);
-    if (!existsSync(filePath)) {
-      return res.status(404).send('Not found');
-    }
-    return res.sendFile(filePath);
+    const primaryPath = join(UPLOADS_DIR, filename);
+    if (existsSync(primaryPath)) return res.sendFile(primaryPath);
+
+    const fallbackPath = join(FALLBACK_UPLOADS_DIR, filename);
+    if (existsSync(fallbackPath)) return res.sendFile(fallbackPath);
+
+    return res.status(404).send('Not found');
   }
 
   @Patch(':id/toggle-status')
@@ -126,18 +130,13 @@ export class PartnersController {
   ) {
     const payload: Partial<{
       business_type: string;
-      icon_size: number;
       icon: string;
     }> = {};
     if (updatePartnerDto.business_type != null) {
       payload.business_type = updatePartnerDto.business_type;
     }
-    if (updatePartnerDto.icon_size != null) {
-      const size = Number(updatePartnerDto.icon_size);
-      if (!Number.isNaN(size)) payload.icon_size = size;
-    }
-    if (file?.path) {
-      payload.icon = file.path.replace(/\\/g, '/');
+    if (file?.filename) {
+      payload.icon = `upload/${file.filename}`;
     }
     return this.partnersService.update(Number(id), payload);
   }

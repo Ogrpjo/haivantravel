@@ -16,9 +16,6 @@ export class Partner {
   @Column()
   icon: string;
 
-  @Column()
-  icon_size: number;
-
   @CreateDateColumn()
   createdAt: Date;
 

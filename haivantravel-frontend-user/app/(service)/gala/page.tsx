@@ -1,5 +1,5 @@
 import Footer from "@/app/components/Footer";
-import Navbar from "@/app/components/Navbar";
+import Navigationbar from "@/app/components/Navigationbar";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
 
@@ -19,7 +19,7 @@ export default async function Gala() {
 
   return (
     <main className="min-h-screen flex flex-col pt-[136px]">
-      <Navbar />
+      <Navigationbar />
       <section className="flex-1 w-full max-w-[1200px] mx-auto px-6 max-sm:px-4 text-white flex items-center justify-center">
         {!content ? (
           <div className="rounded-2xl p-8 text-center w-full">

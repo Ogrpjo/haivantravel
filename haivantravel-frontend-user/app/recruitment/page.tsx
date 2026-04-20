@@ -1,5 +1,5 @@
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Navigationbar from "../components/Navigationbar";
 
 type RecruitmentContent = {
   content: string | null;
@@ -30,7 +30,7 @@ export default async function Recruitment() {
 
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col gap-y-20 relative pt-[136px]">
-      <Navbar />
+      <Navigationbar />
       <section className="w-full max-w-[1200px] mx-auto px-6 max-sm:px-4 py-10 text-white">
         {!content ? (
           <div className="rounded-2xl p-8 text-center">

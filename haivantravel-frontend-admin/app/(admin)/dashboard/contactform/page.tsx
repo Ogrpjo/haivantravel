@@ -1,50 +1,35 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import Sidebar from "@/app/components/SideBar";
 import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
-type ContactData = {
+type BriefContact = {
   id: number;
   full_name: string;
+  company_name: string;
   phone: string;
   email: string;
-  location: string | null;
-  description: string | null;
+  event_type: string;
+  attendee_scale: string;
+  budget: string;
+  expected_time: string;
+  requirements: string;
   created_at: string;
 };
 
-type RequestPhone = {
-  id: number;
-  phone: string;
-  created_at: string;
-};
-
-type ContactResponse = {
+type BriefContactResponse = {
   message: string;
-  data: ContactData[];
+  data: BriefContact[];
 };
 
-type RequestPhoneResponse = {
-  message: string;
-  data: RequestPhone[];
-};
-
-type CombinedRow = {
-  key: string;
-  full_name: string | null;
-  phone: string;
-  email: string | null;
-  location: string | null;
-  description: string | null;
-  created_at: string;
-};
+const REQUIREMENTS_PREVIEW_LIMIT = 120;
 
 export default function ContactFormPage() {
-  const [contacts, setContacts] = useState<ContactData[]>([]);
-  const [requests, setRequests] = useState<RequestPhone[]>([]);
+  const [briefContacts, setBriefContacts] = useState<BriefContact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [expandedRowId, setExpandedRowId] = useState<number | null>(null);
   const apiBaseUrl = getApiBaseUrl();
 
   const fetchAllData = async () => {
@@ -52,26 +37,16 @@ export default function ContactFormPage() {
       setIsLoading(true);
       setErrorMessage("");
 
-      const [contactResponse, requestResponse] = await Promise.all([
-        fetch(`${apiBaseUrl}/contact-data`, { method: "GET" }),
-        fetch(`${apiBaseUrl}/request-phone`, { method: "GET" }),
-      ]);
+      const response = await fetch(`${apiBaseUrl}/brief-contact`, { method: "GET" });
 
-      if (!contactResponse.ok) {
-        const errorText = await contactResponse.text();
-        throw new Error(errorText || "Không thể tải danh sách contact_data.");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Không thể tải danh sách brief_contact.");
       }
 
-      if (!requestResponse.ok) {
-        const errorText = await requestResponse.text();
-        throw new Error(errorText || "Không thể tải danh sách request_phone.");
-      }
+      const result = (await response.json()) as BriefContactResponse;
 
-      const contactResult = (await contactResponse.json()) as ContactResponse;
-      const requestResult = (await requestResponse.json()) as RequestPhoneResponse;
-
-      setContacts(Array.isArray(contactResult.data) ? contactResult.data : []);
-      setRequests(Array.isArray(requestResult.data) ? requestResult.data : []);
+      setBriefContacts(Array.isArray(result.data) ? result.data : []);
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : "Có lỗi xảy ra.");
     } finally {
@@ -83,33 +58,18 @@ export default function ContactFormPage() {
     void fetchAllData();
   }, []);
 
-  const rows = useMemo<CombinedRow[]>(() => {
-    const contactRows: CombinedRow[] = contacts.map((item) => ({
-      key: `contact-${item.id}`,
-      full_name: item.full_name,
-      phone: item.phone,
-      email: item.email,
-      location: item.location,
-      description: item.description,
-      created_at: item.created_at,
-    }));
-
-    const requestRows: CombinedRow[] = requests.map((item) => ({
-      key: `request-${item.id}`,
-      full_name: null,
-      phone: item.phone,
-      email: null,
-      location: null,
-      description: null,
-      created_at: item.created_at,
-    }));
-
-    return [...contactRows, ...requestRows].sort((a, b) => {
+  const rows = useMemo<BriefContact[]>(() => {
+    return [...briefContacts].sort((a, b) => {
       const timeA = new Date(a.created_at).getTime();
       const timeB = new Date(b.created_at).getTime();
       return timeB - timeA;
     });
-  }, [contacts, requests]);
+  }, [briefContacts]);
+
+  const getRequirementsPreview = (value: string) => {
+    if (value.length <= REQUIREMENTS_PREVIEW_LIMIT) return value;
+    return `${value.slice(0, REQUIREMENTS_PREVIEW_LIMIT)}...`;
+  };
 
   return (
     <main className="flex">
@@ -128,10 +88,14 @@ export default function ContactFormPage() {
             <div className="flex w-full items-center border-b border-white/10 bg-[#222222] text-white/85 shrink-0 sticky top-0 z-10">
               <div className="w-12 shrink-0 py-3 px-4 border-r border-white/10 font-medium text-center">#</div>
               <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Họ tên</div>
-              <div className="min-w-[140px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Số điện thoại</div>
-              <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Email</div>
-              <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Địa chỉ</div>
-              <div className="min-w-[260px] flex-1 basis-0 py-3 px-4 font-medium">Nội dung tư vấn</div>
+              <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Công ty</div>
+              <div className="min-w-[150px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Số điện thoại</div>
+              <div className="min-w-[200px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Email</div>
+              <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Loại sự kiện</div>
+              <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Quy mô</div>
+              <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Ngân sách</div>
+              <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 font-medium">Thời gian</div>
+              <div className="min-w-[260px] flex-1 basis-0 py-3 px-4 font-medium">Yêu cầu</div>
             </div>
 
             {isLoading ? (
@@ -149,26 +113,59 @@ export default function ContactFormPage() {
             ) : (
               <div className="divide-y divide-white/10">
                 {rows.map((row, index) => (
-                  <div key={row.key} className="flex w-full items-start min-w-0">
-                    <div className="w-12 shrink-0 py-3 px-4 border-r border-white/10 text-center text-white/75">
-                      {index + 1}
+                  <Fragment key={row.id}>
+                    <div className="flex w-full items-start min-w-0">
+                      <div className="w-12 shrink-0 py-3 px-4 border-r border-white/10 text-center text-white/75">
+                        {index + 1}
+                      </div>
+                      <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.full_name}
+                      </div>
+                      <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.company_name}
+                      </div>
+                      <div className="min-w-[150px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.phone}
+                      </div>
+                      <div className="min-w-[200px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.email}
+                      </div>
+                      <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.event_type}
+                      </div>
+                      <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.attendee_scale}
+                      </div>
+                      <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.budget}
+                      </div>
+                      <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
+                        {row.expected_time}
+                      </div>
+                      <div className="min-w-[260px] flex-1 basis-0 py-3 px-4 text-white/85 break-words">
+                        <p>{getRequirementsPreview(row.requirements)}</p>
+                        {row.requirements.length > REQUIREMENTS_PREVIEW_LIMIT ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedRowId((prev) => (prev === row.id ? null : row.id))
+                            }
+                            className="mt-2 text-[#8ED6D7] hover:text-[#A8EAEB] text-sm font-medium"
+                          >
+                            {expandedRowId === row.id ? "View Less" : "View More"}
+                          </button>
+                        ) : null}
+                      </div>
                     </div>
-                    <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
-                      {row.full_name || "-"}
-                    </div>
-                    <div className="min-w-[140px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
-                      {row.phone}
-                    </div>
-                    <div className="min-w-[180px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
-                      {row.email || "-"}
-                    </div>
-                    <div className="min-w-[160px] flex-1 basis-0 py-3 px-4 border-r border-white/10 text-white/85 break-words">
-                      {row.location || "-"}
-                    </div>
-                    <div className="min-w-[260px] flex-1 basis-0 py-3 px-4 text-white/85 break-words">
-                      {row.description || "-"}
-                    </div>
-                  </div>
+                    {expandedRowId === row.id ? (
+                      <div className="w-full px-4 py-4 bg-[#161616] border-t border-white/10">
+                        <p className="text-sm text-white/70 mb-2">Yêu cầu chi tiết</p>
+                        <p className="text-white/90 whitespace-pre-wrap break-words">
+                          {row.requirements}
+                        </p>
+                      </div>
+                    ) : null}
+                  </Fragment>
                 ))}
               </div>
             )}

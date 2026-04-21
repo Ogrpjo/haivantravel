@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ProjectItem from "./ProjectItem";
 import AddProjectModal from "./AddProjectModal";
-import EditProjectModal, { type ProjectForEdit } from "./EditProjectModal";
 import { confirmDelete } from "@/app/lib/tableActions";
 import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 
@@ -12,12 +12,18 @@ type Project = {
   id: number;
   image_url: string;
   link_url: string;
+  title?: string;
+  short_description?: string | null;
+  project_type?: string | null;
+  duration_days?: number | null;
+  guest_count?: number | null;
+  artist_count?: number | null;
   createdAt?: string;
 };
 
 export default function ProductListContent() {
+  const router = useRouter();
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<ProjectForEdit | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const apiBaseUrl = getApiBaseUrl();
 
@@ -52,10 +58,9 @@ export default function ProductListContent() {
 
   const handleEdit = useCallback(
     (projectId: number) => {
-      const project = projects.find((p) => p.id === projectId) ?? null;
-      if (project) setEditingProject(project);
+      router.push(`/dashboard/project-detail/${projectId}`);
     },
-    [projects],
+    [router],
   );
 
   const handleDelete = useCallback(
@@ -78,6 +83,18 @@ export default function ProductListContent() {
       });
     },
     [apiBaseUrl, fetchProjects, projects],
+  );
+
+  const handleAddProjectSuccess = useCallback(
+    async (createdProjectId: number) => {
+      await fetchProjects();
+      if (createdProjectId > 0) {
+        router.push(`/dashboard/project-detail/${createdProjectId}`);
+        return;
+      }
+      router.push("/dashboard/projectlist");
+    },
+    [fetchProjects, router],
   );
 
   return (
@@ -116,7 +133,7 @@ export default function ProductListContent() {
         <div className="w-full flex flex-col h-full">
           <div className="flex w-full items-center border-b border-white/10 bg-[#222222] text-white/85">
             <div className="flex-1 min-w-0 py-3 px-4 border-r border-white/10 font-medium">
-              Liên kết dự án
+              Tên dự án
             </div>
             <div className="flex-1 min-w-0 py-3 px-4 border-r border-white/10 font-medium">
               Ảnh dự án
@@ -134,6 +151,7 @@ export default function ProductListContent() {
                 <ProjectItem
                   key={p.id}
                   id={p.id}
+                  title={p.title}
                   link={p.link_url}
                   src={getImageSrc(p.image_url)}
                   createdAt={p.createdAt}
@@ -152,13 +170,7 @@ export default function ProductListContent() {
       <AddProjectModal
         isOpen={isAddProjectOpen}
         onClose={() => setIsAddProjectOpen(false)}
-        onSuccess={fetchProjects}
-      />
-      <EditProjectModal
-        isOpen={!!editingProject}
-        project={editingProject}
-        onClose={() => setEditingProject(null)}
-        onSuccess={() => void fetchProjects()}
+        onSuccess={handleAddProjectSuccess}
       />
     </section>
   );

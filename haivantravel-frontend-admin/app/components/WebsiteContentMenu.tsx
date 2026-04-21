@@ -44,6 +44,11 @@ export default function WebsiteContentMenu() {
           title="Team building"
           href="/dashboard/website-content/teambuilding"
         />
+        <SidebarPage
+          src="/pageLogo/blog.svg"
+          title="Case study"
+          href="/dashboard/website-content/case-study"
+        />
       </div>
     </div>
   );

@@ -15,11 +15,6 @@ export default function WebsiteManage() {
           href="/dashboard/projectlist"
         />
         <SidebarPage
-          src="/pageLogo/service.svg"
-          title="Dịch vụ"
-          href="/dashboard/servicelist"
-        />
-        <SidebarPage
           src="/pageLogo/blog.svg"
           title="Blog"
           href="/dashboard/blog"

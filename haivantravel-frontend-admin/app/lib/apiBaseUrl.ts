@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE_URL = "https://api.haivanevent.vn";
+const DEFAULT_API_BASE_URL = "http://127.0.0.1:2031";
 const ADMIN_HOSTNAME = "admin.haivanevent.vn";
 const API_HOSTNAME = "api.haivanevent.vn";
 

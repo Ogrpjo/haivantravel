@@ -1,5 +1,6 @@
 type ProjectItemProps = {
   id: number;
+  title?: string;
   link: string;
   src: string;
   createdAt?: string;
@@ -16,16 +17,18 @@ function formatDate(value?: string) {
 
 export default function ProjectItem({
   id,
+  title,
   src,
   link,
   createdAt,
   onEdit,
   onDelete,
 }: ProjectItemProps) {
+  const primaryLabel = title?.trim() || link || "—";
   return (
     <div className="flex w-full items-center border-b border-white/10 hover:bg-[#111111]">
       <div className="flex-1 min-w-0 py-3 px-4 border-r border-l border-white/10 truncate">
-        {link || "—"}
+        {primaryLabel}
       </div>
       <div className="flex-1 min-w-0 py-2 px-4 border-r border-white/10">
         {src ? (

@@ -1,0 +1,157 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { Editor } from "grapesjs";
+import type { CreateEditorOptions, ProjectData } from "@grapesjs/studio-sdk";
+import "@grapesjs/studio-sdk/style";
+import { viLabels } from "@/app/i18n/locale/vi";
+import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
+
+const StudioEditor = dynamic(
+  () => import("@grapesjs/studio-sdk/react").then((m) => m.StudioEditor),
+  { ssr: false },
+);
+
+const defaultProject: ProjectData = {
+  pages: [
+    { name: "Trang chủ", component: "<h1>Chào mừng</h1>" },
+    { name: "Giới thiệu", component: "<p></p>" },
+  ],
+};
+
+export default function CaseStudyGrapesBuilder() {
+  const apiBaseUrl = getApiBaseUrl();
+  const editorRef = useRef<Editor | null>(null);
+  const [editorReady, setEditorReady] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const options: CreateEditorOptions = useMemo(
+    () => ({
+      licenseKey: process.env.NEXT_PUBLIC_GRAPES_STUDIO_LICENSE_KEY ?? "",
+      theme: "dark",
+      project: {
+        type: "web",
+        default: defaultProject,
+      },
+      storage: {
+        type: "self",
+        onLoad: async () => {
+          try {
+            const res = await fetch(`${apiBaseUrl}/case-study`, { cache: "no-store" });
+            if (!res.ok) return { project: defaultProject };
+            const data = await res.json();
+            const raw = data?.content != null ? String(data.content).trim() : "";
+            if (raw) {
+              try {
+                return { project: JSON.parse(raw) as ProjectData };
+              } catch {
+                return { project: defaultProject };
+              }
+            }
+            return { project: defaultProject };
+          } catch {
+            return { project: defaultProject };
+          }
+        },
+        onSave: async ({ project }) => {
+          const res = await fetch(`${apiBaseUrl}/case-study`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: JSON.stringify(project) }),
+          });
+          if (!res.ok) {
+            const err = await res.text();
+            throw new Error(err || "Không thể lưu nội dung.");
+          }
+        },
+      },
+      i18n: {
+        locales: {
+          vi: viLabels,
+        },
+      },
+    }),
+    [apiBaseUrl],
+  );
+
+  const handleEditor = useCallback((editor: Editor) => {
+    editorRef.current = editor;
+    setEditorReady(true);
+    try {
+      editor.I18n?.addMessages({ vi: viLabels });
+      editor.I18n?.setLocale("vi");
+    } catch {
+      /* I18n có thể chưa sẵn sàng */
+    }
+  }, []);
+
+  const handleReady = useCallback((editor: Editor) => {
+    try {
+      editor.I18n?.setLocale("vi");
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const handleSave = async () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    setIsSaving(true);
+    setMessage(null);
+    try {
+      const project = editor.getProjectData();
+      const res = await fetch(`${apiBaseUrl}/case-study`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: JSON.stringify(project) }),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Không thể lưu nội dung.");
+      }
+      setMessage("Đã lưu Case study.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Có lỗi xảy ra khi lưu.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="rounded-lg bg-[#1a1a1a] p-6 flex flex-col gap-4 border border-white/10">
+      <div className="rounded-lg border border-white/15 overflow-hidden min-h-[72vh] h-[calc(100vh-10rem)] max-h-[900px]">
+        <StudioEditor
+          className="h-full min-h-[72vh]"
+          options={options}
+          onEditor={handleEditor}
+          onReady={handleReady}
+        />
+      </div>
+
+      {message ? (
+        <div
+          className={`text-sm border rounded-lg px-3 py-2 ${
+            message.startsWith("Đã lưu")
+              ? "text-[#2E7D32] bg-[#E8F5E9] border-[#C8E6C9]"
+              : "text-[#C62828] bg-[#FFEBEE] border-[#FFCDD2]"
+          }`}
+        >
+          {message}
+        </div>
+      ) : null}
+
+      <div className="flex justify-end">
+        <button
+          type="button"
+          className="px-4 py-2 rounded-lg bg-[#05B9BA] text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+          onClick={handleSave}
+          disabled={isSaving || !editorReady}
+        >
+          {isSaving ? "Đang lưu..." : "Lưu nội dung"}
+        </button>
+      </div>
+    </div>
+  );
+}

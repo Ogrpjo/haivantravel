@@ -1,23 +1,14 @@
 "use client";
 
-import Sidebar from "@/app/components/SideBar";
 import ServiceContentGrapesBuilder from "@/app/components/websiteContent/ServiceContentGrapesBuilder";
 
 export default function WebsiteContentTeamBuildingPage() {
   return (
-    <main className="flex">
-      <Sidebar />
-      <section className="bg-[#121212] text-white flex-8 px-[20px] w-full py-[10px]">
-        <div className="py-[10px]">
-          <p className="text-xl font-semibold text-white/75">
-            {">"} Website Content {">"} Team building
-          </p>
-        </div>
-        <ServiceContentGrapesBuilder
-          endpoint="teambuilding"
-          saveSuccessMessage="Da luu noi dung Team building."
-        />
-      </section>
+    <main className="w-screen h-screen bg-white">
+      <ServiceContentGrapesBuilder
+        endpoint="teambuilding"
+        saveSuccessMessage="Da luu noi dung Team building."
+      />
     </main>
   );
 }

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Editor } from "grapesjs";
 import type { CreateEditorOptions, ProjectData } from "@grapesjs/studio-sdk";
 import "@grapesjs/studio-sdk/style";
@@ -28,10 +29,25 @@ type ServiceContentGrapesBuilderProps = {
   saveSuccessMessage: string;
 };
 
+function disableNativeFullscreen(editor: Editor): void {
+  try {
+    const candidates = ["fullscreen", "open-fullscreen", "full-screen"];
+    candidates.forEach((id) => {
+      editor.Panels?.removeButton("options", id);
+      editor.Panels?.removeButton("views", id);
+      (editor.Commands as unknown as { remove?: (name: string) => void })?.remove?.(id);
+    });
+    (editor.Commands as unknown as { remove?: (name: string) => void })?.remove?.("core:fullscreen");
+  } catch {
+    // noop
+  }
+}
+
 export default function ServiceContentGrapesBuilder({
   endpoint,
   saveSuccessMessage,
 }: ServiceContentGrapesBuilderProps) {
+  const router = useRouter();
   const apiBaseUrl = getApiBaseUrl();
   const editorRef = useRef<Editor | null>(null);
   const [editorReady, setEditorReady] = useState(false);
@@ -60,6 +76,10 @@ export default function ServiceContentGrapesBuilder({
               } catch {
                 return { project: fromLegacyHtml(raw) };
               }
+            }
+            const rawHtml = data?.html_content != null ? String(data.html_content).trim() : "";
+            if (rawHtml) {
+              return { project: fromLegacyHtml(rawHtml) };
             }
             return { project: defaultProject };
           } catch {
@@ -90,6 +110,7 @@ export default function ServiceContentGrapesBuilder({
   const handleEditor = useCallback((editor: Editor) => {
     editorRef.current = editor;
     setEditorReady(true);
+    disableNativeFullscreen(editor);
     try {
       editor.I18n?.addMessages({ vi: viLabels });
       editor.I18n?.setLocale("vi");
@@ -113,10 +134,16 @@ export default function ServiceContentGrapesBuilder({
     setMessage(null);
     try {
       const project = editor.getProjectData();
+      const htmlContent = editor.getHtml();
+      const cssContent = editor.getCss();
       const res = await fetch(`${apiBaseUrl}/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: JSON.stringify(project) }),
+        body: JSON.stringify({
+          content: JSON.stringify(project),
+          html_content: htmlContent,
+          css_content: cssContent,
+        }),
       });
       if (!res.ok) {
         const errorText = await res.text();
@@ -131,38 +158,36 @@ export default function ServiceContentGrapesBuilder({
   };
 
   return (
-    <div className="rounded-lg bg-[#1a1a1a] p-6 flex flex-col gap-4 border border-white/10">
-      <div className="rounded-lg border border-white/15 overflow-hidden min-h-[72vh] h-[calc(100vh-10rem)] max-h-[900px]">
-        <StudioEditor
-          className="h-full min-h-[72vh]"
-          options={options}
-          onEditor={handleEditor}
-          onReady={handleReady}
-        />
-      </div>
+    <main className="w-screen h-screen bg-white relative overflow-hidden">
+      <StudioEditor
+        className="w-full h-full"
+        options={options}
+        onEditor={handleEditor}
+        onReady={handleReady}
+      />
 
-      {message ? (
-        <div
-          className={`text-sm border rounded-lg px-3 py-2 ${
-            message.startsWith("Da luu")
-              ? "text-[#2E7D32] bg-[#E8F5E9] border-[#C8E6C9]"
-              : "text-[#C62828] bg-[#FFEBEE] border-[#FFCDD2]"
-          }`}
-        >
-          {message}
-        </div>
-      ) : null}
-
-      <div className="flex justify-end">
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+        {message ? (
+          <div className="px-3 py-2 rounded-md text-sm bg-black/80 text-white">
+            {message}
+          </div>
+        ) : null}
         <button
           type="button"
-          className="px-4 py-2 rounded-lg bg-[#05B9BA] text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+          onClick={() => router.back()}
+          className="px-3 py-2 rounded-md bg-black text-white text-sm hover:opacity-90"
+        >
+          Quay lại
+        </button>
+        <button
+          type="button"
+          className="px-3 py-2 rounded-md bg-[#05B9BA] text-white text-sm hover:opacity-90 disabled:opacity-60"
           onClick={handleSave}
           disabled={isSaving || !editorReady}
         >
           {isSaving ? "Dang luu..." : "Luu noi dung"}
         </button>
       </div>
-    </div>
+    </main>
   );
 }

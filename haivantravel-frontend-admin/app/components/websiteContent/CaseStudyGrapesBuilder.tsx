@@ -20,6 +20,20 @@ const defaultProject: ProjectData = {
   ],
 };
 
+function disableNativeFullscreen(editor: Editor): void {
+  try {
+    const candidates = ["fullscreen", "open-fullscreen", "full-screen"];
+    candidates.forEach((id) => {
+      editor.Panels?.removeButton("options", id);
+      editor.Panels?.removeButton("views", id);
+      (editor.Commands as unknown as { remove?: (name: string) => void })?.remove?.(id);
+    });
+    (editor.Commands as unknown as { remove?: (name: string) => void })?.remove?.("core:fullscreen");
+  } catch {
+    // noop
+  }
+}
+
 export default function CaseStudyGrapesBuilder() {
   const apiBaseUrl = getApiBaseUrl();
   const editorRef = useRef<Editor | null>(null);
@@ -50,6 +64,10 @@ export default function CaseStudyGrapesBuilder() {
                 return { project: defaultProject };
               }
             }
+            const rawHtml = data?.html_content != null ? String(data.html_content).trim() : "";
+            if (rawHtml) {
+              return { project: { pages: [{ name: "Trang chủ", component: rawHtml }] } };
+            }
             return { project: defaultProject };
           } catch {
             return { project: defaultProject };
@@ -79,6 +97,7 @@ export default function CaseStudyGrapesBuilder() {
   const handleEditor = useCallback((editor: Editor) => {
     editorRef.current = editor;
     setEditorReady(true);
+    disableNativeFullscreen(editor);
     try {
       editor.I18n?.addMessages({ vi: viLabels });
       editor.I18n?.setLocale("vi");
@@ -102,10 +121,16 @@ export default function CaseStudyGrapesBuilder() {
     setMessage(null);
     try {
       const project = editor.getProjectData();
+      const htmlContent = editor.getHtml();
+      const cssContent = editor.getCss();
       const res = await fetch(`${apiBaseUrl}/case-study`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: JSON.stringify(project) }),
+        body: JSON.stringify({
+          content: JSON.stringify(project),
+          html_content: htmlContent,
+          css_content: cssContent,
+        }),
       });
       if (!res.ok) {
         const errorText = await res.text();

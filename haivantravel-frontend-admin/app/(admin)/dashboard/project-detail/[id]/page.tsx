@@ -1,19 +1,14 @@
 "use client";
 
 import Sidebar from "@/app/components/SideBar";
-import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import "suneditor/dist/css/suneditor.min.css";
 import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
 import {
   PROJECT_TYPE_OPTIONS,
   linkUrlFromTitle,
 } from "@/app/components/projectManager/projectFormShared";
-
-const SunEditor = dynamic(() => import("suneditor-react"), {
-  ssr: false,
-});
+import type { ProjectData } from "@grapesjs/studio-sdk";
 
 type ProjectDetailApi = {
   id: number;
@@ -49,6 +44,21 @@ function numToInput(n: number | null | undefined): string {
   return String(n);
 }
 
+const defaultProject: ProjectData = {
+  pages: [{ name: "Trang", component: "<h1>Nội dung chi tiết dự án</h1><p></p>" }],
+};
+
+function safeParseProjectData(rawContent: string): ProjectData {
+  const trimmed = rawContent.trim();
+  if (!trimmed) return defaultProject;
+  try {
+    return JSON.parse(trimmed) as ProjectData;
+  } catch {
+    // Backward compatibility for legacy HTML content.
+    return { pages: [{ name: "Trang", component: trimmed }] };
+  }
+}
+
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -72,6 +82,8 @@ export default function ProjectDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [initialProjectData, setInitialProjectData] =
+    useState<ProjectData>(defaultProject);
 
   useEffect(() => {
     if (!projectId || Number.isNaN(projectId)) {
@@ -111,6 +123,8 @@ export default function ProjectDetailPage() {
             project_link: currentLink || autoLink,
             content: data.content ?? "",
           });
+          const nextProjectData = safeParseProjectData(data.content ?? "");
+          setInitialProjectData(nextProjectData);
         }
       } catch (error) {
         if (!cancelled) {
@@ -143,7 +157,6 @@ export default function ProjectDetailPage() {
       if (formData.guest_count.trim() !== "") payload.append("guest_count", formData.guest_count.trim());
       if (formData.artist_count.trim() !== "") payload.append("artist_count", formData.artist_count.trim());
       if (formData.project_link.trim()) payload.append("link_url", formData.project_link.trim());
-      payload.append("content", formData.content);
       const res = await fetch(`${apiBaseUrl}/projects/${projectId}`, {
         method: "PATCH",
         body: payload,
@@ -152,7 +165,7 @@ export default function ProjectDetailPage() {
         const errorText = await res.text();
         throw new Error(errorText || "Không thể lưu nội dung chi tiết dự án.");
       }
-      setMessage("Đã lưu intro và chi tiết dự án.");
+      setMessage("Đã lưu thông tin dự án.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Có lỗi xảy ra khi lưu.");
     } finally {
@@ -176,7 +189,7 @@ export default function ProjectDetailPage() {
             ← Quay lại danh sách
           </button>
         </div>
-        <div className="rounded-lg bg-[#1a1a1a] p-6 flex flex-col gap-4 h-screen border border-white/10">
+        <div className="rounded-lg bg-[#1a1a1a] p-6 flex flex-col gap-4 border border-white/10">
           <div className="text-white/90">
             <p className="text-sm text-white/60">Dự án</p>
             <h1 className="text-2xl font-semibold mt-1">{formData.title || "Dự án"}</h1>
@@ -330,24 +343,22 @@ export default function ProjectDetailPage() {
             </div>
           </div>
 
-          <div className="border border-white/15 rounded-lg overflow-hidden">
-            <SunEditor
-              setContents={formData.content}
-              onChange={(value: string) => setFormData((p) => ({ ...p, content: value }))}
-              setOptions={{
-                height: "400px",
-                buttonList: [
-                  ["undo", "redo"],
-                  ["font", "fontSize", "formatBlock"],
-                  ["bold", "italic", "underline", "strike"],
-                  ["fontColor", "hiliteColor"],
-                  ["align", "list", "lineHeight"],
-                  ["link", "image"],
-                  ["removeFormat"],
-                ],
-              }}
-              disable={isLoading}
-            />
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-white/85">
+              Nội dung chi tiết
+            </label>
+            <div className="border border-white/15 rounded-lg bg-[#111111] p-4 flex items-center justify-between gap-3">
+              <p className="text-sm text-white/65">
+                Mở trang riêng để chỉnh sửa UI Block chi tiết.
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push(`/dashboard/project-detail/${projectId}/content`)}
+                className="px-4 py-2 rounded-lg bg-[#05B9BA] text-white font-medium hover:opacity-90 transition-opacity"
+              >
+                Chỉnh sửa nội dung chi tiết
+              </button>
+            </div>
           </div>
 
           {message ? (
@@ -369,7 +380,7 @@ export default function ProjectDetailPage() {
               onClick={handleSave}
               disabled={isSaving || isLoading}
             >
-              {isSaving ? "Đang lưu..." : "Lưu nội dung"}
+              {isSaving ? "Đang lưu..." : "Lưu thông tin"}
             </button>
           </div>
         </div>

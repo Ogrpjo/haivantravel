@@ -1,8 +1,11 @@
-import Footer from "../components/Footer";
+import Footer from "../components/layout/Footer";
 import Navigationbar from "../components/Navigationbar";
+import { resolveUiBlockContent } from "../lib/resolveUiBlockContent";
 
 type RecruitmentContent = {
   content: string | null;
+  html_content?: string | null;
+  css_content?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 };
@@ -25,14 +28,18 @@ async function getRecruitmentContent(): Promise<RecruitmentContent | null> {
 
 export default async function Recruitment() {
   const data = await getRecruitmentContent();
-  const content = data?.content ?? "";
+  const resolvedContent = resolveUiBlockContent(
+    data?.content ?? "",
+    data?.html_content ?? null,
+    data?.css_content ?? null,
+  );
   const updatedAt = data?.updatedAt ?? data?.createdAt ?? null;
 
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col gap-y-20 relative pt-[136px]">
       <Navigationbar />
       <section className="w-full max-w-[1200px] mx-auto px-6 max-sm:px-4 py-10 text-white">
-        {!content ? (
+        {!resolvedContent ? (
           <div className="rounded-2xl p-8 text-center">
             <h1 className="text-2xl font-semibold mb-2">Chưa có nội dung tuyển dụng</h1>
             <p className="text-white/60">Vui lòng quay lại sau.</p>
@@ -52,7 +59,7 @@ export default async function Recruitment() {
             </div>
             <article
               className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-white/90 prose-a:text-[#05B9BA] [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:ml-4 [&_li]:my-1"
-              dangerouslySetInnerHTML={{ __html: content }}
+              dangerouslySetInnerHTML={{ __html: resolvedContent }}
             />
           </div>
         )}

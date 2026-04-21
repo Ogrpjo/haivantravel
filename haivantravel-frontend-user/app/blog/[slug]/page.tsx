@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Footer from "../../components/Footer";
+import Footer from "../../components/layout/Footer";
 import Navigationbar from "../../components/Navigationbar";
+import { resolveUiBlockContent } from "../../lib/resolveUiBlockContent";
 import styles from "./blog-detail.module.css";
 
 type BlogDetail = {
@@ -95,6 +96,7 @@ export default async function BlogDetailPage({
 }) {
   const { slug } = await params;
   const detail = await getBlogDetail(slug);
+  const resolvedContent = resolveUiBlockContent(detail?.content ?? "");
 
   const publishedDate = detail
     ? new Date(detail.createdAt ?? detail.date ?? "").toLocaleDateString("vi-VN", {
@@ -124,13 +126,9 @@ export default async function BlogDetailPage({
             <div
               className={[
                 styles.blogContent,
-                "prose prose-invert max-w-none",
-                "prose-headings:text-white prose-p:text-white/90 prose-a:text-[#05B9BA]",
-                "prose-ul:list-disc prose-ol:list-decimal",
-                "prose-ul:pl-6 prose-ol:pl-6",
-                "prose-li:my-1",
+                "max-w-none",
               ].join(" ")}
-              dangerouslySetInnerHTML={{ __html: detail.content ?? "" }}
+              dangerouslySetInnerHTML={{ __html: resolvedContent }}
             />
           </div>
         )}

@@ -110,10 +110,10 @@ export default function Prestige() {
         <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#747474] to-[#C4C4C4] font-black lg:text-[60px] text-[30px] slide-text" text={data.big_text} />
       </div>
       <div className="sm:grid sm:grid-cols-4 sm:gap-1 md:gap-2 xl:gap-4 max-sm:flex max-sm:flex-col gap-3">
-        <CardAppear translate={-50} card={<PrestigeCard number={data.number_1} description={data.name_1}/>} />
-        <CardAppear translate={-350} card={<PrestigeCard number={data.number_2} description={data.name_2} />} />
-        <CardAppear translate={-650} card={<PrestigeCard number={data.number_3} description={data.name_3} />} />
-        <CardAppear translate={-950} card={<PrestigeCard number={data.number_4} description={data.name_4} />} />
+        <CardAppear translate={-50} desktopTranslateY={60} card={<PrestigeCard number={data.number_1} description={data.name_1}/>} />
+        <CardAppear translate={-350} desktopTranslateY={180} card={<PrestigeCard number={data.number_2} description={data.name_2} />} />
+        <CardAppear translate={-650} desktopTranslateY={300} card={<PrestigeCard number={data.number_3} description={data.name_3} />} />
+        <CardAppear translate={-950} desktopTranslateY={420} card={<PrestigeCard number={data.number_4} description={data.name_4} />} />
       </div>
     </section>
   );

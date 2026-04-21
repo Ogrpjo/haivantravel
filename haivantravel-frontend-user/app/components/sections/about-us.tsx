@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@heroui/react";
+import { Button, Link } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 import ButtonGradient from "../button-gradient";
 import LeftToRightText, { CountingNumber } from "../effect/text-split";
@@ -65,7 +65,7 @@ function Statics({ stats }: StaticsProps) {
       {stats.map((stat, index) => (
         <span key={index} className="flex flex-col">
           <CountingNumber
-            className="lg:text-[35px] text-[25px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] h-[3.3em]"
+            className="lg:text-[35px] text-[25px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] h-[3.3em]"
             endValue={stat.number}
           />
           <LeftToRightText
@@ -81,6 +81,12 @@ function Statics({ stats }: StaticsProps) {
 export default function AboutUs() {
   const [remoteData, setRemoteData] = useState<AboutUsApiData | null>(null);
   const [remoteStatistics, setRemoteStatistics] = useState<AboutUsStatisticApiData | null>(null);
+
+  const scrollToContactForm = () => {
+    const el = document.getElementById("form-contact");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   useEffect(() => {
     const loadAboutUs = async () => {
@@ -156,10 +162,12 @@ export default function AboutUs() {
           text={data.description}
         />
         <div className="flex gap-3 pt-6">
-          <ButtonGradient name="Nhận tư vấn Concept" />
-          <Button className="rounded-[12px] h-auto bg-white/4 border-t shadow-[#CECECE]/14 shadow-1">
-            <p className="lg:text-[18px] text-[12px]">Xem hồ sơ năng lực</p>
-          </Button>
+          <ButtonGradient name="Nhận tư vấn Concept" onClick={scrollToContactForm} />
+          <Link href="/case-study" className="no-underline decoration-transparent hover:no-underline">
+            <Button className="rounded-[12px] h-[50px] bg-white/4 border-t shadow-[#CECECE]/14 shadow-1">
+              <p className="lg:text-[18px] text-[12px]">Xem hồ sơ năng lực</p>
+            </Button>
+          </Link>
         </div>
         <Statics stats={data.stats} />
       </div>

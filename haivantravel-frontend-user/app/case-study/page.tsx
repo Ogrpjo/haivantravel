@@ -1,0 +1,248 @@
+"use client";
+
+import Footer from "../components/layout/Footer";
+import NavigationBar from "../components/layout/Navbar";
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+
+type CaseStudyItem = {
+    id: number;
+    title: string;
+    guests: string;
+    artists: string;
+    duration: string;
+    description: string;
+    image: string;
+    category: string;
+    href: string;
+};
+
+type ApiProject = {
+    id: number;
+    title: string;
+    short_description: string | null;
+    project_type: string | null;
+    duration_days: number | null;
+    guest_count: number | null;
+    artist_count: number | null;
+    image_url: string;
+    link_url: string;
+};
+
+const INITIAL_LOAD_COUNT = 7;
+const LOAD_MORE_COUNT = 3;
+const CATEGORY_FILTERS = ["All", "Gala Dinner", "Team Building", "Conference", "Year End Party"];
+
+function getApiBaseUrl(): string {
+    return process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.haivanevent.vn";
+}
+
+function buildProjectImageUrl(imagePath: string): string {
+    if (!imagePath) return "";
+    if (/^https?:\/\//i.test(imagePath)) return imagePath;
+    const normalized = imagePath.replace(/\\/g, "/").replace(/^\/+/, "");
+    return `${getApiBaseUrl().replace(/\/+$/, "")}/${normalized}`;
+}
+
+function titleToSlug(title: string): string {
+    const stripped = title
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\u0111/g, "d")
+        .replace(/\u0110/g, "d")
+        .toLowerCase()
+        .trim();
+    return stripped
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function toCaseStudyHref(project: ApiProject): string {
+    const raw = project.link_url?.trim();
+    if (raw) {
+        try {
+            const url = new URL(raw);
+            if (url.pathname.startsWith("/case-study/")) {
+                return url.pathname;
+            }
+        } catch {
+            if (raw.startsWith("/case-study/")) return raw;
+        }
+    }
+    return `/case-study/${titleToSlug(project.title || "du-an")}`;
+}
+
+function mapApiProjectToUi(project: ApiProject): CaseStudyItem {
+    const guestCount = project.guest_count ?? 0;
+    return {
+        id: project.id,
+        title: project.title?.trim() || "Dự án",
+        guests: guestCount > 0 ? `${guestCount.toLocaleString("en-US")}+` : "—",
+        artists: project.artist_count != null ? String(project.artist_count) : "—",
+        duration: project.duration_days != null && project.duration_days > 0 ? `${project.duration_days} ngày` : "—",
+        description: project.short_description?.trim() || "Đang cập nhật mô tả dự án.",
+        image: buildProjectImageUrl(project.image_url),
+        category: project.project_type?.trim() || "Gala Dinner",
+        href: toCaseStudyHref(project),
+    };
+}
+
+function MainContent() {
+    const [activeCategory, setActiveCategory] = useState("All");
+    const [projects, setProjects] = useState<CaseStudyItem[]>([]);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchProjects = useCallback(
+        async (offset: number, limit: number, append: boolean) => {
+            try {
+                setIsLoading(true);
+                setError(null);
+                const params = new URLSearchParams();
+                params.set("offset", String(offset));
+                params.set("limit", String(limit));
+                if (activeCategory !== "All") {
+                    params.set("project_type", activeCategory);
+                }
+
+                const res = await fetch(`${getApiBaseUrl()}/projects?${params.toString()}`, {
+                    cache: "no-store",
+                });
+                if (!res.ok) throw new Error("Không thể tải danh sách dự án.");
+
+                const data = (await res.json()) as ApiProject[];
+                const mapped = Array.isArray(data) ? data.map(mapApiProjectToUi) : [];
+                const source = mapped;
+
+                setProjects((prev) => (append ? [...prev, ...source] : source));
+                setHasMore(source.length === limit);
+            } catch (err) {
+                if (!append) setProjects([]);
+                setHasMore(false);
+                setError(err instanceof Error ? err.message : "Có lỗi xảy ra.");
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [activeCategory],
+    );
+
+    useEffect(() => {
+        void fetchProjects(0, INITIAL_LOAD_COUNT, false);
+    }, [fetchProjects]);
+
+    const handleLoadMore = () => {
+        if (isLoading || !hasMore) return;
+        void fetchProjects(projects.length, LOAD_MORE_COUNT, true);
+    };
+
+    return (
+        <section className="pt-[120px] min-h-[100vh]">
+            <header className="relative w-full h-[300px]">
+                <Image
+                    src="/case-study/CaseHero.webp"
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                    alt="Case Study Image"
+                    priority
+                />
+                <div className="absolute inset-0 bg-[#121212]/55" />
+                <div className="absolute inset-0 flex items-end lg:px-[148px] sm:px-[84px] px-[20px] pb-[20px]">
+                    <div className="flex flex-col font-black bg-clip-text text-transparent bg-gradient-to-r min-h-[100px] from-[#4B7171] to-[#8ED6D7]">
+                        <p className="text-[25px]">Dự án</p>
+                        <h1 className="text-[50px] leading-[1.1]">Của chúng tôi</h1>
+                    </div>
+                </div>
+            </header>
+
+            <div className="lg:px-[148px] sm:px-[84px] px-[20px] pt-[24px] pb-[80px]">
+                <div className="flex flex-wrap gap-2">
+                    {CATEGORY_FILTERS.map((item) => (
+                        <button
+                            type="button"
+                            key={item}
+                            onClick={() => setActiveCategory(item)}
+                            className={`px-3 py-1 rounded-[8px] text-[13px] border transition-colors ${
+                                activeCategory === item
+                                    ? "border-[#8ED6D7]/60 bg-[#8ED6D7]/20 text-white"
+                                    : "border-white/10 bg-white/5 text-white/80 hover:bg-white/10"
+                            }`}
+                        >
+                            {item}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="pt-[16px] flex flex-col gap-4">
+                    {projects.map((item) => (
+                        <Link key={item.id} href={item.href} className="no-underline">
+                            <article className="grid grid-cols-[220px_1fr] max-md:grid-cols-1 gap-5 p-3 rounded-[12px] border border-white/10 bg-[#121212] hover:border-[#8ED6D7]/40 transition-colors cursor-pointer">
+                                <div className="relative w-full h-[300px] rounded-[8px] overflow-hidden">
+                                    <Image
+                                        src={item.image}
+                                        alt={item.title}
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 768px) 100vw, 220px"
+                                    />
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <h2 className="text-[16px] md:text-[18px] text-white font-semibold">
+                                        {item.title}
+                                    </h2>
+                                    <div className="flex flex-wrap gap-8">
+                                        <div>
+                                            <p className="text-[#8ED6D7] text-[24px] font-black leading-none">{item.guests}</p>
+                                            <p className="text-white/60 text-[12px]">Khách tham dự</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[#8ED6D7] text-[24px] font-black leading-none">{item.artists}</p>
+                                            <p className="text-white/60 text-[12px]">Nghệ sĩ</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[#8ED6D7] text-[24px] font-black leading-none">{item.duration}</p>
+                                            <p className="text-white/60 text-[12px]">Thời gian</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-white/60 text-[14px] leading-relaxed">{item.description}</p>
+                                </div>
+                            </article>
+                        </Link>
+                    ))}
+
+                    {!isLoading && projects.length === 0 && !error ? (
+                        <p className="text-white/60 py-6">Không có dự án trong danh mục này.</p>
+                    ) : null}
+                    {error ? <p className="text-red-400 py-2">{error}</p> : null}
+
+                    {projects.length > 0 && hasMore ? (
+                        <div className="pt-4 flex justify-center">
+                            <button
+                                type="button"
+                                onClick={handleLoadMore}
+                                disabled={isLoading}
+                                className="px-5 py-2 rounded-[10px] border border-[#8ED6D7]/50 text-[#8ED6D7] hover:bg-[#8ED6D7]/10 transition-colors disabled:opacity-60"
+                            >
+                                {isLoading ? "Đang tải..." : "Show more"}
+                            </button>
+                        </div>
+                    ) : null}
+                </div>
+            </div>
+        </section>
+    )
+}
+
+export default function CaseStudy() {
+    return (
+        <main className="min-h-screen flex flex-col">
+            <NavigationBar />
+            <MainContent />
+            <Footer />
+        </main>
+    )
+}

@@ -1,7 +1,22 @@
-import { Facebook, YouTube } from "@deemlol/next-icons"
-import { div } from "motion/react-client"
+ "use client";
+
+import { Facebook, YouTube, Mail } from "@deemlol/next-icons"
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useMemo, useState } from "react";
+
+type SocialLink = {
+    id: number;
+    title: string;
+    url: string;
+    isActive: boolean;
+}
+
+type SocialIconItem = {
+    key: "youtube" | "facebook" | "zalo" | "tiktok";
+    href: string;
+    icon: React.ReactNode;
+}
 
 type CardSocialProps = {
     icon: React.ReactNode
@@ -15,6 +30,68 @@ function CardSocial({ icon }: CardSocialProps) {
 }
 
 export default function Footer() {
+    const [socialLinks, setSocialLinks] = useState<Record<string, string>>({
+        facebook: "https://www.facebook.com/haivantravelhcmc",
+        youtube: "https://www.youtube.com/@haivantravel9872",
+        zalo: "",
+        tiktok: "https://www.tiktok.com/@haivantravel539?is_from_webapp=1&sender_device=pc",
+    });
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadSocialLinks = async () => {
+            try {
+                const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+                const response = await fetch(`${apiBaseUrl}/social-links`);
+                if (!response.ok) return;
+                const data = (await response.json()) as SocialLink[];
+                if (!Array.isArray(data) || !isMounted) return;
+
+                setSocialLinks((prev) => {
+                    const next = { ...prev };
+                    data.forEach((item) => {
+                        if (!item?.isActive || !item?.title || !item?.url) return;
+                        const key = item.title.trim().toLowerCase();
+                        if (key in next) {
+                            next[key] = item.url;
+                        }
+                    });
+                    return next;
+                });
+            } catch {
+                // keep default links
+            }
+        };
+
+        void loadSocialLinks();
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    const socialItems = useMemo<SocialIconItem[]>(() => {
+        return [
+            { key: "youtube", href: socialLinks.youtube, icon: <YouTube size={20} /> },
+            { key: "facebook", href: socialLinks.facebook, icon: <Facebook size={20} /> },
+            {
+                key: "zalo",
+                href: socialLinks.zalo,
+                icon: <Image src="/socialbutton/zalo.svg" alt="zalo" width={20} height={20} />,
+            },
+            {
+                key: "tiktok",
+                href: socialLinks.tiktok,
+                icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M21 7.917v4.034a9.948 9.948 0 0 1 -5 -1.951v4.5a6.5 6.5 0 1 1 -8 -6.326v4.326a2.5 2.5 0 1 0 4 2v-11.5h4.083a6.005 6.005 0 0 0 4.917 4.917" />
+                    </svg>
+                ),
+            },
+        ];
+    }, [socialLinks]);
+
     const service = [
         "Tổ chức dự kiện",
         "Team Building",
@@ -45,8 +122,11 @@ export default function Footer() {
                         <Image src="/HaivantravelLogo.webp" alt="logo" width={140} height={130} />
                         <p className="text-white/40 text-[12px] lg:text-[16px]">Đơn vị tổ chức sự kiện doanh nghiệp chuyên nghiệp hàng đầu Việt Nam</p>
                         <div className="flex gap-[10px]">
-                            <CardSocial icon={<YouTube size={20} />} />
-                            <CardSocial icon={<Facebook size={20} />} />
+                            {socialItems.map((item) => (
+                                <Link key={item.key} href={item.href} target="_blank" rel="noopener noreferrer">
+                                    <CardSocial icon={item.icon} />
+                                </Link>
+                            ))}
                         </div>
                     </div>
                     <div className="grid w-full flex-1 grid-cols-3">

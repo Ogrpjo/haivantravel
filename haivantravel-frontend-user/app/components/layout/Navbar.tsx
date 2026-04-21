@@ -2,19 +2,43 @@
 
 import { useState, useEffect } from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/navbar";
-import { Link, Button } from "@heroui/react";
+import { Link } from "@heroui/react";
 import {
   PhoneCall,
   Facebook,
   YouTube,
-  Play,
   Menu,
   X,
 } from "@deemlol/next-icons";
 import Image from "next/image";
 import ButtonGradient from "../button-gradient";
 
-function TopNavbar() {
+type SocialLink = {
+  id: number;
+  title: string;
+  url: string;
+  isActive: boolean;
+};
+
+type SocialMap = {
+  facebook: string;
+  youtube: string;
+  zalo: string;
+  tiktok: string;
+};
+
+const DEFAULT_SOCIAL_MAP: SocialMap = {
+  facebook: "https://www.facebook.com/haivantravelhcmc",
+  youtube: "https://www.youtube.com/@haivantravel9872",
+  zalo: "",
+  tiktok:
+    "https://www.tiktok.com/@haivantravel539?is_from_webapp=1&sender_device=pc",
+};
+
+const getApiBaseUrl = () =>
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
+
+function TopNavbar({ socialMap }: { socialMap: SocialMap }) {
   return (
     <div className="px-[20px] justify-between flex w-full bg-[#2E2E2E] text-white max-sm:hidden">
       <div className="flex items-center justify-start">
@@ -25,13 +49,13 @@ function TopNavbar() {
         <p className="pl-[20px]">Info.hcmc@haivantravelvn.com</p>
       </div>
       <div className="flex items-center md:px-[20px] gap-3 hidden sm:flex">
-        <Link href="https://www.facebook.com/haivantravelhcmc">
+        <Link href={socialMap.facebook} target="_blank" rel="noopener noreferrer">
           <Facebook size={20} />
         </Link>
-        <Link href="https://www.youtube.com/@haivantravel9872">
+        <Link href={socialMap.youtube} target="_blank" rel="noopener noreferrer">
           <YouTube size={20} />
         </Link>
-        <Link href="">
+        <Link href={socialMap.tiktok} target="_blank" rel="noopener noreferrer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -47,7 +71,7 @@ function TopNavbar() {
             <path d="M21 7.917v4.034a9.948 9.948 0 0 1 -5 -1.951v4.5a6.5 6.5 0 1 1 -8 -6.326v4.326a2.5 2.5 0 1 0 4 2v-11.5h4.083a6.005 6.005 0 0 0 4.917 4.917" />
           </svg>
         </Link>
-        <Link href="">
+        <Link href={socialMap.zalo} target="_blank" rel="noopener noreferrer">
           <Image
             src="/socialbutton/zalo.svg"
             alt="zalo"
@@ -62,12 +86,19 @@ function TopNavbar() {
 
 function BottomNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false);
+  const [isMobileServiceOpen, setIsMobileServiceOpen] = useState(false);
   const menuItems = [
     {name: "Trang chủ", href: "/"}, 
     {name: "Case Study", href: "/case-study"},
-    {name: "Dịch vụ", href: "/service"}, 
-    {name: "Về chúng tôi", href: "about-us"}
-  ]
+    {name: "Blog", href: "/blog"},
+  ];
+  const aboutItem = { name: "Về chúng tôi", href: "about-us" };
+  const serviceItems = [
+    { name: "MICE", href: "/mice" },
+    { name: "Gala Dinner", href: "/gala" },
+    { name: "Team building", href: "/teambuilding" },
+  ];
 
   return (
     <>
@@ -85,7 +116,7 @@ function BottomNavbar() {
           </Link>
         </NavbarContent>
 
-        <NavbarContent className="hidden lg:flex" justify="center">
+        <NavbarContent className="hidden lg:flex relative" justify="center">
           {menuItems.map((item, index) => (
             <NavbarItem key={`${item}-${index}`}>
               <Link className="no-underline hover:text-white/70 text-[16px]" href={item.href}>
@@ -93,6 +124,48 @@ function BottomNavbar() {
               </Link>
             </NavbarItem>
           ))}
+          <NavbarItem className="relative">
+            <button
+              type="button"
+              onClick={() => setIsServiceDropdownOpen((prev) => !prev)}
+              className="cursor-pointer text-[16px] text-white hover:text-white/70 flex items-center gap-2"
+            >
+              Dịch vụ
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`transition-transform duration-200 ${isServiceDropdownOpen ? "rotate-180" : ""}`}
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            {isServiceDropdownOpen ? (
+              <div className="absolute top-[150%] left-0 min-w-[180px] bg-[#1E1E1E] border border-white/10 rounded-[10px] py-2 z-[120]">
+                {serviceItems.map((serviceItem) => (
+                  <Link
+                    key={serviceItem.name}
+                    href={serviceItem.href}
+                    className="block px-4 py-2 text-[15px] hover:bg-white/10 no-underline text-white"
+                    onPress={() => setIsServiceDropdownOpen(false)}
+                  >
+                    {serviceItem.name}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </NavbarItem>
+          <NavbarItem>
+            <Link className="no-underline hover:text-white/70 text-[16px]" href={aboutItem.href}>
+              {aboutItem.name}
+            </Link>
+          </NavbarItem>
         </NavbarContent>
 
         <NavbarContent className="lg:px-[40px]" justify="end">
@@ -102,7 +175,10 @@ function BottomNavbar() {
 
           <button
             className="lg:hidden cursor-pointer"
-            onClick={() => setIsMenuOpen(true)}
+            onClick={() => {
+              setIsMenuOpen(true);
+              setIsMobileServiceOpen(false);
+            }}
           >
             <Menu size={30} />
           </button>
@@ -124,7 +200,10 @@ function BottomNavbar() {
           <div className="flex justify-end mb-6">
             <button
               className="cursor-pointer"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                setIsMenuOpen(false);
+                setIsMobileServiceOpen(false);
+              }}
             >
               <X size={28} />
             </button>
@@ -136,6 +215,47 @@ function BottomNavbar() {
                 {item.name}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={() => setIsMobileServiceOpen((prev) => !prev)}
+              className="no-underline hover:text-white/70 cursor-pointer text-[16px] flex items-center justify-between"
+            >
+              Dịch vụ
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`transition-transform duration-200 ${isMobileServiceOpen ? "rotate-180" : ""}`}
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            {isMobileServiceOpen ? (
+              <div className="pl-3 flex flex-col gap-3">
+                {serviceItems.map((serviceItem) => (
+                  <Link
+                    key={serviceItem.name}
+                    href={serviceItem.href}
+                    className="no-underline hover:text-white/70 cursor-pointer text-[15px]"
+                    onPress={() => {
+                      setIsMobileServiceOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {serviceItem.name}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+            <Link href={aboutItem.href} className="no-underline hover:text-white/70 cursor-pointer text-[16px]">
+              {aboutItem.name}
+            </Link>
 
             <ButtonGradient name="Nhận Brief" />
           </div>
@@ -148,6 +268,37 @@ function BottomNavbar() {
 export default function NavigationBar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [socialMap, setSocialMap] = useState<SocialMap>(DEFAULT_SOCIAL_MAP);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSocialLinks = async () => {
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/social-links`);
+        if (!response.ok) return;
+        const data = (await response.json()) as SocialLink[];
+        if (!Array.isArray(data) || !isMounted) return;
+
+        const nextMap: SocialMap = { ...DEFAULT_SOCIAL_MAP };
+        data.forEach((item) => {
+          if (!item?.isActive || !item?.title || !item?.url) return;
+          const key = item.title.trim().toLowerCase() as keyof SocialMap;
+          if (key in nextMap) {
+            nextMap[key] = item.url;
+          }
+        });
+        setSocialMap(nextMap);
+      } catch {
+        // Keep default links when API is unavailable.
+      }
+    };
+
+    void loadSocialLinks();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -175,7 +326,7 @@ export default function NavigationBar() {
       className={`fixed top-0 left-0 w-full z-[100] bg-black transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
     >
-      <TopNavbar />
+      <TopNavbar socialMap={socialMap} />
       <BottomNavbar />
     </section>
   );

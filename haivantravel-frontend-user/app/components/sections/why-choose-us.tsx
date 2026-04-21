@@ -4,6 +4,7 @@ import { Check } from "@deemlol/next-icons";
 import ButtonGradient from "../button-gradient";
 import LeftToRightText, { CardAppear, HoverZoomImage } from "../effect/text-split";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 const WhyChooseUsData = {
   image_url: "/home/whychooseus.webp",
@@ -89,7 +90,9 @@ function RightContent({ data, ticks }: { data: typeof WhyChooseUsData; ticks: { 
           </div>
         </div></>} translate={-50} />
 
-      <ButtonGradient name="Tư vấn miễn phí" />
+      <Link href="/contact" className="w-fit">
+        <ButtonGradient name="Tư vấn miễn phí" />
+      </Link>
     </div>
   );
 }

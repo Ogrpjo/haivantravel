@@ -90,19 +90,26 @@ export function CountingNumber({ endValue, className }: CountingNumberProps) {
 type CardAppearProps = {
     card: React.ReactNode;
     translate: number;
+    desktopTranslateY?: number;
+    mobileTranslateX?: number;
 }
 
-export function CardAppear({ card, translate }: CardAppearProps) {
+export function CardAppear({ card, translate, desktopTranslateY, mobileTranslateX }: CardAppearProps) {
     const container = useRef(null);
 
     useGSAP(() => {
+        const isMobile = window.matchMedia("(max-width: 639px)").matches;
+        const fromX = isMobile ? (mobileTranslateX ?? translate) : 0;
+        const fromY = isMobile ? 0 : (desktopTranslateY ?? 0);
+
         gsap.from(".slide-card", {
                         scrollTrigger: {
                 trigger: container.current,
                 start: "top 85%",
                 toggleActions: "play none none none",
             },
-            x: translate,
+            x: fromX,
+            y: fromY,
             opacity: 0,
             duration: 1.8,
             ease: 'power3.out',

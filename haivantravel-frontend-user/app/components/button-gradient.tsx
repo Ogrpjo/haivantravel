@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@heroui/react"
 import { Play } from "@deemlol/next-icons"
 import { useHoverFloat } from "./effect/text-split";

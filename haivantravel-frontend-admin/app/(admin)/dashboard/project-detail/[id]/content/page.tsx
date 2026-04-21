@@ -140,7 +140,7 @@ export default function ProjectDetailContentEditorPage() {
     try {
       const content = JSON.stringify(editor.getProjectData() as ProjectData);
       const htmlContent = editor.getHtml();
-      const cssContent = editor.getCss();
+      const cssContent = editor.getCss() ?? "";
       const payload = new FormData();
       payload.append("content", content);
       payload.append("html_content", htmlContent);

@@ -1,10 +1,19 @@
-import { Repository, DeepPartial } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 export async function saveSingleRichText<
-  TEntity extends { id: number; content: string | null }
+  TEntity extends {
+    id: number;
+    content: string | null;
+    html_content: string | null;
+    css_content: string | null;
+  }
 >(
   repo: Repository<TEntity>,
-  content?: string | null,
+  payload?: {
+    content?: string | null;
+    html_content?: string | null;
+    css_content?: string | null;
+  },
 ): Promise<TEntity> {
   const existing = await repo.findOne({
     where: {},
@@ -12,12 +21,24 @@ export async function saveSingleRichText<
   });
 
   if (existing) {
-    existing.content = content ?? null;
+    if (payload?.content !== undefined) {
+      existing.content = payload.content ?? null;
+    }
+    if (payload?.html_content !== undefined) {
+      existing.html_content = payload.html_content ?? null;
+    }
+    if (payload?.css_content !== undefined) {
+      existing.css_content = payload.css_content ?? null;
+    }
     return repo.save(existing); // TypeScript OK
   }
 
   // Dùng create() để đảm bảo single entity
-  const entity = repo.create({ content: content ?? null } as DeepPartial<TEntity>);
+  const entity = repo.create({
+    content: payload?.content ?? null,
+    html_content: payload?.html_content ?? null,
+    css_content: payload?.css_content ?? null,
+  } as DeepPartial<TEntity>);
 
   // Save single entity → TypeScript sẽ infer Promise<TEntity>
   return repo.save(entity);

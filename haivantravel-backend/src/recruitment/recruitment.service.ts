@@ -22,9 +22,19 @@ export class RecruitmentService {
     });
     if (existing) {
       if (dto.content !== undefined) existing.content = dto.content ?? null;
+      if (dto.html_content !== undefined) {
+        existing.html_content = dto.html_content ?? null;
+      }
+      if (dto.css_content !== undefined) {
+        existing.css_content = dto.css_content ?? null;
+      }
       return this.repo.save(existing);
     }
-    const entity = this.repo.create({ content: dto.content ?? null });
+    const entity = this.repo.create({
+      content: dto.content ?? null,
+      html_content: dto.html_content ?? null,
+      css_content: dto.css_content ?? null,
+    });
     return this.repo.save(entity);
   }
 }

@@ -56,6 +56,14 @@ export class CreateProjectDto {
 
   @IsOptional()
   @IsString()
+  html_content?: string;
+
+  @IsOptional()
+  @IsString()
+  css_content?: string;
+
+  @IsOptional()
+  @IsString()
   seo_title?: string;
 
   @IsOptional()

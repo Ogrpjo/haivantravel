@@ -72,6 +72,24 @@ export class UpdateProjectDto {
   @IsString()
   content?: string;
 
+  /** Gửi chuỗi rỗng để xóa HTML chi tiết (lưu null). */
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === null || value === undefined) return undefined;
+    return typeof value === 'string' ? value : undefined;
+  })
+  @IsString()
+  html_content?: string;
+
+  /** Gửi chuỗi rỗng để xóa CSS chi tiết (lưu null). */
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === null || value === undefined) return undefined;
+    return typeof value === 'string' ? value : undefined;
+  })
+  @IsString()
+  css_content?: string;
+
   /** Gửi chuỗi rỗng để xóa SEO title (lưu null). */
   @IsOptional()
   @Transform(({ value }) => {

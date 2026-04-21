@@ -29,6 +29,11 @@ export class ProjectsController {
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+        // Remove small text-field cap for `content` when sending UI-block JSON.
+        fieldSize: 20 * 1024 * 1024,
+      },
       storage: diskStorage({
         destination: (_req, _file, cb) => {
           fs.mkdirSync(UPLOADS_DIR, { recursive: true });
@@ -98,6 +103,11 @@ export class ProjectsController {
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('image', {
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+        // Remove small text-field cap for `content` when sending UI-block JSON.
+        fieldSize: 20 * 1024 * 1024,
+      },
       storage: diskStorage({
         destination: (_req, _file, cb) => {
           fs.mkdirSync(UPLOADS_DIR, { recursive: true });
@@ -139,6 +149,8 @@ export class ProjectsController {
       link_url: string;
       image_url: string;
       content: string | null;
+      html_content: string | null;
+      css_content: string | null;
       seo_title: string | null;
       seo_keywords: string | null;
       seo_description: string | null;
@@ -161,6 +173,12 @@ export class ProjectsController {
     }
     if (updateDto.link_url != null) payload.link_url = updateDto.link_url;
     if (updateDto.content !== undefined) payload.content = updateDto.content;
+    if (updateDto.html_content !== undefined) {
+      payload.html_content = updateDto.html_content;
+    }
+    if (updateDto.css_content !== undefined) {
+      payload.css_content = updateDto.css_content;
+    }
     if (updateDto.seo_title !== undefined) payload.seo_title = updateDto.seo_title;
     if (updateDto.seo_keywords !== undefined) {
       payload.seo_keywords = updateDto.seo_keywords;

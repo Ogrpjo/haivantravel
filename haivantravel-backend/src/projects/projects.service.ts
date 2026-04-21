@@ -27,6 +27,8 @@ export class ProjectsService {
         createDto.link_url?.trim() || 'https://haivanevent.vn/case-study',
       image_url: imageUrl,
       content: createDto.content?.trim() || null,
+      html_content: createDto.html_content?.trim() || null,
+      css_content: createDto.css_content?.trim() || null,
       seo_title: createDto.seo_title?.trim() || null,
       seo_keywords: createDto.seo_keywords?.trim() || null,
       seo_description: createDto.seo_description?.trim() || null,
@@ -71,6 +73,8 @@ export class ProjectsService {
       link_url: string;
       image_url: string;
       content: string | null;
+      html_content: string | null;
+      css_content: string | null;
       seo_title: string | null;
       seo_keywords: string | null;
       seo_description: string | null;
@@ -119,6 +123,16 @@ export class ProjectsService {
     if (updateDto.content !== undefined) {
       const nextContent = (updateDto.content ?? '').trim();
       project.content = nextContent.length > 0 ? nextContent : null;
+    }
+
+    if (updateDto.html_content !== undefined) {
+      const nextHtml = (updateDto.html_content ?? '').trim();
+      project.html_content = nextHtml.length > 0 ? nextHtml : null;
+    }
+
+    if (updateDto.css_content !== undefined) {
+      const nextCss = (updateDto.css_content ?? '').trim();
+      project.css_content = nextCss.length > 0 ? nextCss : null;
     }
 
     if (updateDto.seo_title !== undefined) {

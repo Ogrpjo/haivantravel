@@ -70,6 +70,8 @@ import { CaseStudyModule } from './case-study/case-study.module';
     MulterModule.register({
       limits: {
         fileSize: 10 * 1024 * 1024,
+        // Allow large JSON payload in multipart text fields (eg. UI-block content).
+        fieldSize: 20 * 1024 * 1024,
       },
     }),
     TypeOrmModule.forRootAsync({

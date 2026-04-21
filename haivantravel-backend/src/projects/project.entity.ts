@@ -38,6 +38,12 @@ export class Project {
   @Column({ type: 'text', nullable: true })
   content: string | null;
 
+  @Column({ type: 'text', nullable: true })
+  html_content: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  css_content: string | null;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   seo_title: string | null;
 

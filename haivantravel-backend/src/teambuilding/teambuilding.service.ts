@@ -17,7 +17,11 @@ export class TeamBuildingService {
   }
 
   async save(dto: SaveTeamBuildingDto): Promise<TeamBuilding> {
-    return saveSingleRichText(this.repo, dto.content);
+    return saveSingleRichText(this.repo, {
+      content: dto.content,
+      html_content: dto.html_content,
+      css_content: dto.css_content,
+    });
   }
 }
 

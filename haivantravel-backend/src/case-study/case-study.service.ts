@@ -17,6 +17,10 @@ export class CaseStudyService {
   }
 
   async save(dto: SaveCaseStudyDto): Promise<CaseStudy> {
-    return saveSingleRichText(this.repo, dto.content);
+    return saveSingleRichText(this.repo, {
+      content: dto.content,
+      html_content: dto.html_content,
+      css_content: dto.css_content,
+    });
   }
 }

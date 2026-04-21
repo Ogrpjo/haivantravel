@@ -17,7 +17,11 @@ export class GalaService {
   }
 
   async save(dto: SaveGalaDto): Promise<Gala> {
-    return saveSingleRichText(this.repo, dto.content);
+    return saveSingleRichText(this.repo, {
+      content: dto.content,
+      html_content: dto.html_content,
+      css_content: dto.css_content,
+    });
   }
 }
 

@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -188,8 +189,20 @@ export class BlogDetailsController {
   }
 
   @Get()
-  async findAll() {
-    return this.blogDetailsService.findAll();
+  async findAll(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    const parsedLimit =
+      limit !== undefined && !Number.isNaN(Number(limit))
+        ? Math.max(1, Number(limit))
+        : undefined;
+    const parsedOffset =
+      offset !== undefined && !Number.isNaN(Number(offset))
+        ? Math.max(0, Number(offset))
+        : undefined;
+
+    return this.blogDetailsService.findAll({
+      limit: parsedLimit,
+      offset: parsedOffset,
+    });
   }
 
   @Get('slug/:slug')

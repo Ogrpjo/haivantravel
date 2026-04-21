@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
@@ -17,25 +17,124 @@ export class ProjectsService {
 
   async create(createDto: CreateProjectDto, imageUrl: string) {
     const project = this.projectsRepository.create({
-      link_url: createDto.link_url,
+      title: createDto.title.trim(),
+      short_description: createDto.short_description?.trim() || null,
+      project_type: createDto.project_type.trim(),
+      duration_days: createDto.duration_days ?? null,
+      guest_count: createDto.guest_count ?? null,
+      artist_count: createDto.artist_count ?? null,
+      link_url:
+        createDto.link_url?.trim() || 'https://haivanevent.vn/case-study',
       image_url: imageUrl,
+      content: createDto.content?.trim() || null,
+      seo_title: createDto.seo_title?.trim() || null,
+      seo_keywords: createDto.seo_keywords?.trim() || null,
+      seo_description: createDto.seo_description?.trim() || null,
     });
     return this.projectsRepository.save(project);
   }
 
-  async findAll() {
-    return this.projectsRepository.find({ order: { id: 'DESC' } });
+  async findAll(options?: {
+    limit?: number;
+    offset?: number;
+    projectType?: string;
+  }) {
+    const qb = this.projectsRepository
+      .createQueryBuilder('project')
+      .orderBy('project.id', 'DESC');
+
+    if (options?.projectType) {
+      qb.where('LOWER(project.project_type) = LOWER(:projectType)', {
+        projectType: options.projectType,
+      });
+    }
+
+    if (options?.offset !== undefined) qb.skip(options.offset);
+    if (options?.limit !== undefined) qb.take(options.limit);
+
+    return qb.getMany();
+  }
+
+  async findOne(id: number) {
+    return this.projectsRepository.findOne({ where: { id } });
   }
 
   async update(
     id: number,
-    updateDto: Partial<{ link_url: string; image_url: string }>,
+    updateDto: Partial<{
+      title: string;
+      short_description: string | null;
+      project_type: string;
+      duration_days: number;
+      guest_count: number;
+      artist_count: number;
+      link_url: string;
+      image_url: string;
+      content: string | null;
+      seo_title: string | null;
+      seo_keywords: string | null;
+      seo_description: string | null;
+    }>,
   ) {
     const project = await this.projectsRepository.findOne({ where: { id } });
     if (!project) return null;
 
+    if (updateDto.title !== undefined) {
+      const t = updateDto.title.trim();
+      if (!t) {
+        throw new BadRequestException('Tên dự án không được để trống.');
+      }
+      project.title = t;
+    }
+
+    if (updateDto.short_description !== undefined) {
+      const s = updateDto.short_description?.trim() ?? '';
+      project.short_description = s.length > 0 ? s : null;
+    }
+
+    if (updateDto.project_type !== undefined) {
+      const pt = updateDto.project_type.trim();
+      if (!pt) {
+        throw new BadRequestException('Loại dự án không được để trống.');
+      }
+      project.project_type = pt;
+    }
+
+    if (updateDto.duration_days !== undefined) {
+      project.duration_days = updateDto.duration_days;
+    }
+
+    if (updateDto.guest_count !== undefined) {
+      project.guest_count = updateDto.guest_count;
+    }
+
+    if (updateDto.artist_count !== undefined) {
+      project.artist_count = updateDto.artist_count;
+    }
+
     if (updateDto.link_url != null) {
       project.link_url = updateDto.link_url;
+    }
+
+    if (updateDto.content !== undefined) {
+      const nextContent = (updateDto.content ?? '').trim();
+      project.content = nextContent.length > 0 ? nextContent : null;
+    }
+
+    if (updateDto.seo_title !== undefined) {
+      const nextSeoTitle = (updateDto.seo_title ?? '').trim();
+      project.seo_title = nextSeoTitle.length > 0 ? nextSeoTitle : null;
+    }
+
+    if (updateDto.seo_keywords !== undefined) {
+      const nextSeoKeywords = (updateDto.seo_keywords ?? '').trim();
+      project.seo_keywords = nextSeoKeywords.length > 0 ? nextSeoKeywords : null;
+    }
+
+    if (updateDto.seo_description !== undefined) {
+      const nextSeoDescription = (updateDto.seo_description ?? '').trim();
+      project.seo_description =
+        nextSeoDescription.length > 0 ? nextSeoDescription : null;
     }
 
     if (updateDto.image_url != null) {

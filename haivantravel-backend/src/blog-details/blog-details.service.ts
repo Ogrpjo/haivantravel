@@ -25,8 +25,15 @@ export class BlogDetailsService {
     return this.blogDetailRepository.save(blogDetail);
   }
 
-  async findAll() {
-    return this.blogDetailRepository.find({ order: { id: 'DESC' } });
+  async findAll(options?: { limit?: number; offset?: number }) {
+    const qb = this.blogDetailRepository
+      .createQueryBuilder('blog')
+      .orderBy('blog.id', 'DESC');
+
+    if (options?.offset !== undefined) qb.skip(options.offset);
+    if (options?.limit !== undefined) qb.take(options.limit);
+
+    return qb.getMany();
   }
 
   async findBySlug(slug: string) {

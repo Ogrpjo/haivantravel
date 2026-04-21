@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -66,8 +67,32 @@ export class ProjectsController {
   }
 
   @Get()
-  async findAll() {
-    return this.projectsService.findAll();
+  async findAll(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('project_type') projectType?: string,
+  ) {
+    const parsedLimit =
+      limit !== undefined && !Number.isNaN(Number(limit))
+        ? Math.max(1, Number(limit))
+        : undefined;
+    const parsedOffset =
+      offset !== undefined && !Number.isNaN(Number(offset))
+        ? Math.max(0, Number(offset))
+        : undefined;
+
+    return this.projectsService.findAll({
+      limit: parsedLimit,
+      offset: parsedOffset,
+      projectType: projectType?.trim() || undefined,
+    });
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const project = await this.projectsService.findOne(Number(id));
+    if (!project) throw new NotFoundException('Không tìm thấy dự án.');
+    return project;
   }
 
   @Patch(':id')
@@ -104,8 +129,45 @@ export class ProjectsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() updateDto: UpdateProjectDto,
   ) {
-    const payload: Partial<{ link_url: string; image_url: string }> = {};
+    const payload: Partial<{
+      title: string;
+      short_description: string | null;
+      project_type: string;
+      duration_days: number;
+      guest_count: number;
+      artist_count: number;
+      link_url: string;
+      image_url: string;
+      content: string | null;
+      seo_title: string | null;
+      seo_keywords: string | null;
+      seo_description: string | null;
+    }> = {};
+    if (updateDto.title !== undefined) payload.title = updateDto.title;
+    if (updateDto.short_description !== undefined) {
+      payload.short_description = updateDto.short_description;
+    }
+    if (updateDto.project_type !== undefined) {
+      payload.project_type = updateDto.project_type;
+    }
+    if (updateDto.duration_days !== undefined) {
+      payload.duration_days = updateDto.duration_days;
+    }
+    if (updateDto.guest_count !== undefined) {
+      payload.guest_count = updateDto.guest_count;
+    }
+    if (updateDto.artist_count !== undefined) {
+      payload.artist_count = updateDto.artist_count;
+    }
     if (updateDto.link_url != null) payload.link_url = updateDto.link_url;
+    if (updateDto.content !== undefined) payload.content = updateDto.content;
+    if (updateDto.seo_title !== undefined) payload.seo_title = updateDto.seo_title;
+    if (updateDto.seo_keywords !== undefined) {
+      payload.seo_keywords = updateDto.seo_keywords;
+    }
+    if (updateDto.seo_description !== undefined) {
+      payload.seo_description = updateDto.seo_description;
+    }
     if (file) payload.image_url = `upload/${file.filename}`;
 
     const updated = await this.projectsService.update(Number(id), payload);

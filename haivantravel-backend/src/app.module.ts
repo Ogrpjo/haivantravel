@@ -57,6 +57,10 @@ import { ExperienceContent } from './experience-content/experience-content.entit
 import { ExperienceContentModule } from './experience-content/experience-content.module';
 import { WorkingProcessContent } from './working-process-content/working-process-content.entity';
 import { WorkingProcessContentModule } from './working-process-content/working-process-content.module';
+import { BriefContact } from './brief-contact/brief-contact.entity';
+import { BriefContactModule } from './brief-contact/brief-contact.module';
+import { CaseStudy } from './case-study/case-study.entity';
+import { CaseStudyModule } from './case-study/case-study.module';
 
 @Module({
   imports: [
@@ -105,6 +109,8 @@ import { WorkingProcessContentModule } from './working-process-content/working-p
           WhyChooseUs,
           ExperienceContent,
           WorkingProcessContent,
+          BriefContact,
+          CaseStudy,
         ],
         synchronize: true,
       }),
@@ -136,6 +142,8 @@ import { WorkingProcessContentModule } from './working-process-content/working-p
     WhyChooseUsModule,
     ExperienceContentModule,
     WorkingProcessContentModule,
+    BriefContactModule,
+    CaseStudyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

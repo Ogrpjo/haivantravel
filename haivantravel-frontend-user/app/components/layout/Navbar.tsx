@@ -93,7 +93,7 @@ function BottomNavbar() {
     {name: "Case Study", href: "/case-study"},
     {name: "Blog", href: "/blog"},
   ];
-  const aboutItem = { name: "Về chúng tôi", href: "about-us" };
+  const aboutItem = { name: "Về chúng tôi", href: "/about-us" };
   const serviceItems = [
     { name: "MICE", href: "/mice" },
     { name: "Gala Dinner", href: "/gala" },

@@ -7,8 +7,14 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     ports: 
       - "2032:2032"
+    env_file:
+      - .env.production
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     extra_hosts: 
       - "host.docker.internal:host-gateway"
     networks: 

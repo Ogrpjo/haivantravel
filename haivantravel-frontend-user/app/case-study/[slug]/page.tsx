@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Footer from "../../components/layout/Footer";
 import Navigationbar from "../../components/Navigationbar";
-import ProjectContentFrame from "@/app/components/ProjectContentFrame";
 
 type ApiProject = {
   id: number;
@@ -228,16 +227,24 @@ function resolveProjectContent(
   htmlContent?: string | null,
   cssContent?: string | null,
 ): string {
+  const wrapWithScope = (html: string) => `<div class="ui-block-body">${html}</div>`;
+  const scopeCss = (css: string) =>
+    css
+      .replace(/(^|[\s,{])body(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body")
+      .replace(/(^|[\s,{])html(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body");
+
   const directHtml = htmlContent?.trim();
   if (directHtml) {
     const directCss = cssContent?.trim();
-    return directCss ? `<style>${directCss}</style>${directHtml}` : directHtml;
+    const normalizedCss = directCss ? scopeCss(directCss) : "";
+    const wrappedHtml = wrapWithScope(directHtml);
+    return normalizedCss ? `<style>${normalizedCss}</style>${wrappedHtml}` : wrappedHtml;
   }
 
   const trimmed = rawContent?.trim();
   if (!trimmed) return "<p>Chưa có nội dung chi tiết cho dự án này.</p>";
 
-  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return trimmed;
+  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return wrapWithScope(trimmed);
 
   try {
     const parsed = JSON.parse(trimmed) as ParsedGrapesProject;
@@ -273,22 +280,8 @@ function resolveProjectContent(
     const css = [normalizedRawCss, ...cssRules].filter(Boolean).join("\n");
     return css ? `<style>${css}</style>${html}` : html;
   } catch {
-    return trimmed;
+    return wrapWithScope(trimmed);
   }
-}
-
-function isStandaloneHtmlDocument(content: string): boolean {
-  const trimmed = content.trim().toLowerCase();
-  return (
-    trimmed.startsWith("<!doctype html") ||
-    trimmed.startsWith("<html") ||
-    /<html[\s>]/i.test(content)
-  );
-}
-
-function toIframeDocument(content: string): string {
-  if (isStandaloneHtmlDocument(content)) return content;
-  return `<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head><body>${content}</body></html>`;
 }
 
 async function getProjectBySlug(slug: string): Promise<ApiProject | null> {
@@ -350,17 +343,17 @@ export default async function CaseStudyDetailPage({
     project.html_content,
     project.css_content,
   );
-  const iframeDoc = toIframeDocument(resolvedContent);
 
   return (
-    <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative pt-[136px]">
+    <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
       <Navigationbar />
-      <section className="w-full text-white flex py-4">
-        <ProjectContentFrame
-          title={project.title || "Project detail content"}
-          srcDoc={iframeDoc}
-        />
-
+      <section className="w-full flex-1 text-white">
+        <div className="w-full max-w-[1200px] mx-auto px-6 max-sm:px-4 py-10">
+          <article
+            className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-white/90 prose-a:text-[#05B9BA] [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:ml-4 [&_li]:my-1"
+            dangerouslySetInnerHTML={{ __html: resolvedContent }}
+          />
+        </div>
       </section>
       <Footer />
     </main>

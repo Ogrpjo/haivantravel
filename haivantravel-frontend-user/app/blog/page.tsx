@@ -7,7 +7,7 @@ import Footer from "../components/layout/Footer";
 
 export default function BlogPage() {
   return (
-    <main className="w-screen min-h-screen bg-[#111111] flex flex-col gap-y-20 relative pt-[136px]">
+    <main className="w-screen min-h-screen bg-[#111111] flex flex-col gap-y-20 relative">
       <Navigationbar />
       <BlogHeader />
       <BlogEvent />

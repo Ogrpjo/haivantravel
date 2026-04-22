@@ -185,16 +185,24 @@ export function resolveUiBlockContent(
   htmlContent?: string | null,
   cssContent?: string | null,
 ): string {
+  const wrapWithScope = (html: string) => `<div class="ui-block-body">${html}</div>`;
+  const scopeCss = (css: string) =>
+    css
+      .replace(/(^|[\s,{])body(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body")
+      .replace(/(^|[\s,{])html(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body");
+
   const directHtml = htmlContent?.trim();
   if (directHtml) {
     const directCss = cssContent?.trim();
-    return directCss ? `<style>${directCss}</style>${directHtml}` : directHtml;
+    const normalizedCss = directCss ? scopeCss(directCss) : "";
+    const wrappedHtml = wrapWithScope(directHtml);
+    return normalizedCss ? `<style>${normalizedCss}</style>${wrappedHtml}` : wrappedHtml;
   }
 
   const trimmed = rawContent?.trim();
   if (!trimmed) return "";
 
-  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return trimmed;
+  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return wrapWithScope(trimmed);
 
   try {
     const parsed = JSON.parse(trimmed) as ParsedGrapesProject;
@@ -230,7 +238,7 @@ export function resolveUiBlockContent(
     const css = [normalizedRawCss, ...cssRules].filter(Boolean).join("\n");
     return css ? `<style>${css}</style>${html}` : html;
   } catch {
-    return trimmed;
+    return wrapWithScope(trimmed);
   }
 }
 

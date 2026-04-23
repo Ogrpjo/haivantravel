@@ -8,6 +8,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_GRAPES_STUDIO_LICENSE_KEY: ${NEXT_PUBLIC_GRAPES_STUDIO_LICENSE_KEY}
     ports: 
       - "127.0.0.1:2033:2033"
     env_file: 

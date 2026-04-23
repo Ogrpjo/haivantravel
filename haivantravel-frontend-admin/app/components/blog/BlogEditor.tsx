@@ -201,7 +201,7 @@ export default function BlogCreatePage() {
                   ["removeFormat"],
                 ],
 
-                imageUploadSizeLimit: 10000000,
+                imageUploadSizeLimit: 157286400,
                 imageAccept: ".jpg,.jpeg,.png,.webp",
               }}
               onImageUploadBefore={(files, _info, uploadHandler) => {

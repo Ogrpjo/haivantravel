@@ -16,6 +16,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid username');
     }
 
+    if (!users.password) {
+      throw new UnauthorizedException('Password is not set for this account');
+    }
+
     const isMatch = await bcrypt.compare(password, users.password);
 
     if (!isMatch) {

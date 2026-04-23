@@ -11,6 +11,6 @@ export class Admin {
   @Column({ unique: true })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   password: string | null;
 }

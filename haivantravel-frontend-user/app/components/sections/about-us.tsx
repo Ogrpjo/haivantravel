@@ -61,9 +61,9 @@ function normalizeImageUrl(url: string | null): string {
 
 function Statics({ stats }: StaticsProps) {
   return (
-    <div className="flex xl:max-w-[75%] md:max-w-[100%] w-full justify-between py-[30px]">
+    <div className="flex xl:max-w-[75%] md:max-w-[100%] w-full justify-between py-[30px] max-sm:text-center">
       {stats.map((stat, index) => (
-        <span key={index} className="flex flex-col">
+        <span key={index} className="flex flex-col max-sm:items-center">
           <CountingNumber
             className="lg:text-[35px] text-[25px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] h-[3.3em]"
             endValue={stat.number}
@@ -145,23 +145,23 @@ export default function AboutUs() {
   if (!data.is_active) return null;
 
   return (
-    <section className="flex relative z-0 flex-row lg:pl-[148px] w-full sm:pl-[84px] pt-[150px]">
+    <section className="flex relative z-0 flex-row lg:pl-[148px] w-full sm:pl-[84px]">
       <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[50px] left-[10%] top-[65%] opacity-40" />
       <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[50px] left-[25%] top-[30%] opacity-40" />
-      <div className="sm:flex-1 relative z-10 gap-3 flex-col sm:items-start items-center flex justify-center max-sm:px-[20px]">
+      <div className="sm:flex-1 relative z-10 gap-3 flex-col sm:items-start items-center flex justify-center max-sm:px-[20px] max-sm:text-center">
         <LeftToRightText
           className="text-[#9B9B9B] lg:text-[20px] text-[12px] text-center pt-[30px] slide-text"
           text={data.small_text}
         />
         <LeftToRightText
-          className="font-bold 2xl:text-[90px] xl:text-[80px] lg:text-[60px] md:text-[40px] text-[30px] bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] bg-clip-text text-transparent leading-[1.2] max-w-[90%] max-sm:text-center slide-text"
+          className="font-bold 2xl:text-[90px] xl:text-[80px] lg:text-[60px] md:text-[40px] text-[30px] bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] bg-clip-text text-transparent leading-[1.2] max-w-[90%] max-sm:w-full max-sm:mx-auto max-sm:text-center slide-text"
           text={data.big_text}
         />
         <LeftToRightText
-          className="text-[#9B9B9B] lg:text-[20px] text-[12px] max-w-[80%] max-sm:text-justify slide-text"
+          className="text-[#9B9B9B] lg:text-[20px] text-[12px] max-w-[80%] max-sm:text-justify max-sm:max-w-full slide-text"
           text={data.description}
         />
-        <div className="flex gap-3 pt-6">
+        <div className="flex gap-3 pt-6 max-sm:justify-center">
           <ButtonGradient name="Nhận tư vấn Concept" onClick={scrollToContactForm} />
           <Link href="/case-study" className="no-underline decoration-transparent hover:no-underline">
             <Button className="rounded-[12px] h-[50px] bg-white/4 border-t shadow-[#CECECE]/14 shadow-1">
@@ -180,14 +180,14 @@ export default function AboutUs() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/1 to-[#121212]/80" />
         <div className="absolute inset-0 bg-gradient-to-l from-[#121212]/1 to-[#121212]/80" />
       </div>
-      <div className="sm:hidden opacity-20">
+      <div className="sm:hidden opacity-6image.png0">
         <img
           src={data.image_url}
           alt="hero img"
           className="object-cover absolute inset-0 h-full w-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/1 to-[#121212]/80" />
-        <div className="absolute inset-0 bg-gradient-to-l from-[#121212]/1 to-[#121212]/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/10 to-[#121212]/90" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#121212]/10 to-[#121212]/90" />
       </div>
     </section>
   );

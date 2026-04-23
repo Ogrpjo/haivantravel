@@ -185,6 +185,18 @@ export function resolveUiBlockContent(
   htmlContent?: string | null,
   cssContent?: string | null,
 ): string {
+  const appendCssToDocumentHead = (documentHtml: string, css: string): string => {
+    const styleTag = `<style>${css}</style>`;
+    if (/<\/head>/i.test(documentHtml)) {
+      return documentHtml.replace(/<\/head>/i, `${styleTag}</head>`);
+    }
+    if (/<html[\s>]/i.test(documentHtml)) {
+      return documentHtml.replace(/<html([^>]*)>/i, `<html$1><head>${styleTag}</head>`);
+    }
+    return `${styleTag}${documentHtml}`;
+  };
+  const isFullDocumentHtml = (html: string) =>
+    /<!doctype html/i.test(html) || /<html[\s>]/i.test(html);
   const wrapWithScope = (html: string) => `<div class="ui-block-body">${html}</div>`;
   const scopeCss = (css: string) =>
     css
@@ -194,6 +206,10 @@ export function resolveUiBlockContent(
   const directHtml = htmlContent?.trim();
   if (directHtml) {
     const directCss = cssContent?.trim();
+    if (isFullDocumentHtml(directHtml)) {
+      if (!directCss) return directHtml;
+      return appendCssToDocumentHead(directHtml, directCss);
+    }
     const normalizedCss = directCss ? scopeCss(directCss) : "";
     const wrappedHtml = wrapWithScope(directHtml);
     return normalizedCss ? `<style>${normalizedCss}</style>${wrappedHtml}` : wrappedHtml;

@@ -19,14 +19,29 @@
 html, body {
   overflow-y: auto;
   overflow-x: hidden;
-
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff #121212;
 }
 
-html::-webkit-scrollbar, 
+html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  display: none;
+  width: 1px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border: 1px solid #121212;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: #e5e5e5;
 }
 
 .text-gradient-split .split-char {
@@ -91,3 +106,4 @@ body {
   border-radius: 50%;
   z-index: 20;
 }
+

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Footer from "../../components/layout/Footer";
 import Navigationbar from "../../components/Navigationbar";
+import ScopedHtmlContent from "@/app/components/ScopedHtmlContent";
+import { resolveUiBlockContent } from "@/app/lib/resolveUiBlockContent";
 
 type ApiProject = {
   id: number;
@@ -227,61 +229,7 @@ function resolveProjectContent(
   htmlContent?: string | null,
   cssContent?: string | null,
 ): string {
-  const wrapWithScope = (html: string) => `<div class="ui-block-body">${html}</div>`;
-  const scopeCss = (css: string) =>
-    css
-      .replace(/(^|[\s,{])body(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body")
-      .replace(/(^|[\s,{])html(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body");
-
-  const directHtml = htmlContent?.trim();
-  if (directHtml) {
-    const directCss = cssContent?.trim();
-    const normalizedCss = directCss ? scopeCss(directCss) : "";
-    const wrappedHtml = wrapWithScope(directHtml);
-    return normalizedCss ? `<style>${normalizedCss}</style>${wrappedHtml}` : wrappedHtml;
-  }
-
-  const trimmed = rawContent?.trim();
-  if (!trimmed) return "<p>Chưa có nội dung chi tiết cho dự án này.</p>";
-
-  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return wrapWithScope(trimmed);
-
-  try {
-    const parsed = JSON.parse(trimmed) as ParsedGrapesProject;
-
-    const firstPage = parsed.pages?.[0];
-    const pageComponent = firstPage?.component;
-    const frameComponent = firstPage?.frames?.[0]?.component;
-
-    const html =
-      typeof pageComponent === "string"
-        ? pageComponent
-        : typeof frameComponent === "string"
-          ? frameComponent
-          : renderGrapesComponentsToHtml(
-              (pageComponent ?? frameComponent) as GrapesComponentNode | GrapesComponentNode[] | undefined,
-            );
-    if (!html) return trimmed;
-
-    const cssSources = [
-      typeof parsed.css === "string" ? parsed.css.trim() : "",
-      typeof firstPage?.css === "string" ? firstPage.css.trim() : "",
-      typeof firstPage?.frames?.[0]?.css === "string" ? firstPage.frames[0].css.trim() : "",
-    ].filter(Boolean);
-    const cssRules = [
-      extractCssFromGrapesStyles(parsed.styles),
-      extractCssFromGrapesStyles(firstPage?.styles),
-      extractCssFromGrapesStyles(firstPage?.frames?.[0]?.styles),
-    ].filter(Boolean);
-    const normalizedRawCss = cssSources
-      .join("\n")
-      .replace(/(^|[\s,{])body(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body")
-      .replace(/(^|[\s,{])html(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body");
-    const css = [normalizedRawCss, ...cssRules].filter(Boolean).join("\n");
-    return css ? `<style>${css}</style>${html}` : html;
-  } catch {
-    return wrapWithScope(trimmed);
-  }
+  return resolveUiBlockContent(rawContent, htmlContent, cssContent);
 }
 
 async function getProjectBySlug(slug: string): Promise<ApiProject | null> {
@@ -348,11 +296,8 @@ export default async function CaseStudyDetailPage({
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
       <Navigationbar />
       <section className="w-full flex-1 text-white">
-        <div className="w-full px-6 max-sm:px-4 py-10">
-          <article
-            className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-white/90 prose-a:text-[#05B9BA] [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:ml-4 [&_li]:my-1"
-            dangerouslySetInnerHTML={{ __html: resolvedContent }}
-          />
+        <div className="w-full">
+          <ScopedHtmlContent html={resolvedContent} />
         </div>
       </section>
       <Footer />

@@ -38,9 +38,9 @@ function LeftContent() {
                     <p className="text-white/40">Hãy chia sẻ ý tưởng và yêu cầu của bạn. Đội ngũ chuyên gia của chúng tôi sẽ liên hệ và tư vấn miễn phí trong vòng 24 giờ.</p>
                 </div>
                 <div className="flex max-lg:flex-1 flex-col gap-[20px] md:items-start">
-                    <CardContact icon={<MapMaker />} name="Địa chỉ" detail="123 Nguyễn Đình Chiểu, Q.3, TP.HCM" />
+                    <CardContact icon={<MapMaker />} name="Địa chỉ" detail="154 Phan Văn Hớn, Phường Đông Hưng Thuận, TP. Hồ Chí Minh" />
                     <CardContact icon={<PhoneCall size={37} />} name="Hotline" detail="+84 853 566 556" />
-                    <CardContact icon={<Mail size={37} />} name="Email" detail="Info.hcmc@haivantravel.com" />
+                    <CardContact icon={<Mail size={37} />} name="Email" detail="Info.hcmc@haivantravelvn.com" />
                     <CardContact icon={<Clock size={37} />} name="Giờ làm việc" detail="T2 – T7: 8:00 – 18:00" />
                 </div>
             </div>
@@ -99,7 +99,7 @@ export function BriefContactFormPanel() {
                 throw new Error("submit failed");
             }
 
-            setSubmitMessage("Gửi brief thành công. Đội ngũ của chúng tôi sẽ liên hệ sớm.");
+            setSubmitMessage("Yêu cầu của quý khách đã được gửi, đội ngũ hỗ trợ của chúng tôi sẽ liên lạc cho bạn sớm nhất có thể!");
             setFormData({
                 fullName: "",
                 companyName: "",
@@ -183,7 +183,7 @@ export function BriefContactFormPanel() {
                     <p className="pt-[16px] text-center text-white/80">{submitMessage}</p>
                 ) : null}
                 <div className="pt-[30px]">
-                    <p className="text-white/40 text-center">Bằng cách gửi form này, bạn đồng ý để chúng tôi liên hệ tư vấn. Thông tin của bạn được bảo mật tuyệt đối.</p>
+                    <p className="text-[12px] md:text-[16px] text-white/40 text-center">Bằng cách gửi form này, bạn đồng ý để chúng tôi liên hệ tư vấn. Thông tin của bạn được bảo mật tuyệt đối.</p>
                 </div>
             </Form>
         </div>

@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { resolveUiBlockContent } from "@/app/lib/resolveUiBlockContent";
 import Footer from "@/app/components/layout/Footer";
 import Navigationbar from "@/app/components/Navigationbar";
+import ScopedHtmlContent from "@/app/components/ScopedHtmlContent";
+
+export const metadata: Metadata = {
+  title: "Team Building",
+};
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
 
@@ -40,11 +46,8 @@ export default async function Teambuilding() {
             <p className="text-white/60">Vui lòng quay lại sau.</p>
           </div>
         ) : (
-          <div className="w-full px-6 max-sm:px-4 py-10">
-            <article
-              className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-white/90 prose-a:text-[#05B9BA] [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:ml-4 [&_li]:my-1"
-              dangerouslySetInnerHTML={{ __html: resolvedContent }}
-            />
+          <div className="w-full">
+            <ScopedHtmlContent html={resolvedContent} />
           </div>
         )}
       </section>

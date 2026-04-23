@@ -106,8 +106,8 @@ export default function Prestige() {
       <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[100px] top-[10%] -left-[10%] opacity-40" />
       <div className="absolute w-[300px] h-[300px] bg-[#904589]/15 rounded-full blur-[100px] -bottom-[20%] -right-[5%] opacity-60" />
       <div className="flex flex-col items-center justify-center">
-        <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#747474] to-[#C4C4C4] text-[18px] slide-text" text={data.small_text}/>
-        <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#747474] to-[#C4C4C4] font-black lg:text-[60px] text-[30px] slide-text" text={data.big_text} />
+        <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#C4C4C4] to-[#747474] text-[18px] slide-text" text={data.small_text}/>
+        <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] font-black lg:text-[60px] text-[30px] slide-text" text={data.big_text} />
       </div>
       <div className="sm:grid sm:grid-cols-4 sm:gap-1 md:gap-2 xl:gap-4 max-sm:flex max-sm:flex-col gap-3">
         <CardAppear translate={-50} desktopTranslateY={60} card={<PrestigeCard number={data.number_1} description={data.name_1}/>} />

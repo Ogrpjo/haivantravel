@@ -106,7 +106,7 @@ function CaseStudy({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer border rounded-[10px] px-4 py-2 transition-all duration-300 ${
+      className={`inline-flex w-fit cursor-pointer border rounded-[10px] px-2 py-2 transition-all duration-300 ${
         isActive
           ? "bg-white/20 border-white/50 shadow-[0_0_15px_rgba(142,214,215,0.3)]"
           : "bg-white/5 border-white/10 hover:bg-white/10"
@@ -138,7 +138,7 @@ function LeftContent({
           Case Study nổi bật
         </h1>
       </div>
-      <div className="md:grid xl:grid-cols-4 md:grid-cols-2 max-md:flex max-md:flex-row gap-[10px] flex-wrap">
+      <div className="flex flex-wrap gap-[10px]">
         {categories.map((cat) => (
           <CaseStudy
             key={cat}

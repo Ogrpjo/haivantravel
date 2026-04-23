@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
 import Navigationbar from "../components/Navigationbar";
 import BlogHeader from "../components/BlogHeader";
 import BlogEvent from "../components/BlogEvent";
 import BlogIntroduce from "../components/BlogIntroduce";
 import BlogList from "../components/BlogList";
 import Footer from "../components/layout/Footer";
+
+export const metadata: Metadata = {
+  title: "Blog",
+};
 
 export default function BlogPage() {
   return (

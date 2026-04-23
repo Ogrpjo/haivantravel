@@ -165,7 +165,7 @@ function MainContent() {
                             type="button"
                             key={item}
                             onClick={() => setActiveCategory(item)}
-                            className={`px-3 py-1 rounded-[8px] text-[13px] border transition-colors ${
+                            className={`w-fit px-2 py-1 rounded-[8px] text-[13px] border transition-colors ${
                                 activeCategory === item
                                     ? "border-[#8ED6D7]/60 bg-[#8ED6D7]/20 text-white"
                                     : "border-white/10 bg-white/5 text-white/80 hover:bg-white/10"

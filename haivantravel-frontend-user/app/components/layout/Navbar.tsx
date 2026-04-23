@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/navbar";
 import { Link } from "@heroui/react";
+import { usePathname } from "next/navigation";
 import {
   PhoneCall,
   Facebook,
@@ -128,7 +129,7 @@ function BottomNavbar() {
             <button
               type="button"
               onClick={() => setIsServiceDropdownOpen((prev) => !prev)}
-              className="cursor-pointer text-[16px] text-white hover:text-white/70 flex items-center gap-2"
+              className="cursor-pointer text-[16px] font-semibold text-white hover:text-white/70 flex items-center gap-2"
             >
               Dịch vụ
               <svg
@@ -267,8 +268,10 @@ function BottomNavbar() {
 
 export default function NavigationBar() {
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [socialMap, setSocialMap] = useState<SocialMap>(DEFAULT_SOCIAL_MAP);
+  const lastScrollYRef = useRef(0);
+  const tickingRef = useRef(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     let isMounted = true;
@@ -302,32 +305,46 @@ export default function NavigationBar() {
 
   useEffect(() => {
     const controlNavbar = () => {
-      const currentScollY = window.scrollY;
+      if (tickingRef.current) return;
+      tickingRef.current = true;
 
-      if (currentScollY < 50) {
-        setIsVisible(true);
-      } else if (currentScollY > lastScrollY) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      setLastScrollY(currentScollY);
+      window.requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const previousScrollY = lastScrollYRef.current;
+        const scrollDelta = Math.abs(currentScrollY - previousScrollY);
+
+        if (currentScrollY <= 50) {
+          setIsVisible(true);
+        } else if (scrollDelta >= 4) {
+          setIsVisible(currentScrollY < previousScrollY);
+        }
+
+        lastScrollYRef.current = currentScrollY;
+        tickingRef.current = false;
+      });
     };
 
-    window.addEventListener("scroll", controlNavbar);
-
+    window.addEventListener("scroll", controlNavbar, { passive: true });
     return () => {
       window.removeEventListener("scroll", controlNavbar);
     };
-  }, [lastScrollY]);
+  }, []);
+
+  useEffect(() => {
+    setIsVisible(true);
+    lastScrollYRef.current = 0;
+  }, [pathname]);
 
   return (
-    <section
-      className={`sticky top-0 left-0 w-full z-[100] bg-black transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
-    >
-      <TopNavbar socialMap={socialMap} />
-      <BottomNavbar />
-    </section>
+    <>
+      <div className="h-[148px] max-sm:h-[96px]" aria-hidden="true" />
+      <section
+        className={`fixed top-0 left-0 w-full z-[100] bg-black transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
+          }`}
+      >
+        <TopNavbar socialMap={socialMap} />
+        <BottomNavbar />
+      </section>
+    </>
   );
 }

@@ -2,6 +2,6 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 
 export const multerConfig: MulterOptions = {
   limits: {
-    fileSize: 10 * 1024 * 1024,
+    fileSize: 150 * 1024 * 1024,
   },
 };

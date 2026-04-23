@@ -30,9 +30,9 @@ export class ProjectsController {
   @UseInterceptors(
     FileInterceptor('image', {
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 150 * 1024 * 1024,
         // Remove small text-field cap for `content` when sending UI-block JSON.
-        fieldSize: 20 * 1024 * 1024,
+        fieldSize: 50 * 1024 * 1024,
       },
       storage: diskStorage({
         destination: (_req, _file, cb) => {
@@ -104,9 +104,9 @@ export class ProjectsController {
   @UseInterceptors(
     FileInterceptor('image', {
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 150 * 1024 * 1024,
         // Remove small text-field cap for `content` when sending UI-block JSON.
-        fieldSize: 20 * 1024 * 1024,
+        fieldSize: 50 * 1024 * 1024,
       },
       storage: diskStorage({
         destination: (_req, _file, cb) => {

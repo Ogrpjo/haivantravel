@@ -124,8 +124,8 @@ export class BlogDetailsController {
       }),
 
       limits: {
-        fileSize: 10 * 1024 * 1024,
-        fieldSize: 10 * 1024 * 1024,
+        fileSize: 150 * 1024 * 1024,
+        fieldSize: 50 * 1024 * 1024,
       },
 
       fileFilter: (_req, file, cb) => {
@@ -228,7 +228,7 @@ export class BlogDetailsController {
       }),
 
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 150 * 1024 * 1024,
       },
 
       fileFilter: (_req, file, cb) => {

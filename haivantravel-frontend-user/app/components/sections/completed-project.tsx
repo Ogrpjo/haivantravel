@@ -148,13 +148,13 @@ function LeftContent({
           />
         ))}
       </div>
-      <div className="relative h-full w-full min-h-[200px] rounded-[16px] bg-gradient overflow-hidden">
+      <div className="relative w-full h-[220px] sm:h-[300px] lg:h-[390px] xl:h-[480px] rounded-[16px] bg-gradient overflow-hidden">
         <img
           src={activeProject.mainImage}
           alt={activeProject.title}
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/1 to-[#121212]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/10 via-[#121212]/30 to-[#121212]/85" />
       </div>
     </div>
   );

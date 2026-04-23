@@ -108,9 +108,9 @@ function BottomNavbar() {
           <Link href="/">
             <NavbarBrand>
               <Image
-                src="/HaivantravelLogo.webp"
+                src="/HaivantravelLogo.svg"
                 alt="Logo"
-                width={120}
+                width={190}
                 height={104}
               />
             </NavbarBrand>

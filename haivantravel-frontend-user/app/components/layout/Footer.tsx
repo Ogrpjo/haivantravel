@@ -144,9 +144,9 @@ export default function Footer() {
         <div className="w-full gap-[80px] flex flex-col sm:flex-row border-b pb-[40px] border-white/5">
           <div className="relative w-full flex sm:max-w-[15vw] max-sm:items-center flex-col gap-[20px]">
             <Image
-              src="/HaivantravelLogo.webp"
+              src="/HaivantravelLogo.svg"
               alt="logo"
-              width={140}
+              width={190}
               height={130}
             />
             <p className="text-white/40 text-[12px] lg:text-[16px] text-center sm:text-left">

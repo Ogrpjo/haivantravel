@@ -105,7 +105,7 @@ function BottomNavbar() {
 
   return (
     <>
-      <Navbar className="h-auto py-[24px] bg-[#121212] lg:px-[84px] border-b-2 border-white/5">
+      <Navbar className="h-auto py-[10px] bg-[#121212] lg:px-[84px] border-b-2 border-white/5">
         <NavbarContent className="lg:px-[40px]" justify="start">
           <Link href="/">
             <NavbarBrand>

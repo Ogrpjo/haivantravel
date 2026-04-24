@@ -22,6 +22,7 @@ type ProjectDetailApi = {
   guest_count: number | null;
   artist_count: number | null;
   link_url: string;
+  image_url: string | null;
   content: string | null;
 };
 
@@ -84,6 +85,17 @@ export default function ProjectDetailPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [initialProjectData, setInitialProjectData] =
     useState<ProjectData>(defaultProject);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState<string | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string>("");
+
+  useEffect(() => {
+    return () => {
+      if (selectedImagePreview) {
+        URL.revokeObjectURL(selectedImagePreview);
+      }
+    };
+  }, [selectedImagePreview]);
 
   useEffect(() => {
     if (!projectId || Number.isNaN(projectId)) {
@@ -125,6 +137,12 @@ export default function ProjectDetailPage() {
           });
           const nextProjectData = safeParseProjectData(data.content ?? "");
           setInitialProjectData(nextProjectData);
+          setExistingImageUrl(data.image_url?.trim() ?? "");
+          setSelectedImageFile(null);
+          setSelectedImagePreview((prev) => {
+            if (prev) URL.revokeObjectURL(prev);
+            return null;
+          });
         }
       } catch (error) {
         if (!cancelled) {
@@ -157,6 +175,7 @@ export default function ProjectDetailPage() {
       if (formData.guest_count.trim() !== "") payload.append("guest_count", formData.guest_count.trim());
       if (formData.artist_count.trim() !== "") payload.append("artist_count", formData.artist_count.trim());
       if (formData.project_link.trim()) payload.append("link_url", formData.project_link.trim());
+      if (selectedImageFile) payload.append("image", selectedImageFile);
       const res = await fetch(`${apiBaseUrl}/projects/${projectId}`, {
         method: "PATCH",
         body: payload,
@@ -196,6 +215,48 @@ export default function ProjectDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <p className="block text-sm font-medium text-white/85 mb-1.5">
+                Ảnh dự án
+              </p>
+              <input
+                id="detail-project-image"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  setSelectedImageFile(file);
+                  setSelectedImagePreview((prev) => {
+                    if (prev) URL.revokeObjectURL(prev);
+                    return file ? URL.createObjectURL(file) : null;
+                  });
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => document.getElementById("detail-project-image")?.click()}
+                className="relative w-full min-h-[180px] rounded-xl border-2 border-dashed border-white/20 bg-[#111111] flex items-center justify-center text-white/70 hover:border-[#05B9BA]/60 transition-colors overflow-hidden"
+              >
+                {selectedImagePreview || existingImageUrl ? (
+                  <img
+                    src={
+                      selectedImagePreview ||
+                      (existingImageUrl.startsWith("http://") || existingImageUrl.startsWith("https://")
+                        ? existingImageUrl
+                        : `${apiBaseUrl}/${existingImageUrl.replace(/^\/+/, "")}`)
+                    }
+                    alt="Ảnh dự án"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-sm">Chọn ảnh dự án</span>
+                )}
+              </button>
+              <p className="mt-1 text-xs text-white/60">
+                Chọn ảnh mới để thay ảnh hiện tại.
+              </p>
+            </div>
             <div>
               <label htmlFor="detail-title" className="block text-sm font-medium text-white/85 mb-1.5">
                 Tên dự án

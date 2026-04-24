@@ -198,7 +198,7 @@ export default function AddProjectModal({
       aria-labelledby="add-project-title"
     >
       <div
-        className="relative w-full max-w-lg bg-white rounded-xl shadow-[0_25px_50px_-12px_rgb(0_0_0_/0.15)] my-8"
+        className="relative w-full max-w-[100vh] bg-white rounded-xl shadow-[0_25px_50px_-12px_rgb(0_0_0_/0.15)] my-8"
         style={{ animation: "modal-content-in 0.2s ease-out forwards" }}
         onClick={(e) => e.stopPropagation()}
       >

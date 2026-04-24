@@ -87,6 +87,29 @@ function joinNodeClasses(classes: GrapesComponentNode["classes"]): string {
     .join(" ");
 }
 
+function normalizeAnchorHref(value: unknown): unknown {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  if (!trimmed) return value;
+
+  // Keep internal/explicit protocols untouched.
+  if (
+    /^(https?:)?\/\//i.test(trimmed) ||
+    /^[a-z][a-z0-9+.-]*:/i.test(trimmed) ||
+    /^[#/?]/.test(trimmed) ||
+    /^\.{1,2}\//.test(trimmed)
+  ) {
+    return trimmed;
+  }
+
+  // Convert bare domains like "haivanevent.vn/contact" to absolute URLs.
+  if (/^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+([:/?#].*)?$/i.test(trimmed)) {
+    return `https://${trimmed}`;
+  }
+
+  return trimmed;
+}
+
 function renderGrapesComponentsToHtml(
   input: GrapesComponentNode[] | GrapesComponentNode | string | undefined,
 ): string {
@@ -115,6 +138,9 @@ function renderGrapesComponentsToHtml(
           ...(node.attributes ?? {}),
           ...(mergedClass ? { class: mergedClass } : {}),
         };
+  if (tagName === "a" && Object.prototype.hasOwnProperty.call(nextAttributes, "href")) {
+    nextAttributes.href = normalizeAnchorHref(nextAttributes.href);
+  }
 
   const attrs = Object.entries(nextAttributes)
     .filter(([, value]) => value !== false && value !== null && value !== undefined)

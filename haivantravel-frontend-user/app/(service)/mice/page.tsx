@@ -29,9 +29,11 @@ async function getMiceContent(): Promise<MicePayload | null> {
 
 export default async function Mice() {
   const data = await getMiceContent();
-  const htmlToRender =
-    data?.html_content?.trim() ||
-    resolveUiBlockContent(data?.content ?? null, null, null);
+  const htmlToRender = resolveUiBlockContent(
+    data?.content ?? null,
+    data?.html_content ?? null,
+    null,
+  );
   const cssToRender = data?.css_content?.trim() ?? "";
   const safeCss = `
     @layer external-content {

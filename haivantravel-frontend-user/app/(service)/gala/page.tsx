@@ -29,9 +29,11 @@ async function getGalaContent(): Promise<GalaPayload | null> {
 
 export default async function Gala() {
   const data = await getGalaContent();
-  const htmlToRender =
-    data?.html_content?.trim() ||
-    resolveUiBlockContent(data?.content ?? null, null, null);
+  const htmlToRender = resolveUiBlockContent(
+    data?.content ?? null,
+    data?.html_content ?? null,
+    null,
+  );
   const cssToRender = data?.css_content?.trim() ?? "";
   const safeCss = `
     @layer external-content {

@@ -28,9 +28,11 @@ async function getRecruitmentContent(): Promise<RecruitmentContent | null> {
 
 export default async function Recruitment() {
   const data = await getRecruitmentContent();
-  const htmlToRender =
-    data?.html_content?.trim() ||
-    resolveUiBlockContent(data?.content ?? "", null, null);
+  const htmlToRender = resolveUiBlockContent(
+    data?.content ?? "",
+    data?.html_content ?? null,
+    null,
+  );
   const cssToRender = data?.css_content?.trim() ?? "";
   const safeCss = `
     @layer external-content {

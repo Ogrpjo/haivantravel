@@ -29,7 +29,11 @@ async function getAboutContent(): Promise<AboutPayload | null> {
 
 export default async function About() {
   const data = await getAboutContent();
-  const htmlToRender = data?.html_content?.trim() || resolveUiBlockContent(data?.content ?? null, null, null);
+  const htmlToRender = resolveUiBlockContent(
+    data?.content ?? null,
+    data?.html_content ?? null,
+    null,
+  );
   const cssToRender = data?.css_content?.trim() ?? "";
 
   // 1. Gói CSS từ API vào một Layer có độ ưu tiên thấp nhất (ví dụ: 'external')

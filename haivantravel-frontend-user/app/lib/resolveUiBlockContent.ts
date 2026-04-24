@@ -110,6 +110,20 @@ function normalizeAnchorHref(value: unknown): unknown {
   return trimmed;
 }
 
+function normalizeAnchorHrefsInHtml(html: string): string {
+  return html.replace(
+    /(<a\b[^>]*\bhref\s*=\s*)("([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/gi,
+    (match, prefix: string, rawValueToken: string, doubleQuoted: string, singleQuoted: string, unquoted: string) => {
+      const rawValue = doubleQuoted ?? singleQuoted ?? unquoted ?? "";
+      const normalized = normalizeAnchorHref(rawValue);
+      if (typeof normalized !== "string" || normalized === rawValue) {
+        return match;
+      }
+      return `${prefix}"${escapeHtml(normalized)}"`;
+    },
+  );
+}
+
 function renderGrapesComponentsToHtml(
   input: GrapesComponentNode[] | GrapesComponentNode | string | undefined,
 ): string {
@@ -231,20 +245,23 @@ export function resolveUiBlockContent(
 
   const directHtml = htmlContent?.trim();
   if (directHtml) {
+    const normalizedHtml = normalizeAnchorHrefsInHtml(directHtml);
     const directCss = cssContent?.trim();
-    if (isFullDocumentHtml(directHtml)) {
-      if (!directCss) return directHtml;
-      return appendCssToDocumentHead(directHtml, directCss);
+    if (isFullDocumentHtml(normalizedHtml)) {
+      if (!directCss) return normalizedHtml;
+      return appendCssToDocumentHead(normalizedHtml, directCss);
     }
     const normalizedCss = directCss ? scopeCss(directCss) : "";
-    const wrappedHtml = wrapWithScope(directHtml);
+    const wrappedHtml = wrapWithScope(normalizedHtml);
     return normalizedCss ? `<style>${normalizedCss}</style>${wrappedHtml}` : wrappedHtml;
   }
 
   const trimmed = rawContent?.trim();
   if (!trimmed) return "";
 
-  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return wrapWithScope(trimmed);
+  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) {
+    return wrapWithScope(normalizeAnchorHrefsInHtml(trimmed));
+  }
 
   try {
     const parsed = JSON.parse(trimmed) as ParsedGrapesProject;
@@ -262,6 +279,7 @@ export function resolveUiBlockContent(
               (pageComponent ?? frameComponent) as GrapesComponentNode | GrapesComponentNode[] | undefined,
             );
     if (!html) return trimmed;
+    const normalizedHtml = normalizeAnchorHrefsInHtml(html);
 
     const cssSources = [
       typeof parsed.css === "string" ? parsed.css.trim() : "",
@@ -278,9 +296,9 @@ export function resolveUiBlockContent(
       .replace(/(^|[\s,{])body(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body")
       .replace(/(^|[\s,{])html(?=[\s.#:[,{>]|$)/g, "$1.ui-block-body");
     const css = [normalizedRawCss, ...cssRules].filter(Boolean).join("\n");
-    return css ? `<style>${css}</style>${html}` : html;
+    return css ? `<style>${css}</style>${normalizedHtml}` : normalizedHtml;
   } catch {
-    return wrapWithScope(trimmed);
+    return wrapWithScope(normalizeAnchorHrefsInHtml(trimmed));
   }
 }
 

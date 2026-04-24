@@ -12,13 +12,13 @@ type ButtonGradientProps = {
 export default function ButtonGradient({ name, onClick }: ButtonGradientProps) {
     const useEffect = useHoverFloat();
     return (
-        <Button
+        <button
             {...useEffect}
             onClick={onClick}
-            className="!bg-gradient-to-b !from-[#3F9293] !to-[#8E4590] !rounded-[12px] !text-[16px] !lg:text-[18px] !py-3 !px-3 !h-auto !border-b"
+            className="!bg-gradient-to-b !from-[#3F9293] flex !to-[#8E4590] !rounded-[12px] !text-[16px] !lg:text-[18px] !py-3 !px-3 !h-auto !border-b"
         >
             <p>{name}</p>
             <Play size={24} />
-        </Button>
+        </button>
     )
 }

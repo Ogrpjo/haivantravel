@@ -2,7 +2,6 @@
 
 import Footer from "../components/layout/Footer";
 import NavigationBar from "../components/layout/Navbar";
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -141,13 +140,10 @@ function MainContent() {
     return (
         <section className="pt-[120px] min-h-[100vh]">
             <header className="relative w-full h-[300px]">
-                <Image
+                <img
                     src="/case-study/CaseHero.webp"
-                    fill
-                    className="object-cover"
-                    sizes="100vw"
+                    className="absolute inset-0 h-full w-full object-cover"
                     alt="Case Study Image"
-                    priority
                 />
                 <div className="absolute inset-0 bg-[#121212]/55" />
                 <div className="absolute inset-0 flex items-end lg:px-[148px] sm:px-[84px] px-[20px] pb-[20px]">
@@ -181,12 +177,10 @@ function MainContent() {
                         <Link key={item.id} href={item.href} className="no-underline">
                             <article className="grid grid-cols-[220px_1fr] max-md:grid-cols-1 gap-5 p-3 rounded-[12px] border border-white/10 bg-[#121212] hover:border-[#8ED6D7]/40 transition-colors cursor-pointer">
                                 <div className="relative w-full h-[300px] rounded-[8px] overflow-hidden">
-                                    <Image
+                                    <img
                                         src={item.image}
                                         alt={item.title}
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 768px) 100vw, 220px"
+                                        className="absolute inset-0 h-full w-full object-cover"
                                     />
                                 </div>
 

@@ -13,13 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Homepage",
-  description: "Haivanevent - Hải Vân Travel với hơn một thập kỷ kinh nghiệm tổ chức tour, sự kiện và teambuilding, mang đến hành trình gắn kết và trải nghiệm trọn vẹn cho doanh nghiệp.",
-  icons: "/HaivantravelLogo.webp",
+  title: "Hải Vân Event | Teambuilding, Gala, MICE cho doanh nghiệp",
+  description:
+    "Hải Vân Event cung cấp giải pháp Teambuilding, Gala Dinner, MICE và sự kiện doanh nghiệp được thiết kế riêng theo mục tiêu, quy mô và ngân sách thực tế",
+  icons: {
+    icon: [{ url: "/HaivantravelLogo.svg", type: "image/svg+xml", sizes: "any" }],
+    shortcut: [{ url: "/HaivantravelLogo.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/HaivantravelLogo.svg", sizes: "180x180" }],
+  },
   openGraph: {
-    title: "Homepage",
+    title: "Hải Vân Event | Teambuilding, Gala, MICE cho doanh nghiệp",
     description:
-      "Hải Vân Travel - Đơn vị tổ chức tour, sự kiện và teambuilding chuyên nghiệp cho doanh nghiệp.",
+      "Hải Vân Event cung cấp giải pháp Teambuilding, Gala Dinner, MICE và sự kiện doanh nghiệp được thiết kế riêng theo mục tiêu, quy mô và ngân sách thực tế",
     url: "https://haivanevent.vn",
     siteName: "Hải Vân Travel",
     images: [

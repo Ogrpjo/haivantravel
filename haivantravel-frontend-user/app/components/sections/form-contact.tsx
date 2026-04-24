@@ -183,7 +183,7 @@ export function BriefContactFormPanel() {
                     <p className="pt-[16px] text-center text-white/80">{submitMessage}</p>
                 ) : null}
                 <div className="pt-[30px]">
-                    <p className="text-[12px] md:text-[16px] text-white/40 text-center">Bằng cách gửi form này, bạn đồng ý để chúng tôi liên hệ tư vấn. Thông tin của bạn được bảo mật tuyệt đối.</p>
+                    <p className="text-[12px] md:text-[16px] text-white/40 text-center">Bằng cách gửi form này, bạn đồng ý để chúng tôi liên hệ tư vấn.</p>
                 </div>
             </Form>
         </div>

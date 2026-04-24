@@ -7,7 +7,9 @@ import BlogList from "../components/BlogList";
 import Footer from "../components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Blog",
+  title: "Cẩm nang tổ chức sự kiện doanh nghiệp | Hải Vân Event",
+  description:
+    "Hải Vân Event tổ chức Gala Dinner và Year End Party với concept riêng, sân khấu chỉn chu, kịch bản rõ ràng và trải nghiệm cảm xúc cho doanh nghiệp.",
 };
 
 export default function BlogPage() {

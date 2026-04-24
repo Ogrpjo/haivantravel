@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Footer from "../../components/layout/Footer";
 import Navigationbar from "../../components/Navigationbar";
-import ScopedHtmlContent from "@/app/components/ScopedHtmlContent";
 import { resolveUiBlockContent } from "@/app/lib/resolveUiBlockContent";
 
 type ApiProject = {
@@ -291,14 +290,28 @@ export default async function CaseStudyDetailPage({
     project.html_content,
     project.css_content,
   );
+  const htmlToRender =
+    project.html_content?.trim() ||
+    resolveUiBlockContent(project.content ?? "", null, null);
+  const cssToRender = project.css_content?.trim() ?? "";
+  const safeCss = `
+    @layer external-content {
+      ${cssToRender.replace(/(body|html|:root)/g, ".gjs-content-wrapper")}
+    }
+  `;
 
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
       <Navigationbar />
       <section className="w-full flex-1 text-white">
-        <div className="w-full">
-          <ScopedHtmlContent html={resolvedContent} />
-        </div>
+        {!htmlToRender && !resolvedContent ? (
+          <div className="p-8 text-center text-white">Nội dung chưa sẵn sàng</div>
+        ) : (
+          <div className="w-full gjs-content-wrapper">
+            <style dangerouslySetInnerHTML={{ __html: safeCss }} />
+            <div dangerouslySetInnerHTML={{ __html: htmlToRender || resolvedContent }} />
+          </div>
+        )}
       </section>
       <Footer />
     </main>

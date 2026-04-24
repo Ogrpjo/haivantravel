@@ -1,6 +1,5 @@
 import Footer from "../components/layout/Footer";
 import Navigationbar from "../components/Navigationbar";
-import ScopedHtmlContent from "../components/ScopedHtmlContent";
 import { resolveUiBlockContent } from "../lib/resolveUiBlockContent";
 
 type RecruitmentContent = {
@@ -29,24 +28,28 @@ async function getRecruitmentContent(): Promise<RecruitmentContent | null> {
 
 export default async function Recruitment() {
   const data = await getRecruitmentContent();
-  const resolvedContent = resolveUiBlockContent(
-    data?.content ?? "",
-    data?.html_content ?? null,
-    data?.css_content ?? null,
-  );
+  const htmlToRender =
+    data?.html_content?.trim() ||
+    resolveUiBlockContent(data?.content ?? "", null, null);
+  const cssToRender = data?.css_content?.trim() ?? "";
+  const safeCss = `
+    @layer external-content {
+      ${cssToRender.replace(/(body|html|:root)/g, ".gjs-content-wrapper")}
+    }
+  `;
   const updatedAt = data?.updatedAt ?? data?.createdAt ?? null;
 
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col gap-y-20 relative">
       <Navigationbar />
       <section className="w-full max-w-[1200px] mx-auto px-6 max-sm:px-4 py-10 text-white">
-        {!resolvedContent ? (
+        {!htmlToRender ? (
           <div className="rounded-2xl p-8 text-center">
             <h1 className="text-2xl font-semibold mb-2">Chưa có nội dung tuyển dụng</h1>
             <p className="text-white/60">Vui lòng quay lại sau.</p>
           </div>
         ) : (
-          <div className="rounded-2xl p-8 max-sm:p-6">
+          <div className="rounded-2xl p-8 max-sm:p-6 gjs-content-wrapper">
             <div className="mb-6">
               <p className="text-sm text-white/60">
                 {updatedAt
@@ -58,7 +61,8 @@ export default async function Recruitment() {
                   : ""}
               </p> 
             </div>
-            <ScopedHtmlContent html={resolvedContent} />
+            <style dangerouslySetInnerHTML={{ __html: safeCss }} />
+            <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
           </div>
         )}
       </section>

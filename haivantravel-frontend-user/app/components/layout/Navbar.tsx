@@ -35,15 +35,15 @@ const getApiBaseUrl = () =>
 
 function TopNavbar({ socialMap }: { socialMap: SocialMap }) {
   return (
-    <div className="px-[20px] justify-between flex w-full bg-[#2E2E2E] text-white max-sm:hidden">
-      <div className="flex items-center justify-start">
-        <div className="flex gap-3 items-center border-r pr-[20px] my-[10px]">
+    <div className="!px-[20px] !justify-between !flex !w-full !bg-[#2E2E2E] !text-white max-sm:!hidden">
+      <div className="!flex !items-center !justify-start">
+        <div className="!flex !gap-3 !items-center !border-r !pr-[20px] !my-[10px]">
           <PhoneCall size={20} />
           <p>+84 (853 566 556)</p>
         </div>
-        <p className="pl-[20px]">Info.hcmc@haivantravelvn.com</p>
+        <p className="!pl-[20px]">Info.hcmc@haivantravelvn.com</p>
       </div>
-      <div className="flex items-center md:px-[20px] gap-3 hidden sm:flex">
+      <div className="!flex !items-center md:!px-[20px] !gap-3 !hidden sm:!flex">
         <Link
           href={socialMap.facebook}
           target="_blank"
@@ -105,8 +105,8 @@ function BottomNavbar() {
 
   return (
     <>
-      <Navbar className="h-auto py-[10px] bg-[#121212] lg:px-[84px] border-b-2 border-white/5">
-        <NavbarContent className="lg:px-[40px]" justify="start">
+      <Navbar className="!h-auto !py-[10px] !bg-[#121212] lg:!px-[84px] !border-b-2 !border-white/5">
+        <NavbarContent className="lg:!px-[40px]" justify="start">
           <Link href="/">
             <NavbarBrand>
               <Image
@@ -119,22 +119,22 @@ function BottomNavbar() {
           </Link>
         </NavbarContent>
 
-        <NavbarContent className="hidden lg:flex relative" justify="center">
+        <NavbarContent className="!hidden lg:!flex !relative" justify="center">
           {menuItems.map((item, index) => (
             <NavbarItem key={`${item}-${index}`}>
               <Link
-                className="no-underline hover:text-white/70 text-[16px]"
+                className="!no-underline hover:!text-white/70 !text-[16px]"
                 href={item.href}
               >
                 {item.name}
               </Link>
             </NavbarItem>
           ))}
-          <NavbarItem className="relative">
+          <NavbarItem className="!relative">
             <button
               type="button"
               onClick={() => setIsServiceDropdownOpen((prev) => !prev)}
-              className="cursor-pointer text-[16px] font-semibold text-white hover:text-white/70 flex items-center gap-2"
+              className="!cursor-pointer !text-[16px] !font-semibold !text-white hover:!text-white/70 !flex !items-center !gap-2"
             >
               Dịch vụ
               <svg
@@ -147,18 +147,18 @@ function BottomNavbar() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={`transition-transform duration-200 ${isServiceDropdownOpen ? "rotate-180" : ""}`}
+                className={`!transition-transform !duration-200 ${isServiceDropdownOpen ? "!rotate-180" : ""}`}
               >
                 <path d="m6 9 6 6 6-6" />
               </svg>
             </button>
             {isServiceDropdownOpen ? (
-              <div className="absolute top-[150%] left-0 min-w-[180px] bg-[#1E1E1E] border border-white/10 rounded-[10px] py-2 z-[120]">
+              <div className="!absolute !top-[150%] !left-0 !min-w-[180px] !bg-[#1E1E1E] !border !border-white/10 !rounded-[10px] !py-2 !z-[120]">
                 {serviceItems.map((serviceItem) => (
                   <Link
                     key={serviceItem.name}
                     href={serviceItem.href}
-                    className="block px-4 py-2 text-[15px] hover:bg-white/10 no-underline text-white"
+                    className="!block !px-4 !py-2 !text-[15px] hover:!bg-white/10 !no-underline !text-white"
                     onPress={() => setIsServiceDropdownOpen(false)}
                   >
                     {serviceItem.name}
@@ -169,7 +169,7 @@ function BottomNavbar() {
           </NavbarItem>
           <NavbarItem>
             <Link
-              className="no-underline hover:text-white/70 text-[16px]"
+              className="!no-underline hover:!text-white/70 !text-[16px]"
               href={aboutItem.href}
             >
               {aboutItem.name}
@@ -177,16 +177,16 @@ function BottomNavbar() {
           </NavbarItem>
         </NavbarContent>
 
-        <NavbarContent className="lg:px-[40px]" justify="end">
+        <NavbarContent className="lg:!px-[40px]" justify="end">
           <Link
             href="/contact"
-            className="no-underline decoration-transparent hover:no-underline"
+            className="!no-underline !decoration-transparent hover:!no-underline"
           >
             <ButtonGradient name="Nhận Brief ngay" />
           </Link>
 
           <button
-            className="lg:hidden cursor-pointer"
+            className="lg:!hidden !cursor-pointer"
             onClick={() => {
               setIsMenuOpen(true);
               setIsMobileServiceOpen(false);
@@ -198,22 +198,22 @@ function BottomNavbar() {
       </Navbar>
 
       <div
-        className={`fixed inset-0 flex transition-opacity duration-300 ${
+        className={`!fixed !inset-0 !flex !transition-opacity !duration-300 ${
           isMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+            ? "!opacity-100 !pointer-events-auto"
+            : "!opacity-0 !pointer-events-none"
         }`}
       >
-        <div className="flex-1" onClick={() => setIsMenuOpen(false)} />
+        <div className="!flex-1" onClick={() => setIsMenuOpen(false)} />
 
         <div
-          className={`w-full sm:max-w-sm bg-[#121212] text-white h-screen z-100 relative p-6 transform transition-transform duration-300 ${
-            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          className={`!w-full sm:!max-w-sm !bg-[#121212] !text-white !h-screen !z-100 !relative !p-6 !transform !transition-transform !duration-300 ${
+            isMenuOpen ? "!translate-x-0" : "!translate-x-full"
           }`}
         >
-          <div className="flex justify-end mb-6">
+          <div className="!flex !justify-end !mb-6">
             <button
-              className="cursor-pointer"
+              className="!cursor-pointer"
               onClick={() => {
                 setIsMenuOpen(false);
                 setIsMobileServiceOpen(false);
@@ -223,12 +223,12 @@ function BottomNavbar() {
             </button>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="!flex !flex-col !gap-6">
             {menuItems.map((item, index) => (
               <Link
                 key={index}
                 href={item.href}
-                className="no-underline hover:text-white/70 cursor-pointer text-[16px]"
+                className="!no-underline hover:!text-white/70 !cursor-pointer !text-[16px]"
               >
                 {item.name}
               </Link>
@@ -236,7 +236,7 @@ function BottomNavbar() {
             <button
               type="button"
               onClick={() => setIsMobileServiceOpen((prev) => !prev)}
-              className="no-underline hover:text-white/70 cursor-pointer text-[16px] flex items-center justify-between"
+              className="!no-underline hover:!text-white/70 !cursor-pointer !text-[16px] !flex !items-center !justify-between"
             >
               Dịch vụ
               <svg
@@ -249,18 +249,18 @@ function BottomNavbar() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={`transition-transform duration-200 ${isMobileServiceOpen ? "rotate-180" : ""}`}
+                className={`!transition-transform !duration-200 ${isMobileServiceOpen ? "!rotate-180" : ""}`}
               >
                 <path d="m6 9 6 6 6-6" />
               </svg>
             </button>
             {isMobileServiceOpen ? (
-              <div className="pl-3 flex flex-col gap-3">
+              <div className="!pl-3 !flex !flex-col !gap-3">
                 {serviceItems.map((serviceItem) => (
                   <Link
                     key={serviceItem.name}
                     href={serviceItem.href}
-                    className="no-underline hover:text-white/70 cursor-pointer text-[15px]"
+                    className="!no-underline hover:!text-white/70 !cursor-pointer !text-[15px]"
                     onPress={() => {
                       setIsMobileServiceOpen(false);
                       setIsMenuOpen(false);
@@ -273,13 +273,13 @@ function BottomNavbar() {
             ) : null}
             <Link
               href={aboutItem.href}
-              className="no-underline hover:text-white/70 cursor-pointer text-[16px]"
+              className="!no-underline hover:!text-white/70 !cursor-pointer !text-[16px]"
             >
               {aboutItem.name}
             </Link>
             <Link
               href="/contact"
-              className="no-underline decoration-transparent hover:no-underline"
+              className="!no-underline !decoration-transparent hover:!no-underline"
             >
               <ButtonGradient name="Nhận Brief ngay" />
             </Link>
@@ -361,10 +361,10 @@ export default function NavigationBar() {
 
   return (
     <>
-      <div className="h-[148px] max-sm:h-[96px]" aria-hidden="true" />
+      <div className="!h-[148px] max-sm:!h-[96px]" aria-hidden="true" />
       <section
-        className={`fixed top-0 left-0 w-full z-[100] bg-black transition-transform duration-300 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
+        className={`!fixed !top-0 !left-0 !w-full !z-[100] !bg-black !transition-transform !duration-300 ${
+          isVisible ? "!translate-y-0" : "!-translate-y-full"
         }`}
       >
         <TopNavbar socialMap={socialMap} />

@@ -68,7 +68,6 @@ export default function LoginPage() {
           >
             Sign in
           </button>
-          <p>Copyrighted © by Z.Tech</p>
         </div>
       </div>
       <div className="flex-1">

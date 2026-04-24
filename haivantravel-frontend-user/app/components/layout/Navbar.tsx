@@ -180,9 +180,13 @@ function BottomNavbar() {
         <NavbarContent className="lg:!px-[40px]" justify="end">
           <Link
             href="/contact"
-            className="!no-underline !decoration-transparent hover:!no-underline"
+            className="!hidden lg:!block !no-underline !decoration-transparent hover:!no-underline"
           >
-            <ButtonGradient name="Nhận Brief ngay" />
+            <ButtonGradient
+              name="Nhận Brief ngay"
+              className="!text-[14px] !sm:text-[16px] !py-2 !sm:!py-3 !px-2.5 !sm:!px-3"
+              iconSize={20}
+            />
           </Link>
 
           <button
@@ -281,7 +285,11 @@ function BottomNavbar() {
               href="/contact"
               className="!no-underline !decoration-transparent hover:!no-underline"
             >
-              <ButtonGradient name="Nhận Brief ngay" />
+              <ButtonGradient
+                name="Nhận Brief ngay"
+                className="!text-[14px] !sm:text-[16px] !py-2 !sm:!py-3 !px-2.5 !sm:!px-3"
+                iconSize={20}
+              />
             </Link>
           </div>
         </div>

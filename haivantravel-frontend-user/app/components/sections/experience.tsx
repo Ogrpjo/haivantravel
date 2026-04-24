@@ -62,7 +62,7 @@ function LeftContent({ data, images }: { data: typeof experienceData; images: ty
         <LeftToRightText text={data.big_text} className="text-[22px] md:text-[30px] xl:text-[40px] 2xl:text-[59px] bg-clip-text text-transparent bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] font-black leading-tight max-sm:text-center slide-text" />
         <LeftToRightText text={data.description} className="text-white/70 text-[14px] md:text-[16px] leading-relaxed line-clamp-2 lg:line-clamp-none max-sm:text-justify slide-text" />
       </div>
-      <div className="grid grid-cols-2 pt-[20px] lg:pt-[40px] gap-[15px] lg:gap-[30px] flex-1 min-h-0">
+      <div className="grid grid-cols-2 pt-[20px] lg:pt-[40px] gap-[15px] lg:gap-[30px] flex-1">
         {images.map((image, index) => (
           <HoverZoomWrapper key={index}>
               <ExpImage src={image.src} type={image.type} />
@@ -135,7 +135,7 @@ export default function Experience() {
   );
 
   return (
-    <section className="h-[120vh] lg:h-[80vh] xl:max-h-[900px] lg:max-h-[700px] max-h-[900px] py-[60px] lg:py-[100px] flex flex-col lg:flex-row xl:gap-[80px] sm:gap-[40px] gap-10 lg:px-[148px] sm:px-[84px] px-[20px]">
+    <section className="h-[120vh] lg:h-[80vh] xl:h-[115vh] 2xl:h-[95vh] py-[60px] lg:py-[100px] flex flex-col lg:flex-row xl:gap-[80px] sm:gap-[40px] gap-10 lg:px-[148px] sm:px-[84px] px-[20px]">
       <LeftContent data={data} images={images} />
       <RightContent imageUrl={bigImage} />
     </section>

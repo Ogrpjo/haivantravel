@@ -285,14 +285,11 @@ export default async function CaseStudyDetailPage({
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
-  const resolvedContent = resolveProjectContent(
+  const htmlToRender = resolveProjectContent(
     project.content,
     project.html_content,
-    project.css_content,
+    null,
   );
-  const htmlToRender =
-    project.html_content?.trim() ||
-    resolveUiBlockContent(project.content ?? "", null, null);
   const cssToRender = project.css_content?.trim() ?? "";
   const safeCss = `
     @layer external-content {
@@ -304,12 +301,12 @@ export default async function CaseStudyDetailPage({
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
       <Navigationbar />
       <section className="w-full flex-1 text-white">
-        {!htmlToRender && !resolvedContent ? (
+        {!htmlToRender ? (
           <div className="p-8 text-center text-white">Nội dung chưa sẵn sàng</div>
         ) : (
           <div className="w-full gjs-content-wrapper">
             <style dangerouslySetInnerHTML={{ __html: safeCss }} />
-            <div dangerouslySetInnerHTML={{ __html: htmlToRender || resolvedContent }} />
+            <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
           </div>
         )}
       </section>

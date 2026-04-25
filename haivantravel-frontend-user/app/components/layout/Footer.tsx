@@ -166,8 +166,8 @@ export default function Footer() {
               ))}
             </div>
           </div>
-          <div className="grid w-full flex-1 grid-cols-3">
-            <div className="flex flex-col gap-[20px]">
+          <div className="grid w-full flex-1 grid-cols-3 max-sm:grid-cols-2 gap-4">
+            <div className="flex min-w-0 flex-col gap-[20px]">
               <p className="font-bold text-[16px] lg:text-[20px]">Dịch vụ</p>
               <div className="flex flex-col gap-[20px]">
                 {service.map((item, index) => (
@@ -181,7 +181,7 @@ export default function Footer() {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col gap-[20px]">
+            <div className="flex min-w-0 flex-col gap-[20px]">
               <p className="font-bold text-[16px] lg:text-[20px]">Công ty</p>
               <div className="flex flex-col gap-[20px]">
                 {company.map((item, index) => (
@@ -195,13 +195,14 @@ export default function Footer() {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col gap-[20px]">
+            <div className="flex min-w-0 flex-col gap-[20px] max-sm:col-span-2 pr-3 sm:pr-0">
               <p className="font-bold text-[16px] lg:text-[20px]">Liên hệ</p>
               <div className="flex flex-col gap-[20px]">
                 {contact.map((item, index) => (
                   <div
                     key={index}
-                    className="text-white/40 text-[12px] lg:text-[16px]"
+                    className="text-white/40 text-[12px] lg:text-[16px] whitespace-normal break-all"
+                    style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                   >
                     {item}
                   </div>

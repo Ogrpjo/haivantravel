@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { resolveUiBlockContent } from "@/app/lib/resolveUiBlockContent";
+import ScopedHtmlContent from "@/app/components/ScopedHtmlContent";
 import Footer from "@/app/components/layout/Footer";
 import Navigationbar from "@/app/components/Navigationbar";
 
@@ -32,14 +33,8 @@ export default async function Mice() {
   const htmlToRender = resolveUiBlockContent(
     data?.content ?? null,
     data?.html_content ?? null,
-    null,
+    data?.css_content ?? null,
   );
-  const cssToRender = data?.css_content?.trim() ?? "";
-  const safeCss = `
-    @layer external-content {
-      ${cssToRender.replace(/(body|html|:root)/g, ".gjs-content-wrapper")}
-    }
-  `;
 
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
@@ -53,10 +48,7 @@ export default async function Mice() {
             <p className="text-white/60">Vui lòng quay lại sau.</p>
           </div>
         ) : (
-          <div className="w-full gjs-content-wrapper">
-            <style dangerouslySetInnerHTML={{ __html: safeCss }} />
-            <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
-          </div>
+          <ScopedHtmlContent html={htmlToRender} className="w-full min-h-screen border-0 bg-transparent" />
         )}
       </section>
       <Footer />

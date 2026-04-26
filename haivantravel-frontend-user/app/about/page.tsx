@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { resolveUiBlockContent } from "@/app/lib/resolveUiBlockContent";
-import Footer from "../components/layout/Footer";
-import Navigationbar from "../components/Navigationbar";
+import Footer from "@/app/components/layout/Footer";
+import Navigationbar from "@/app/components/Navigationbar";
 
 export const metadata: Metadata = {
   title: "Về chúng tôi | Hải Vân Event",
@@ -16,6 +16,26 @@ type AboutPayload = {
   html_content?: string | null;
   css_content?: string | null;
 };
+
+function scopeCssToWrapper(css: string, wrapperSelector: string): string {
+  return css.replace(/(^|})\s*([^@}{][^{}]*)\s*\{/g, (match, boundary, selectorGroup) => {
+    const scopedSelectors = selectorGroup
+      .split(",")
+      .map((selector: string) => selector.trim())
+      .filter(Boolean)
+      .map((selector: string) => {
+        if (selector.startsWith(wrapperSelector)) return selector;
+        if (selector === "html" || selector === "body" || selector === ":root") {
+          return wrapperSelector;
+        }
+        return `${wrapperSelector} ${selector}`;
+      })
+      .join(", ");
+
+    if (!scopedSelectors) return match;
+    return `${boundary} ${scopedSelectors} {`;
+  });
+}
 
 async function getAboutContent(): Promise<AboutPayload | null> {
   try {
@@ -35,24 +55,23 @@ export default async function About() {
     null,
   );
   const cssToRender = data?.css_content?.trim() ?? "";
-
-  // 1. Gói CSS từ API vào một Layer có độ ưu tiên thấp nhất (ví dụ: 'external')
-  // 2. Chuyển selector 'body' thành một class cụ thể để bảo vệ Navbar
+  const scopedCss = scopeCssToWrapper(cssToRender, ".gjs-content-wrapper");
   const safeCss = `
     @layer external-content {
-      ${cssToRender.replace(/(body|html|:root)/g, '.gjs-content-wrapper')}
+      ${scopedCss}
     }
   `;
-
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
       <Navigationbar />
       <section className="w-full flex-1 text-white">
         {!htmlToRender ? (
-          <div className="p-8 text-center text-white">Nội dung chưa sẵn sàng</div>
+          <div className="p-8 text-center">
+            <h1 className="text-2xl font-semibold mb-2">Nội dung About chưa sẵn sàng</h1>
+            <p className="text-white/60">Vui lòng quay lại sau.</p>
+          </div>
         ) : (
           <div className="w-full gjs-content-wrapper">
-             {/* Chèn CSS đã được phân lớp */}
             <style dangerouslySetInnerHTML={{ __html: safeCss }} />
             <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
           </div>

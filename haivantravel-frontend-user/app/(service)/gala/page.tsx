@@ -17,6 +17,26 @@ type GalaPayload = {
   css_content?: string | null;
 };
 
+function scopeCssToWrapper(css: string, wrapperSelector: string): string {
+  return css.replace(/(^|})\s*([^@}{][^{}]*)\s*\{/g, (match, boundary, selectorGroup) => {
+    const scopedSelectors = selectorGroup
+      .split(",")
+      .map((selector: string) => selector.trim())
+      .filter(Boolean)
+      .map((selector: string) => {
+        if (selector.startsWith(wrapperSelector)) return selector;
+        if (selector === "html" || selector === "body" || selector === ":root") {
+          return wrapperSelector;
+        }
+        return `${wrapperSelector} ${selector}`;
+      })
+      .join(", ");
+
+    if (!scopedSelectors) return match;
+    return `${boundary} ${scopedSelectors} {`;
+  });
+}
+
 async function getGalaContent(): Promise<GalaPayload | null> {
   try {
     const res = await fetch(`${API_BASE}/gala`, { cache: "no-store" });
@@ -35,9 +55,10 @@ export default async function Gala() {
     null,
   );
   const cssToRender = data?.css_content?.trim() ?? "";
+  const scopedCss = scopeCssToWrapper(cssToRender, ".gjs-content-wrapper");
   const safeCss = `
     @layer external-content {
-      ${cssToRender.replace(/(body|html|:root)/g, ".gjs-content-wrapper")}
+      ${scopedCss}
     }
   `;
 

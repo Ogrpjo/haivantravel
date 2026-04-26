@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { resolveUiBlockContent } from "@/app/lib/resolveUiBlockContent";
-import ScopedHtmlContent from "@/app/components/ScopedHtmlContent";
 import Footer from "@/app/components/layout/Footer";
 import Navigationbar from "@/app/components/Navigationbar";
 
 export const metadata: Metadata = {
-  title: "MICE, Hội nghị, Hội thảo cho doanh nghiệp | Hải Vân Event",
+  title: "Company Trip & Teambuilding cho doanh nghiệp | Hải Vân Event",
   description:
-    "Giải pháp MICE, hội nghị và hội thảo cho doanh nghiệp với quy trình rõ ràng, vận hành chuyên nghiệp và trải nghiệm đồng bộ cho đại biểu.",
+    "Giải pháp Company Trip và Teambuilding thiết kế riêng cho doanh nghiệp. Hải Vân Event đồng hành từ concept, lên lịch trình đến vận hành onsite.",
 };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2031";
@@ -17,6 +16,26 @@ type MicePayload = {
   html_content?: string | null;
   css_content?: string | null;
 };
+
+function scopeCssToWrapper(css: string, wrapperSelector: string): string {
+  return css.replace(/(^|})\s*([^@}{][^{}]*)\s*\{/g, (match, boundary, selectorGroup) => {
+    const scopedSelectors = selectorGroup
+      .split(",")
+      .map((selector: string) => selector.trim())
+      .filter(Boolean)
+      .map((selector: string) => {
+        if (selector.startsWith(wrapperSelector)) return selector;
+        if (selector === "html" || selector === "body" || selector === ":root") {
+          return wrapperSelector;
+        }
+        return `${wrapperSelector} ${selector}`;
+      })
+      .join(", ");
+
+    if (!scopedSelectors) return match;
+    return `${boundary} ${scopedSelectors} {`;
+  });
+}
 
 async function getMiceContent(): Promise<MicePayload | null> {
   try {
@@ -33,8 +52,15 @@ export default async function Mice() {
   const htmlToRender = resolveUiBlockContent(
     data?.content ?? null,
     data?.html_content ?? null,
-    data?.css_content ?? null,
+    null,
   );
+  const cssToRender = data?.css_content?.trim() ?? "";
+  const scopedCss = scopeCssToWrapper(cssToRender, ".gjs-content-wrapper");
+  const safeCss = `
+    @layer external-content {
+      ${scopedCss}
+    }
+  `;
 
   return (
     <main className="w-screen min-h-screen bg-[#111111] flex flex-col relative">
@@ -48,7 +74,10 @@ export default async function Mice() {
             <p className="text-white/60">Vui lòng quay lại sau.</p>
           </div>
         ) : (
-          <ScopedHtmlContent html={htmlToRender} className="w-full min-h-screen border-0 bg-transparent" />
+          <div className="w-full gjs-content-wrapper">
+            <style dangerouslySetInnerHTML={{ __html: safeCss }} />
+            <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
+          </div>
         )}
       </section>
       <Footer />

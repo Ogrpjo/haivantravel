@@ -59,6 +59,18 @@ export default async function Mice() {
   const safeCss = `
     @layer external-content {
       ${scopedCss}
+
+      .gjs-content-wrapper {
+        position: relative !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+      }
+
+      .gjs-content-wrapper > * {
+        max-width: 100% !important;
+      }
     }
   `;
 

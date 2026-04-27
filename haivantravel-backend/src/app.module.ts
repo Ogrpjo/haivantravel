@@ -61,6 +61,9 @@ import { BriefContact } from './brief-contact/brief-contact.entity';
 import { BriefContactModule } from './brief-contact/brief-contact.module';
 import { CaseStudy } from './case-study/case-study.entity';
 import { CaseStudyModule } from './case-study/case-study.module';
+import { EmailTemplate } from './email-template/email-template.entity';
+import { EmailTemplateModule } from './email-template/email-template.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -113,6 +116,7 @@ import { CaseStudyModule } from './case-study/case-study.module';
           WorkingProcessContent,
           BriefContact,
           CaseStudy,
+          EmailTemplate,
         ],
         synchronize: true,
       }),
@@ -146,6 +150,8 @@ import { CaseStudyModule } from './case-study/case-study.module';
     WorkingProcessContentModule,
     BriefContactModule,
     CaseStudyModule,
+    EmailTemplateModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

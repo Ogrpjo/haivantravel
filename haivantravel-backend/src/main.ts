@@ -10,8 +10,6 @@ async function bootstrap() {
   app.enableCors();
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-  // Serve both the new repo-level `upload/` dir and the legacy `haivantravel-backend/uploads/` dir
-  // under the same public URL prefix `/upload/...`.
   const uploadDir = join(__dirname, '..', '..', 'upload');
   const legacyUploadDir = join(__dirname, '..', 'uploads');
   // eslint-disable-next-line no-console

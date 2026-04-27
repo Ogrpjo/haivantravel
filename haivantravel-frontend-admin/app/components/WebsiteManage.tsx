@@ -34,6 +34,11 @@ export default function WebsiteManage() {
           title="Đăng kí tư vấn"
           href="/dashboard/contactform"
         />
+        <SidebarPage
+          src="/pageLogo/service.svg"
+          title="Email templates"
+          href="/dashboard/email-templates"
+        />
       </div>
     </div>
   );

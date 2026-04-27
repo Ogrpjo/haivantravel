@@ -6,7 +6,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { join } from 'path';
 import * as fs from 'fs';
 
-const UPLOADS_DIR = join(process.cwd(), '..', 'uploads');
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
 
 @Injectable()
 export class ProjectsService {
@@ -156,7 +156,7 @@ export class ProjectsService {
       project.image_url = updateDto.image_url;
 
       // Best-effort cleanup old file (ignore errors).
-      if (previous && previous.startsWith('uploads/')) {
+      if (previous && (previous.startsWith('upload/') || previous.startsWith('uploads/'))) {
         const filename = previous.split('/').pop();
         if (filename) {
           const oldPath = join(UPLOADS_DIR, filename);
@@ -182,7 +182,7 @@ export class ProjectsService {
 
     // Best-effort cleanup file (ignore errors).
     const imageUrl = project.image_url;
-    if (imageUrl && imageUrl.startsWith('uploads/')) {
+    if (imageUrl && (imageUrl.startsWith('upload/') || imageUrl.startsWith('uploads/'))) {
       const filename = imageUrl.split('/').pop();
       if (filename) {
         const filePath = join(UPLOADS_DIR, filename);

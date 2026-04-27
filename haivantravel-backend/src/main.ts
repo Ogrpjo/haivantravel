@@ -10,8 +10,10 @@ async function bootstrap() {
   app.enableCors();
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-  const uploadDir = join(__dirname, '..', '..', 'upload');
-  const legacyUploadDir = join(__dirname, '..', 'uploads');
+  // When running from `haivantravel-backend/`, persist files to the repo-level `../upload/` folder.
+  const uploadDir = join(process.cwd(), '..', 'upload');
+  // Backward-compat: still serve files that were stored in `haivantravel-backend/uploads/`.
+  const legacyUploadDir = join(process.cwd(), 'uploads');
   // eslint-disable-next-line no-console
   console.log('[static] /upload =>', uploadDir);
   // eslint-disable-next-line no-console

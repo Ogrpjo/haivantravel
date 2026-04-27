@@ -21,10 +21,10 @@ import { PartnersService } from './partners.service';
 import { CreatePartnerDto } from './dto/create-partner.dto';
 import { UpdatePartnerDto } from './dto/update-partner.dto';
 
-// Save partner icons into `haivantravel-backend/uploads` (historical location),
-// but still support reading from the repo-level `upload/` folder as a fallback.
-const UPLOADS_DIR = join(__dirname, '..', '..', 'uploads');
-const FALLBACK_UPLOADS_DIR = join(__dirname, '..', '..', '..', 'upload');
+// Persist partner icons into the repo-level `../upload/` folder.
+// Backward-compat: still allow reading legacy files from `haivantravel-backend/uploads/`.
+const UPLOADS_DIR = join(process.cwd(), '..', 'upload');
+const LEGACY_UPLOADS_DIR = join(process.cwd(), 'uploads');
 
 @Controller('partners')
 export class PartnersController {
@@ -86,8 +86,8 @@ export class PartnersController {
     const primaryPath = join(UPLOADS_DIR, filename);
     if (existsSync(primaryPath)) return res.sendFile(primaryPath);
 
-    const fallbackPath = join(FALLBACK_UPLOADS_DIR, filename);
-    if (existsSync(fallbackPath)) return res.sendFile(fallbackPath);
+    const legacyPath = join(LEGACY_UPLOADS_DIR, filename);
+    if (existsSync(legacyPath)) return res.sendFile(legacyPath);
 
     return res.status(404).send('Not found');
   }

@@ -14,7 +14,7 @@ services:
     ports:
       - "2031:2031"
     volumes:
-      - ./upload:/app/upload
+      - ./upload:/upload
     networks: 
       - haivantravel_network
 

@@ -60,7 +60,7 @@ function CollaCard({ src }: CollaCardProps) {
         <img
           src={src}
           alt="collaborator logo"
-          className="h-[75px] w-[120px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+          className="h-[90px] w-[120px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
         />
       </CardContent>
     </Card>

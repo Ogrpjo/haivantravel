@@ -60,7 +60,7 @@ function CollaCard({ src }: CollaCardProps) {
         <img
           src={src}
           alt="collaborator logo"
-          className="h-[60px] w-[120px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+          className="h-[75px] w-[120px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
         />
       </CardContent>
     </Card>
@@ -71,7 +71,7 @@ function LeftList({ data }: { data: typeof defaultCollaboratorData }) {
   return (
     <div className="flex-2 relative border-r-3 h-[60vh] flex items-center justify-center">
       <div className="absolute h-full border-r-[40px] -right-[8%] blur-xl opacity-13 hidden sm:flex" />
-      <div className="absolute w-[400px] h-[400px] bg-[#3F9293]/15 rounded-full blur-[40px] bottom-0 opacity-40" />
+      <div className="absolute w-[400px] h-[400px] bg-[#3F9293]/15 rounded-full blur-[40px] bottom-0 opacity-50" />
       <div className="shadow-[-10px_0_25px_-5px] shadow-white/3 px-[20px] py-[20px]">
         <LeftToRightText className="font-bold lg:text-[20px] xl:text-[30px] max-w-[80%] leading-tight text-white uppercase slide-text" text={<> {data.first_text}{" "}
           <span className="text-[#8ED6D7]">

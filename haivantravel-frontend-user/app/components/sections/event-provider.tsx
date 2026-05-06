@@ -18,12 +18,12 @@ const eventData = {
 }
 
 const eventCardData = [
-  { type: "Corporate Event", title: "Tổ chức sự kiện doanh nghiệp", description: "Lên kế hoạch và thực thi toàn diện các sự kiện lớn nhỏ dành cho doanh nghiệp: lễ khánh thành, ra mắt sản phẩm, anniversary...", icon: <EventIcon1 />},
+  { type: "Corporate Event", title: "Tổ chức sự kiện doanh nghiệp", description: "Lên kế hoạch và thực thi toàn diện các sự kiện lớn nhỏ dành cho doanh nghiệp: lễ khánh thành, ra mắt sản phẩm, anniversary...", icon: <EventIcon1 /> },
   { type: "Team building", title: "Team Building & Gắn kết", description: "Chương trình hoạt động ngoài trời sáng tạo, giúp tăng cường tinh thần đồng đội, xây dựng văn hóa doanh nghiệp bền vững.", icon: <EventIcon2 /> },
   { type: "Conference", title: "Hội nghị & Hội thảo", description: "Tổ chức hội nghị, hội thảo chuyên nghiệp với đầy đủ thiết bị, âm thanh ánh sáng, dịch thuật và hậu cần đẳng cấp.", icon: <EventIcon3 /> },
   { type: "Gala Dinner", title: "Gala Dinner & Year End Party", description: "Thiết kế không gian tiệc tất niên sang trọng, chương trình nghệ thuật đặc sắc, tạo ấn tượng khó quên cho toàn bộ nhân viên.", icon: <EventIcon4 /> },
-  {type: "Media", title: "Truyền thông & Media", description: "Sản xuất nội dung truyền thông sự kiện: livestream, quay phim chuyên nghiệp, photography, thiết kế backdrop và ấn phẩm.", icon: <EventIcon5 />},
-  { type: "MICE Travel", title: "Du lịch MICE", description: "Gói tour kết hợp hội nghị, triển lãm và du lịch trong và ngoài nước cho doanh nghiệp, tối ưu ngân sách và trải nghiệm.", icon: <EventIcon6 />}, 
+  { type: "Media", title: "Truyền thông & Media", description: "Sản xuất nội dung truyền thông sự kiện: livestream, quay phim chuyên nghiệp, photography, thiết kế backdrop và ấn phẩm.", icon: <EventIcon5 /> },
+  { type: "MICE Travel", title: "Du lịch MICE", description: "Gói tour kết hợp hội nghị, triển lãm và du lịch trong và ngoài nước cho doanh nghiệp, tối ưu ngân sách và trải nghiệm.", icon: <EventIcon6 /> },
 ]
 
 type EventProviderCardApi = {
@@ -158,7 +158,8 @@ export default function EventProvider() {
   }, [remoteData]);
 
   return (
-    <section className="lg:px-[148px] sm:px-[84px] px-[20px] py-[100px]">
+    <section className="relative lg:px-[148px] sm:px-[84px] px-[20px] py-[100px]">
+      <div className="absolute w-[500px] h-[500px] z-100 bg-[#3F9293]/15 rounded-full blur-[50px] right-0 top-30 opacity-60" />
       <Intro header={header} />
       <MainContent remoteCards={remoteData?.cards ?? null} />
     </section>

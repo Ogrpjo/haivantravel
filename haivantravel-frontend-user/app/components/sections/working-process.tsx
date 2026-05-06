@@ -124,7 +124,9 @@ export default function WorkingProcess() {
     }, [remoteData]);
 
     return (
-        <section className="lg:px-[148px] sm:px-[84px] px-[20px] py-[80px] lg:py-[110px] flex flex-col items-center gap-[50px] lg:gap-[80px]">
+        <section className="relative lg:px-[148px] sm:px-[84px] px-[20px] py-[80px] lg:py-[110px] flex flex-col items-center gap-[50px] lg:gap-[80px]">
+            <div className="absolute w-[400px] h-[400px] z-10 bg-[#3F9293]/15 rounded-full blur-[50px] left-0 top-30 opacity-60" />
+            <div className="absolute w-[400px] h-[400px] z-10 bg-[#904589]/15 rounded-full blur-[50px] right-0 bottom-0 opacity-60" />
             <Introduce data={introData} />
             <ListProcess cards={cards} />
             <ButtonGradient name="Bắt đầu dự án ngay hôm nay" onClick={scrollToFormContact} />

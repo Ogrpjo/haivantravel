@@ -41,7 +41,7 @@ function LeftContent() {
                     <CardContact icon={<MapMaker />} name="Địa chỉ" detail="154 Phan Văn Hớn, Phường Đông Hưng Thuận, TP. Hồ Chí Minh" />
                     <CardContact icon={<PhoneCall size={37} />} name="Hotline" detail="+84 853 566 556" />
                     <CardContact icon={<Mail size={37} />} name="Email" detail="Info.hcmc@haivantravelvn.com" />
-                    <CardContact icon={<Clock size={37} />} name="Giờ làm việc" detail="T2 – T7: 8:00 – 18:00" />
+                    <CardContact icon={<Clock size={37} />} name="Giờ làm việc" detail="08:00 - 17:00 (Thứ 2 - Thứ 6) | 08:00 - 11:30 (Thứ 7)" />
                 </div>
             </div>
         </div>
@@ -200,7 +200,10 @@ function RightContent() {
 
 export default function FormContact() {
     return (
-        <section id="form-contact" className="flex xl:flex-row flex-col py-[80px] lg:px-[148px] sm:px-[84px] px-[20px] gap-[40px]">
+        <section id="form-contact" className="relative z-100 bg-[#121212] flex xl:flex-row flex-col py-[80px] lg:px-[148px] sm:px-[84px] px-[20px] gap-[40px]">
+            <div className="absolute w-[400px] h-[400px] z-100 bg-[#904589]/15 rounded-full blur-[50px] left-2/3 top-1/2 opacity-60" />
+            <div className="absolute w-[400px] h-[400px] z-100 bg-[#904589]/15 rounded-full blur-[50px] left-0 bottom-0 opacity-60" />
+            <div className="absolute w-[400px] h-[400px] z-100 bg-[#3F9293]/15 rounded-full blur-[50px] left-0 top-30 opacity-60" />
             <LeftContent />
             <RightContent />
         </section>

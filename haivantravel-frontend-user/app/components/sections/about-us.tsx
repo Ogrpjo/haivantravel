@@ -163,7 +163,7 @@ export default function AboutUs() {
         />
         <div className="flex gap-3 pt-6 max-sm:justify-center">
           <ButtonGradient name="Nhận tư vấn Concept" onClick={scrollToContactForm} />
-          <Link href="/case-study" className="no-underline decoration-transparent hover:no-underline">
+          <Link href="https://heyzine.com/flip-book/c40725525e.html" className="no-underline decoration-transparent hover:no-underline">
             <Button className="rounded-[12px] h-[50px] bg-white/4 border-t shadow-[#CECECE]/14 shadow-1">
               <p className="lg:text-[18px] text-[12px]">Xem hồ sơ năng lực</p>
             </Button>

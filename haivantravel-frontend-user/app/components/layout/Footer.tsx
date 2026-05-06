@@ -149,9 +149,8 @@ export default function Footer() {
               width={190}
               height={130}
             />
-            <p className="text-white/40 text-[12px] lg:text-[16px] text-center sm:text-left">
-              Đơn vị tổ chức sự kiện doanh nghiệp chuyên nghiệp hàng đầu Việt
-              Nam
+            <p className="text-white/60 text-[12px] lg:text-[16px] text-center sm:text-left">
+              Đơn vị tổ chức sự kiện doanh nghiệp chuyên nghiệp hàng đầu Việt Nam
             </p>
             <div className="flex gap-[10px]">
               {socialItems.map((item) => (
@@ -174,7 +173,7 @@ export default function Footer() {
                   <Link
                     href={item.href}
                     key={index}
-                    className="hover:text-white text-white/40 cursor-pointer text-[12px] lg:text-[16px]"
+                    className="hover:text-white text-white/60 cursor-pointer text-[12px] lg:text-[16px]"
                   >
                     {item.name}
                   </Link>
@@ -188,7 +187,7 @@ export default function Footer() {
                   <Link
                     href={item.href}
                     key={index}
-                    className="hover:text-white text-white/40 cursor-pointer text-[12px] lg:text-[16px]"
+                    className="hover:text-white text-white/60 cursor-pointer text-[12px] lg:text-[16px]"
                   >
                     {item.name}
                   </Link>
@@ -201,7 +200,7 @@ export default function Footer() {
                 {contact.map((item, index) => (
                   <div
                     key={index}
-                    className="text-white/40 text-[12px] lg:text-[16px] whitespace-normal break-all"
+                    className="text-white/60 text-[12px] lg:text-[16px] whitespace-normal break-all"
                     style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                   >
                     {item}

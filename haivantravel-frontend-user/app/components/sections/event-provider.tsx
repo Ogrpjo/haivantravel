@@ -159,7 +159,7 @@ export default function EventProvider() {
 
   return (
     <section className="relative lg:px-[148px] sm:px-[84px] px-[20px] py-[100px]">
-      <div className="absolute w-[500px] h-[500px] z-100 bg-[#3F9293]/15 rounded-full blur-[50px] right-0 top-30 opacity-60" />
+      <div className="absolute w-[500px] h-[500px] z-100 bg-[#3F9293]/15 rounded-full blur-[50px] right-0 top-30 opacity-80" />
       <Intro header={header} />
       <MainContent remoteCards={remoteData?.cards ?? null} />
     </section>

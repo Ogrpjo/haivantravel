@@ -146,8 +146,8 @@ export default function AboutUs() {
 
   return (
     <section className="flex relative z-0 flex-row lg:pl-[148px] w-full sm:pl-[84px]">
-      <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[50px] left-[10%] top-[65%] opacity-40" />
-      <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[50px] left-[25%] top-[30%] opacity-40" />
+      <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[50px] left-[10%] top-[65%] opacity-80" />
+      <div className="absolute w-[300px] h-[300px] bg-[#3F9293]/15 rounded-full blur-[50px] left-[25%] top-[30%] opacity-80" />
       <div className="sm:flex-1 relative z-10 gap-3 flex-col sm:items-start items-center flex justify-center max-sm:px-[20px] max-sm:text-center">
         <LeftToRightText
           className="text-[#9B9B9B] lg:text-[20px] text-[12px] text-center pt-[30px] slide-text"

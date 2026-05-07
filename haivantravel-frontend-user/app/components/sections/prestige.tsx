@@ -103,8 +103,8 @@ export default function Prestige() {
 
   return (
     <section className="lg:px-[148px] sm:px-[84px] px-[20px] py-[220px] flex flex-col md:gap-[120px] relative gap-[60px]">
-      <div className="absolute w-[400px] h-[400px] z-100 bg-[#3F9293]/15 rounded-full blur-[50px] left-0 top-30 opacity-60" />
-      <div className="absolute w-[400px] h-[400px] z-100 bg-[#904589]/15 rounded-full blur-[50px] right-0 -bottom-10 opacity-60" />
+      <div className="absolute w-[400px] h-[400px] z-100 bg-[#3F9293]/15 rounded-full blur-[50px] left-0 top-30 opacity-80" />
+      <div className="absolute w-[400px] h-[400px] z-100 bg-[#904589]/15 rounded-full blur-[50px] right-0 -bottom-10 opacity-80" />
       <div className="flex flex-col items-center justify-center">
         <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#C4C4C4] to-[#747474] text-[18px] slide-text" text={data.small_text} />
         <LeftToRightText className="bg-clip-text text-transparent bg-gradient-to-r from-[#8ED6D7] to-[#4B7171] font-black lg:text-[60px] text-[30px] slide-text" text={data.big_text} />

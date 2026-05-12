@@ -19,6 +19,7 @@ interface Project {
   mainImage: string;
   thumbnail: string;
   link: string;
+  createdAt?: string;
 }
 
 type ApiProject = {
@@ -34,12 +35,11 @@ type ApiProject = {
   createdAt?: string;
 };
 
-const FILTER_CATEGORIES = [
-  "Gala Dinner",
-  "Team Building",
-  "Conference",
-  "Year End Party",
-] as const;
+type ApiProjectType = {
+  id: number;
+  name: string;
+  sort_order: number;
+};
 
 function getApiBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.haivanevent.vn";
@@ -60,10 +60,7 @@ function mapApiProjectToUi(p: ApiProject): Project | null {
   const imageUrl = buildProjectImageUrl(p.image_url);
   if (!imageUrl) return null;
 
-  const rawType = (p.project_type || "").trim();
-  const category = FILTER_CATEGORIES.find(
-    (c) => c.toLowerCase() === rawType.toLowerCase(),
-  ) || rawType || "Gala Dinner";
+  const category = (p.project_type || "").trim() || "";
 
   const stats: ProjectStat[] = [];
   if (p.guest_count != null && p.guest_count >= 0) {
@@ -120,13 +117,14 @@ function CaseStudy({
 function LeftContent({
   activeProject,
   activeCategory,
+  categories,
   onCategoryClick,
 }: {
   activeProject: Project;
   activeCategory: string | null;
+  categories: string[];
   onCategoryClick: (category: string) => void;
 }) {
-  const categories = [...FILTER_CATEGORIES];
 
   return (
     <div className="flex-1 flex flex-col h-full max-md:justify-center max-md:items-center gap-10">
@@ -270,6 +268,7 @@ function SliderBottom({
 
 export default function CompletedProject() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [projectTypes, setProjectTypes] = useState<string[]>([]);
   const [loadError, setLoadError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -279,16 +278,33 @@ export default function CompletedProject() {
     try {
       setLoading(true);
       setLoadError(false);
-      const res = await fetch(`${getApiBaseUrl()}/projects`, { cache: "no-store" });
-      if (!res.ok) throw new Error("fetch failed");
-      const data = (await res.json()) as ApiProject[];
-      if (!Array.isArray(data)) {
+      const [projectsRes, typesRes] = await Promise.all([
+        fetch(`${getApiBaseUrl()}/projects`, { cache: "no-store" }),
+        fetch(`${getApiBaseUrl()}/project-types`, { cache: "no-store" }),
+      ]);
+
+      if (!projectsRes.ok) throw new Error("fetch failed");
+      const projectData = (await projectsRes.json()) as ApiProject[];
+      const typeData = typesRes.ok ? ((await typesRes.json()) as ApiProjectType[]) : [];
+
+      setProjectTypes(
+        Array.isArray(typeData)
+          ? typeData
+              .map((item) => item.name?.trim())
+              .filter((name): name is string => Boolean(name))
+          : [],
+      );
+
+      if (!Array.isArray(projectData)) {
         setProjects([]);
         return;
       }
-      const mapped = data
+      const mapped = projectData
         .map(mapApiProjectToUi)
-        .filter((p): p is Project => p !== null);
+        .filter((p): p is Project => p !== null)
+        .slice()
+        .sort((a, b) => b.id - a.id)
+        .slice(0, 10);
       setProjects(mapped);
     } catch {
       setLoadError(true);
@@ -302,11 +318,27 @@ export default function CompletedProject() {
     void loadProjects();
   }, [loadProjects]);
 
+  const categoryOptions = useMemo(() => {
+    const categoryMap = new Map<string, string>();
+
+    for (const name of projectTypes) {
+      const key = name.toLowerCase();
+      if (!categoryMap.has(key)) categoryMap.set(key, name);
+    }
+
+    for (const project of projects) {
+      const raw = project.category.trim();
+      if (!raw) continue;
+      const key = raw.toLowerCase();
+      if (!categoryMap.has(key)) categoryMap.set(key, raw);
+    }
+
+    return Array.from(categoryMap.values());
+  }, [projectTypes, projects]);
+
   const filteredProjects = useMemo(() => {
     if (!activeCategory) return projects;
-    return projects.filter(
-      (p) => p.category.toLowerCase() === activeCategory.toLowerCase(),
-    );
+    return projects.filter((p) => p.category.toLowerCase() === activeCategory.toLowerCase());
   }, [projects, activeCategory]);
 
   useEffect(() => {
@@ -372,6 +404,7 @@ export default function CompletedProject() {
         <LeftContent
           activeProject={activeProject}
           activeCategory={activeCategory}
+          categories={categoryOptions}
           onCategoryClick={handleCategoryClick}
         />
         <RightContent activeProject={activeProject} />

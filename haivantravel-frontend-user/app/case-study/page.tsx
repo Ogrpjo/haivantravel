@@ -3,7 +3,7 @@
 import Footer from "../components/layout/Footer";
 import NavigationBar from "../components/layout/Navbar";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type CaseStudyItem = {
     id: number;
@@ -29,9 +29,22 @@ type ApiProject = {
     link_url: string;
 };
 
+type ApiProjectType = {
+    id: number;
+    name: string;
+    sort_order: number;
+};
+
 const INITIAL_LOAD_COUNT = 7;
 const LOAD_MORE_COUNT = 3;
-const CATEGORY_FILTERS = ["All", "Gala Dinner", "Team Building", "Conference", "Year End Party"];
+
+function normalizeTypeName(value: string): string {
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .replace(/gala\s*dinner/g, "gala");
+}
 
 function getApiBaseUrl(): string {
     return process.env.NEXT_PUBLIC_API_URL?.trim() || "https://api.haivanevent.vn";
@@ -52,9 +65,7 @@ function titleToSlug(title: string): string {
         .replace(/\u0110/g, "d")
         .toLowerCase()
         .trim();
-    return stripped
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+    return stripped.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
 function toCaseStudyHref(project: ApiProject): string {
@@ -82,7 +93,7 @@ function mapApiProjectToUi(project: ApiProject): CaseStudyItem {
         duration: project.duration_days != null && project.duration_days > 0 ? `${project.duration_days} ngày` : "—",
         description: project.short_description?.trim() || "Đang cập nhật mô tả dự án.",
         image: buildProjectImageUrl(project.image_url),
-        category: project.project_type?.trim() || "Gala Dinner",
+        category: project.project_type?.trim() || "",
         href: toCaseStudyHref(project),
     };
 }
@@ -90,9 +101,26 @@ function mapApiProjectToUi(project: ApiProject): CaseStudyItem {
 function MainContent() {
     const [activeCategory, setActiveCategory] = useState("All");
     const [projects, setProjects] = useState<CaseStudyItem[]>([]);
+    const [projectTypes, setProjectTypes] = useState<string[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const fetchProjectTypes = useCallback(async () => {
+        try {
+            const res = await fetch(`${getApiBaseUrl()}/project-types`, { cache: "no-store" });
+            if (!res.ok) return;
+            const data = (await res.json()) as ApiProjectType[];
+            const names = Array.isArray(data)
+                ? data
+                      .map((item) => item.name?.trim())
+                      .filter((name): name is string => Boolean(name))
+                : [];
+            setProjectTypes(names);
+        } catch {
+            // keep project-derived fallback
+        }
+    }, []);
 
     const fetchProjects = useCallback(
         async (offset: number, limit: number, append: boolean) => {
@@ -113,10 +141,8 @@ function MainContent() {
 
                 const data = (await res.json()) as ApiProject[];
                 const mapped = Array.isArray(data) ? data.map(mapApiProjectToUi) : [];
-                const source = mapped;
-
-                setProjects((prev) => (append ? [...prev, ...source] : source));
-                setHasMore(source.length === limit);
+                setProjects((prev) => (append ? [...prev, ...mapped] : mapped));
+                setHasMore(mapped.length === limit);
             } catch (err) {
                 if (!append) setProjects([]);
                 setHasMore(false);
@@ -129,8 +155,41 @@ function MainContent() {
     );
 
     useEffect(() => {
+        void fetchProjectTypes();
+    }, [fetchProjectTypes]);
+
+    useEffect(() => {
         void fetchProjects(0, INITIAL_LOAD_COUNT, false);
     }, [fetchProjects]);
+
+    const projectCategories = useMemo(() => {
+        const categoryMap = new Map<string, string>();
+
+        for (const name of projectTypes) {
+            const key = normalizeTypeName(name);
+            if (!categoryMap.has(key)) {
+                categoryMap.set(key, name);
+            }
+        }
+
+        for (const project of projects) {
+            const raw = project.category.trim();
+            if (!raw) continue;
+            const key = normalizeTypeName(raw);
+            if (!categoryMap.has(key)) {
+                categoryMap.set(key, raw);
+            }
+        }
+
+        return Array.from(categoryMap.values()).sort((a, b) => a.localeCompare(b, "vi"));
+    }, [projectTypes, projects]);
+
+    const filterButtons = ["All", ...projectCategories];
+
+    const visibleProjects = projects.filter((project) => {
+        if (activeCategory === "All") return true;
+        return normalizeTypeName(project.category) === normalizeTypeName(activeCategory);
+    });
 
     const handleLoadMore = () => {
         if (isLoading || !hasMore) return;
@@ -156,7 +215,7 @@ function MainContent() {
 
             <div className="lg:px-[148px] sm:px-[84px] px-[20px] pt-[24px] pb-[80px]">
                 <div className="flex flex-wrap gap-2">
-                    {CATEGORY_FILTERS.map((item) => (
+                    {filterButtons.map((item) => (
                         <button
                             type="button"
                             key={item}
@@ -173,10 +232,10 @@ function MainContent() {
                 </div>
 
                 <div className="pt-[16px] flex flex-col gap-4">
-                    {projects.map((item) => (
+                    {visibleProjects.map((item) => (
                         <Link key={item.id} href={item.href} className="no-underline">
-                            <article className="grid grid-cols-[220px_1fr] max-md:grid-cols-1 gap-5 p-3 rounded-[12px] border border-white/10 bg-[#121212] hover:border-[#8ED6D7]/40 transition-colors cursor-pointer">
-                                <div className="relative w-full h-[300px] rounded-[8px] overflow-hidden">
+                            <article className="grid grid-cols-[360px_1fr] max-md:grid-cols-1 gap-5 p-3 rounded-[12px] border border-white/10 bg-[#121212] hover:border-[#8ED6D7]/40 transition-colors cursor-pointer">
+                                <div className="relative w-full aspect-[3/2] max-md:aspect-[4/3] rounded-[8px] overflow-hidden">
                                     <img
                                         src={item.image}
                                         alt={item.title}
@@ -228,7 +287,7 @@ function MainContent() {
                 </div>
             </div>
         </section>
-    )
+    );
 }
 
 export default function CaseStudy() {
@@ -238,5 +297,5 @@ export default function CaseStudy() {
             <MainContent />
             <Footer />
         </main>
-    )
+    );
 }

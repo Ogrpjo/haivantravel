@@ -27,6 +27,8 @@ import { SocialLinksModule } from './social-links/social-links.module';
 import { BlogDetailsModule } from './blog-details/blog-details.module';
 import { ProjectsModule } from './projects/projects.module';
 import { Project } from './projects/project.entity';
+import { ProjectTypesModule } from './project-types/project-types.module';
+import { ProjectType } from './project-types/project-type.entity';
 import { About } from './about/about.entity';
 import { Recruitment } from './recruitment/recruitment.entity';
 import { Event } from './events/events.entity';
@@ -99,6 +101,7 @@ import { MailModule } from './mail/mail.module';
           SocialLink,
           BlogDetail,
           Project,
+          ProjectType,
           About,
           Recruitment,
           Event,
@@ -135,6 +138,7 @@ import { MailModule } from './mail/mail.module';
     SocialLinksModule,
     BlogDetailsModule,
     ProjectsModule,
+    ProjectTypesModule,
     ContactDataModule,
     RequestPhoneModule,
     AuthModule,

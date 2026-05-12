@@ -2,10 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getApiBaseUrl } from "@/app/lib/apiBaseUrl";
-import {
-  PROJECT_TYPE_OPTIONS,
-  linkUrlFromTitle,
-} from "./projectFormShared";
+import { linkUrlFromTitle } from "./projectFormShared";
 
 type AddProjectModalProps = {
   isOpen: boolean;
@@ -25,6 +22,12 @@ type ProjectFormData = {
   artist_count: string;
   project_link: string;
   image: File | null;
+};
+
+type ProjectTypeItem = {
+  id: number;
+  name: string;
+  sort_order: number;
 };
 
 const INITIAL_FORM: ProjectFormData = {
@@ -51,6 +54,7 @@ export default function AddProjectModal({
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [projectLinkManual, setProjectLinkManual] = useState(false);
+  const [projectTypes, setProjectTypes] = useState<ProjectTypeItem[]>([]);
   const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
@@ -77,6 +81,22 @@ export default function AddProjectModal({
       return null;
     });
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const loadProjectTypes = async () => {
+      try {
+        const res = await fetch(`${apiBaseUrl}/project-types`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as ProjectTypeItem[];
+        setProjectTypes(Array.isArray(data) ? data : []);
+      } catch {
+        setProjectTypes([]);
+      }
+    };
+
+    void loadProjectTypes();
+  }, [apiBaseUrl, isOpen]);
 
   useEffect(() => {
     return () => {
@@ -363,9 +383,9 @@ export default function AddProjectModal({
               className="w-full px-3 py-2 border border-[#E0E0E0] rounded-lg text-[#424242] bg-white focus:outline-none focus:ring-2 focus:ring-[#05B9BA]/50 focus:border-[#05B9BA]"
             >
               <option value="">Chọn loại dự án</option>
-              {PROJECT_TYPE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
+              {projectTypes.map((opt) => (
+                <option key={opt.id} value={opt.name}>
+                  {opt.name}
                 </option>
               ))}
             </select>
@@ -433,7 +453,7 @@ export default function AddProjectModal({
               className="w-full px-3 py-2 border border-[#E0E0E0] rounded-lg text-[#424242] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#05B9BA]/50 focus:border-[#05B9BA]"
             />
             <p className="mt-1 text-xs text-[#7E7E7E]">
-              Tự động: site user + <code className="text-[#424242]">/case-study/</code> + slug (vd:{" "}
+              Tự động: site user + <code className="text-[#424242]">/case-study/</code> + slug (vd: {" "}
               <code className="text-[#424242]">localhost:2032/case-study/du-an-1</code>). Có thể chỉnh tay.
             </p>
           </div>

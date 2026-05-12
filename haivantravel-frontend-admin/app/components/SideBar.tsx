@@ -1,13 +1,11 @@
-import Profile from "./Profile"
-import SidebarItem from "./SidebarItem"
-import UserSystem from "./UserSystem"
-import WebsiteManage from "./WebsiteManage"
+import Profile from "./Profile";
+import SidebarItem from "./SidebarItem";
 
 export default function Sidebar() {
-    return (
-        <div className="flex-2 min-h-screen bg-[#121212] text-white relative border-r border-white/10">
-            <Profile /> 
-            <SidebarItem />
-        </div>
-    )
+  return (
+    <aside className="w-[240px] shrink-0 min-h-screen bg-[#121212] text-white relative border-r border-white/10 overflow-y-auto">
+      <Profile />
+      <SidebarItem />
+    </aside>
+  );
 }

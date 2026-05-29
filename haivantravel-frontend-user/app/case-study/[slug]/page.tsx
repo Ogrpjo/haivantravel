@@ -304,7 +304,7 @@ export default async function CaseStudyDetailPage({
         {!htmlToRender ? (
           <div className="p-8 text-center text-white">Nội dung chưa sẵn sàng</div>
         ) : (
-          <div className="w-full gjs-content-wrapper">
+          <div className="w-full pt-10 gjs-content-wrapper">
             <style dangerouslySetInnerHTML={{ __html: safeCss }} />
             <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
           </div>

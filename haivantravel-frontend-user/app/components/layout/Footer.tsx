@@ -170,13 +170,13 @@ export default function Footer() {
               <p className="font-bold text-[16px] lg:text-[20px]">Dịch vụ</p>
               <div className="flex flex-col gap-[20px]">
                 {service.map((item, index) => (
-                  <Link
+                  <a
                     href={item.href}
                     key={index}
                     className="hover:text-white text-white/60 cursor-pointer text-[12px] lg:text-[16px]"
                   >
                     {item.name}
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>

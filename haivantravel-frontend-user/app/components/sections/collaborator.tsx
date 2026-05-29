@@ -12,11 +12,11 @@ type CollaCardProps = {
 };
 
 const defaultCollaboratorData = {
-  blue_text_1: "KHÁCH HÀNG",
-  blue_text_2: "ĐỐI TÁC",
+  blue_text_1: "ĐỐI TÁC",
+  blue_text_2: "",
   first_text: "ĐƯỢC TIN TƯỞNG BỞI",
   last_text: "CỦA CHÚNG TÔI",
-  description: "Những doanh nghiệp đã tin tưởng Hải Vân Event"
+  description: "Những đối tác đã tin tưởng Hải Vân Event"
 }
 
 type CollaboratorContentApi = {
@@ -56,12 +56,14 @@ function buildPartnerIconUrl(iconPath: string): string {
 function CollaCard({ src }: CollaCardProps) {
   return (
     <Card className="bg-transparent rounded-none border-t border-r border-black h-full w-full shadow-none hover:bg-white/5 transition-colors duration-300 group">
-      <CardContent className="flex items-center justify-center p-6 transition-all duration-300">
-        <img
-          src={src}
-          alt="collaborator logo"
-          className="h-[90px] w-[120px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
-        />
+      <CardContent className="h-full w-full p-6 box-border">
+        <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-none">
+          <img
+            src={src}
+            alt="collaborator logo"
+            className="h-[90px] w-[230px] object-contain transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
       </CardContent>
     </Card>
   );
@@ -75,7 +77,8 @@ function LeftList({ data }: { data: typeof defaultCollaboratorData }) {
       <div className="shadow-[-10px_0_25px_-5px] shadow-white/3 px-[20px] py-[20px]">
         <LeftToRightText className="font-bold lg:text-[20px] xl:text-[30px] max-w-[80%] leading-tight text-white uppercase slide-text" text={<> {data.first_text}{" "}
           <span className="text-[#8ED6D7]">
-            {data.blue_text_1} & {data.blue_text_2}
+            {data.blue_text_1}
+            {data.blue_text_2 ? ` & ${data.blue_text_2}` : ""}
           </span>{" "}
           {data.last_text}
         </>} />

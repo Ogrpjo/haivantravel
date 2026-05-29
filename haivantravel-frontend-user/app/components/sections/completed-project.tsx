@@ -67,7 +67,7 @@ function mapApiProjectToUi(p: ApiProject): Project | null {
     stats.push({ number: formatGuestDisplay(p.guest_count), name: "Khách tham dự" });
   }
   if (p.artist_count != null && p.artist_count >= 0) {
-    stats.push({ number: String(p.artist_count), name: "Nghệ sĩ" });
+    stats.push({ number: String(p.artist_count), name: "Đối tác" });
   }
   if (p.duration_days != null && p.duration_days > 0) {
     stats.push({

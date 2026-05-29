@@ -422,7 +422,7 @@ export default function AddProjectModal({
             </div>
             <div>
               <label htmlFor="artist-count" className="block text-sm font-medium text-[#424242] mb-1.5">
-                Số nghệ sĩ
+                Số đối tác
               </label>
               <input
                 id="artist-count"

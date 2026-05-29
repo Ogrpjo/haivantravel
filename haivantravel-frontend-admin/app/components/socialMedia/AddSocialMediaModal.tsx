@@ -13,25 +13,31 @@ const SOCIAL_OPTIONS = [
   "Zalo",
 ];
 
+type SocialMediaFormData = {
+  title: string;
+  url: string;
+};
+
 type AddSocialMediaModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-};
-
-type SocialMediaFormData = {
-  title: string;
-  url: string;
+  initialData?: SocialMediaFormData;
+  recordId?: number;
+  mode?: "add" | "edit";
 };
 
 export default function AddSocialMediaModal({
   isOpen,
   onClose,
   onSuccess,
+  initialData,
+  recordId,
+  mode = "add",
 }: AddSocialMediaModalProps) {
   const [formData, setFormData] = useState<SocialMediaFormData>({
-    title: SOCIAL_OPTIONS[0],
-    url: "",
+    title: initialData?.title || SOCIAL_OPTIONS[0],
+    url: initialData?.url || "",
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,9 +59,12 @@ export default function AddSocialMediaModal({
 
   useEffect(() => {
     if (!isOpen) return;
-    setFormData({ title: SOCIAL_OPTIONS[0], url: "" });
+    setFormData({
+      title: initialData?.title || SOCIAL_OPTIONS[0],
+      url: initialData?.url || "",
+    });
     setErrorMessage("");
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   const isValidUrl = useMemo(() => {
     if (!formData.url.trim()) return false;
@@ -90,14 +99,17 @@ export default function AddSocialMediaModal({
 
     try {
       setIsSubmitting(true);
-      const response = await fetch(`${apiBaseUrl}/social-links`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: formData.title.trim(),
-          url: formData.url.trim(),
-        }),
-      });
+      const response = await fetch(
+        mode === "edit" && recordId ? `${apiBaseUrl}/social-links/${recordId}` : `${apiBaseUrl}/social-links`,
+        {
+          method: mode === "edit" ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title.trim(),
+            url: formData.url.trim(),
+          }),
+        },
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -129,7 +141,7 @@ export default function AddSocialMediaModal({
       >
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[#E0E0E0]">
           <h2 id="add-social-title" className="text-xl font-semibold text-[#424242]">
-            Thêm mạng xã hội
+            {mode === "edit" ? "Sửa mạng xã hội" : "Thêm mạng xã hội"}
           </h2>
           <button
             type="button"

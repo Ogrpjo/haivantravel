@@ -376,7 +376,7 @@ export default function ProjectDetailPage() {
             </div>
             <div>
               <label htmlFor="detail-artist" className="block text-sm font-medium text-white/85 mb-1.5">
-                Số nghệ sĩ
+                Số đối tác
               </label>
               <input
                 id="detail-artist"

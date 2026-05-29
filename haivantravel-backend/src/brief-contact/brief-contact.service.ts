@@ -63,5 +63,17 @@ export class BriefContactService {
       },
     });
   }
+
+  async deleteOne(id: number) {
+    const result = await this.briefContactRepository.delete(id);
+
+    if (!result.affected) {
+      throw new Error(`Không tìm thấy brief_contact với id ${id}.`);
+    }
+  }
+
+  async deleteAll() {
+    await this.briefContactRepository.clear();
+  }
 }
 

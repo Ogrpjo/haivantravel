@@ -254,7 +254,7 @@ function MainContent() {
                                         </div>
                                         <div>
                                             <p className="text-[#8ED6D7] text-[24px] font-black leading-none">{item.artists}</p>
-                                            <p className="text-white/60 text-[12px]">Nghệ sĩ</p>
+                                            <p className="text-white/60 text-[12px]">Đối tác</p>
                                         </div>
                                         <div>
                                             <p className="text-[#8ED6D7] text-[24px] font-black leading-none">{item.duration}</p>

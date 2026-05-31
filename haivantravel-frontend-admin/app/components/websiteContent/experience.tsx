@@ -150,6 +150,7 @@ export default function ExperienceSection() {
             onChange={(e) => setBigImageFile(e.target.files?.[0] ?? null)}
             className="block w-full text-sm text-white/70 file:mr-4 file:rounded-md file:border-0 file:bg-[#8ED6D7] file:px-4 file:py-2 file:text-sm file:font-medium file:text-black hover:file:opacity-90"
           />
+          <p className="mt-1 text-xs text-white/60">Chỉ được upload ảnh có dung lượng tối đa là 2MB / 1 ảnh.</p>
         </div>
 
         {[1, 2, 3, 4].map((idx) => (
@@ -164,6 +165,7 @@ export default function ExperienceSection() {
               }
               className="block w-full text-sm text-white/70 file:mr-4 file:rounded-md file:border-0 file:bg-[#8ED6D7] file:px-4 file:py-2 file:text-sm file:font-medium file:text-black hover:file:opacity-90"
             />
+            <p className="mt-1 text-xs text-white/60">Chỉ được upload ảnh có dung lượng tối đa là 2MB / 1 ảnh.</p>
             <input
               type="text"
               value={form[`small_image_${idx}_name` as keyof FormState]}

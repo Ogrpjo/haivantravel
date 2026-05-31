@@ -305,6 +305,9 @@ export default function EditProjectModal({
               )}
             </button>
             <p className="mt-1.5 text-xs text-[#7E7E7E]">
+              Chỉ được upload ảnh có dung lượng tối đa là 2MB / 1 ảnh.
+            </p>
+            <p className="mt-1 text-xs text-[#7E7E7E]">
               Chọn ảnh mới để thay thế; để trống nếu giữ ảnh hiện tại.
             </p>
           </div>

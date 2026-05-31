@@ -290,6 +290,9 @@ export default function AddProjectModal({
                 </>
               )}
             </button>
+            <p className="mt-1.5 text-xs text-[#7E7E7E]">
+              Chỉ được upload ảnh có dung lượng tối đa là 2MB / 1 ảnh.
+            </p>
           </div>
 
           <div>

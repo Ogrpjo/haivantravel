@@ -268,6 +268,7 @@ export default function AboutUs() {
             onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
             className="block w-full text-sm text-white/80 file:mr-3 file:rounded-md file:border-0 file:bg-[#8ED6D7] file:px-3 file:py-2 file:text-black"
           />
+          <p className="mt-1 text-xs text-white/60">Chỉ được upload ảnh có dung lượng tối đa là 2MB / 1 ảnh.</p>
         </label>
 
         {imagePreview ? (

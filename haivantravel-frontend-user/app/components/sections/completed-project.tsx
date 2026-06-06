@@ -125,7 +125,6 @@ function LeftContent({
   categories: string[];
   onCategoryClick: (category: string) => void;
 }) {
-
   return (
     <div className="flex-1 flex flex-col h-full max-md:justify-center max-md:items-center gap-10">
       <div className="flex flex-col gap-[15px] lg:gap-[25px] max-md:justify-center shrink-0">
@@ -299,12 +298,13 @@ export default function CompletedProject() {
         setProjects([]);
         return;
       }
+
       const mapped = projectData
         .map(mapApiProjectToUi)
         .filter((p): p is Project => p !== null)
         .slice()
-        .sort((a, b) => b.id - a.id)
-        .slice(0, 10);
+        .sort((a, b) => b.id - a.id);
+
       setProjects(mapped);
     } catch {
       setLoadError(true);
@@ -336,21 +336,53 @@ export default function CompletedProject() {
     return Array.from(categoryMap.values());
   }, [projectTypes, projects]);
 
-  const filteredProjects = useMemo(() => {
-    if (!activeCategory) return projects;
-    return projects.filter((p) => p.category.toLowerCase() === activeCategory.toLowerCase());
-  }, [projects, activeCategory]);
+  const projectsByCategory = useMemo(() => {
+    const grouped = new Map<string, Project[]>();
+
+    for (const project of projects) {
+      const key = project.category.trim().toLowerCase();
+      if (!key) continue;
+      const items = grouped.get(key) ?? [];
+      items.push(project);
+      grouped.set(key, items);
+    }
+
+    return grouped;
+  }, [projects]);
+
+  const visibleProjects = useMemo(() => {
+    if (activeCategory) {
+      const source = projectsByCategory.get(activeCategory.toLowerCase()) ?? [];
+      return source.slice(0, 5);
+    }
+
+    const seen = new Set<number>();
+    const visible: Project[] = [];
+
+    for (const category of categoryOptions) {
+      const categoryProjects = (projectsByCategory.get(category.toLowerCase()) ?? []).slice(0, 5);
+      for (const project of categoryProjects) {
+        if (seen.has(project.id)) continue;
+        seen.add(project.id);
+        visible.push(project);
+      }
+    }
+
+    if (visible.length > 0) return visible;
+
+    return projects.slice(0, 5);
+  }, [activeCategory, categoryOptions, projects, projectsByCategory]);
 
   useEffect(() => {
-    if (filteredProjects.length === 0) {
+    if (visibleProjects.length === 0) {
       setActiveProject(null);
       return;
     }
     setActiveProject((prev) => {
-      if (prev && filteredProjects.some((p) => p.id === prev.id)) return prev;
-      return filteredProjects[0];
+      if (prev && visibleProjects.some((p) => p.id === prev.id)) return prev;
+      return visibleProjects[0];
     });
-  }, [filteredProjects]);
+  }, [visibleProjects]);
 
   const handleCategoryClick = (category: string) => {
     if (activeCategory?.toLowerCase() === category.toLowerCase()) {
@@ -409,9 +441,9 @@ export default function CompletedProject() {
         />
         <RightContent activeProject={activeProject} />
       </div>
-      {filteredProjects.length > 0 ? (
+      {visibleProjects.length > 0 ? (
         <SliderBottom
-          projects={filteredProjects}
+          projects={visibleProjects}
           activeProjectId={activeProject.id}
           onProjectClick={setActiveProject}
         />

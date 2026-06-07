@@ -18,14 +18,45 @@ const defaultProject: ProjectData = {
   pages: [{ name: "Trang", component: "<h1>Nội dung chi tiết dự án</h1><p></p>" }],
 };
 
-function safeParseProjectData(rawContent: string): ProjectData {
-  const trimmed = rawContent.trim();
-  if (!trimmed) return defaultProject;
-  try {
-    return JSON.parse(trimmed) as ProjectData;
-  } catch {
-    return { pages: [{ name: "Trang", component: trimmed }] };
+function fromLegacyHtml(content: string): ProjectData {
+  return {
+    pages: [{ name: "Trang", component: content }],
+  };
+}
+
+function parseProjectData(data: {
+  content?: string | null;
+  html_content?: string | null;
+}): ProjectData {
+  const raw = data?.content != null ? String(data.content).trim() : "";
+  if (raw) {
+    try {
+      return JSON.parse(raw) as ProjectData;
+    } catch {
+      return fromLegacyHtml(raw);
+    }
   }
+  const rawHtml = data?.html_content != null ? String(data.html_content).trim() : "";
+  if (rawHtml) {
+    return fromLegacyHtml(rawHtml);
+  }
+  return defaultProject;
+}
+
+async function loadProjectFromApi(
+  apiBaseUrl: string,
+  projectId: number,
+): Promise<ProjectData> {
+  const res = await fetch(`${apiBaseUrl}/projects/${projectId}`, {
+    cache: "no-store",
+    headers: { "Cache-Control": "no-cache" },
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Không thể tải nội dung dự án.");
+  }
+  const data = await res.json();
+  return parseProjectData(data);
 }
 
 function disableNativeFullscreen(editor: Editor): void {
@@ -50,42 +81,35 @@ export default function ProjectDetailContentEditorPage() {
 
   const editorRef = useRef<Editor | null>(null);
   const [editorReady, setEditorReady] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [initialProjectData, setInitialProjectData] = useState<ProjectData>(defaultProject);
+  const [loadedProject, setLoadedProject] = useState<ProjectData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!projectId || Number.isNaN(projectId)) {
       setIsLoading(false);
-      setMessage("ID dự án không hợp lệ.");
       return;
     }
 
     let cancelled = false;
     const fetchProject = async () => {
+      setIsLoading(true);
+      setLoadError(null);
+      setEditorReady(false);
+      editorRef.current = null;
       try {
-        setIsLoading(true);
-        setMessage(null);
-        const res = await fetch(`${apiBaseUrl}/projects/${projectId}`, { cache: "no-store" });
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(errorText || "Không thể tải nội dung dự án.");
-        }
-        const data = (await res.json()) as {
-          content?: string | null;
-          html_content?: string | null;
-        };
-        const fallbackContent =
-          typeof data.html_content === "string" && data.html_content.trim()
-            ? data.html_content
-            : "";
+        const project = await loadProjectFromApi(apiBaseUrl, projectId);
         if (!cancelled) {
-          setInitialProjectData(safeParseProjectData(data.content ?? fallbackContent));
+          setLoadedProject(project);
         }
       } catch (error) {
         if (!cancelled) {
-          setMessage(error instanceof Error ? error.message : "Có lỗi khi tải nội dung.");
+          setLoadError(
+            error instanceof Error ? error.message : "Có lỗi xảy ra khi tải nội dung.",
+          );
+          setLoadedProject(defaultProject);
         }
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -103,11 +127,16 @@ export default function ProjectDetailContentEditorPage() {
       licenseKey: process.env.NEXT_PUBLIC_GRAPES_STUDIO_LICENSE_KEY ?? "",
       project: {
         type: "web",
-        default: initialProjectData,
+        id: `project-detail-${projectId}`,
+        default: defaultProject,
       },
       storage: {
         type: "self",
-        onLoad: async () => ({ project: initialProjectData }),
+        project: loadedProject ?? defaultProject,
+        autosaveChanges: 0,
+        onSave: async () => {
+          // Manual save via button; prevent SDK local autosave.
+        },
       },
       i18n: {
         locales: {
@@ -115,7 +144,7 @@ export default function ProjectDetailContentEditorPage() {
         },
       },
     }),
-    [initialProjectData],
+    [loadedProject, projectId],
   );
 
   const handleEditor = useCallback((editor: Editor) => {
@@ -124,6 +153,14 @@ export default function ProjectDetailContentEditorPage() {
     disableNativeFullscreen(editor);
     try {
       editor.I18n?.addMessages({ vi: viLabels });
+      editor.I18n?.setLocale("vi");
+    } catch {
+      // noop
+    }
+  }, []);
+
+  const handleReady = useCallback((editor: Editor) => {
+    try {
       editor.I18n?.setLocale("vi");
     } catch {
       // noop
@@ -161,16 +198,38 @@ export default function ProjectDetailContentEditorPage() {
     }
   };
 
+  if (!projectId || Number.isNaN(projectId)) {
+    return (
+      <main className="w-screen h-screen bg-white flex items-center justify-center">
+        <p className="text-sm text-black/70">ID dự án không hợp lệ.</p>
+      </main>
+    );
+  }
+
+  if (isLoading || loadedProject === null) {
+    return (
+      <main className="w-screen h-screen bg-white flex items-center justify-center">
+        <p className="text-sm text-black/70">Đang tải nội dung...</p>
+      </main>
+    );
+  }
+
   return (
     <main className="w-screen h-screen bg-white relative overflow-hidden">
       <StudioEditor
-        key={`${projectId}-${isLoading ? "loading" : "ready"}`}
+        key={`project-detail-${projectId}`}
         className="w-full h-full"
         options={options}
         onEditor={handleEditor}
+        onReady={handleReady}
       />
 
       <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+        {loadError ? (
+          <div className="px-3 py-2 rounded-md text-sm bg-amber-600 text-white">
+            {loadError}
+          </div>
+        ) : null}
         {message ? (
           <div className="px-3 py-2 rounded-md text-sm bg-black/80 text-white">
             {message}
@@ -186,7 +245,7 @@ export default function ProjectDetailContentEditorPage() {
         <button
           type="button"
           onClick={handleSave}
-          disabled={isLoading || isSaving || !editorReady}
+          disabled={isSaving || !editorReady}
           className="px-3 py-2 rounded-md bg-[#05B9BA] text-white text-sm hover:opacity-90 disabled:opacity-60"
         >
           {isSaving ? "Đang lưu..." : "Lưu"}

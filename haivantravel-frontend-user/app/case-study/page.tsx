@@ -233,7 +233,7 @@ function MainContent() {
 
                 <div className="pt-[16px] flex flex-col gap-4">
                     {visibleProjects.map((item) => (
-                        <Link key={item.id} href={item.href} className="no-underline">
+                        <a key={item.id} href={item.href} className="no-underline">
                             <article className="grid grid-cols-[360px_1fr] max-md:grid-cols-1 gap-5 p-3 rounded-[12px] border border-white/10 bg-[#121212] hover:border-[#8ED6D7]/40 transition-colors cursor-pointer">
                                 <div className="relative w-full aspect-[3/2] max-md:aspect-[4/3] rounded-[8px] overflow-hidden">
                                     <img
@@ -264,7 +264,7 @@ function MainContent() {
                                     <p className="text-white/60 text-[14px] leading-relaxed">{item.description}</p>
                                 </div>
                             </article>
-                        </Link>
+                        </a>
                     ))}
 
                     {!isLoading && projects.length === 0 && !error ? (

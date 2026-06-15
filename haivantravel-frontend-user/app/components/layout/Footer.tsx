@@ -23,7 +23,7 @@ type CardSocialProps = {
 };
 function CardSocial({ icon }: CardSocialProps) {
   return (
-    <div className="bg-white/5 rounded-[10px] px-2 py-2 border border-white/10 flex items-center justify-center">
+    <div className="bg-white/5 rounded-[10px] border border-white/10 flex items-center justify-center w-[36px] h-[36px] shrink-0">
       {icon}
     </div>
   );
@@ -93,6 +93,7 @@ export default function Footer() {
             alt="zalo"
             width={20}
             height={20}
+            className="w-[20px] h-[20px] shrink-0"
           />
         ),
       },

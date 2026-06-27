@@ -21,6 +21,21 @@ async function bootstrap() {
   app.use('/upload', express.static(uploadDir));
   app.use('/upload', express.static(legacyUploadDir));
 
+  app.use((req, res, next) => {
+  const before = process.memoryUsage().heapUsed / 1024 / 1024;
+
+  res.on("finish", () => {
+    const after = process.memoryUsage().heapUsed / 1024 / 1024;
+
+    console.log(
+      `${req.method} ${req.originalUrl}`,
+      `Heap: ${before.toFixed(1)}MB -> ${after.toFixed(1)}MB`
+    );
+  });
+
+  next();
+});
+  
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
